@@ -5,8 +5,8 @@ name: Scheduled release
 # and waits until the release time before pushing.
 on:
   schedule:
-    - cron: "40 16 7 11 *"   # 16:40 UTC Nov 7
-    - cron: "5 17 7 11 *"    # 17:05 UTC Nov 7 (backup)
+    - cron: "40 16 6 11 *"   # 16:40 UTC Nov 6
+    - cron: "5 17 6 11 *"    # 17:05 UTC Nov 6 (backup)
   workflow_dispatch:
     inputs:
       now:
@@ -22,8 +22,8 @@ concurrency:
   cancel-in-progress: false
 
 env:
-  BRANCH: release-2026-11-07
-  RELEASE_AT: "2026-11-07T17:30:00Z"   # 12:30 PM Eastern
+  BRANCH: release-2026-11-06
+  RELEASE_AT: "2026-11-06T17:30:00Z"   # 12:30 PM Eastern
 
 jobs:
   release:
