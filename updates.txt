@@ -1,3 +1,3 @@
-2026-11-06|New forward category: Grit (Current NHL).
+2026-11-06|Grit added for current forwards.
 2026-11-06|D Physicality now counts puck battles.
-2026-11-06|Grades refreshed with the latest games.
+2026-11-06|Grades updated with latest games.
