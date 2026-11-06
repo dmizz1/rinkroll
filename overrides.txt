@@ -6,3 +6,4 @@ Auston Matthews|Shot|S
 Auston Matthews|Build|A-
 Connor Bedard|Shot|S
 Mikko Rantanen|Build|S
+Patrick Kane|Sense|A

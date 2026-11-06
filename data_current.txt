@@ -749,7 +749,7 @@ Ryan Donato|CHI|C|8|C B C+ D+ C C-|582|125|137|0
 Anton Frondell|CHI|C|16|D- C C- D+ B- C|29|6|11|1
 Ryan Greene|CHI|C|20|C D C- D- C- C-|100|14|19|0
 Jordan Greenway|CHI|L|12|D- F F F D S|490|57|109|0
-Patrick Kane|CHI|R|88|B- C B D+ A+ F|1384|509|900|1
+Patrick Kane|CHI|R|88|B- C B A A+ F|1384|509|900|1
 Roman Kantserov|CHI|R|80|B- B- B- D+ D+ F|17|8|2|1
 Andrew Mangiapane|CHI|L|26|C C C- D D D-|565|131|130|0
 Oliver Moore|CHI|C|11|B+ D D D- C+ D+|76|7|19|0
