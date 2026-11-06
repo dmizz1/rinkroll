@@ -30,6 +30,10 @@ jobs:
       - name: Pull NHL stats and regrade players
         run: node tools/update-stats.mjs
 
+      - name: Pull current cap hits
+        continue-on-error: true   # keep last month's cap hits if the cap site is unavailable
+        run: node tools/update-caps.mjs
+
       - name: Rebuild the site
         run: python3 build.py
 
@@ -38,6 +42,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add data_current.txt data_meta.json netlify
+          git add data_cap.txt 2>/dev/null || true
           if git diff --cached --quiet; then
             echo "No changes this month."
           else

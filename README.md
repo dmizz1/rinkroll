@@ -10,10 +10,12 @@ Netlify deploys the `netlify/` folder and the `functions/` API automatically on 
 `.github/workflows/monthly-stats.yml` runs on the 1st of every month. It:
 1. pulls current rosters, stats and NHL EDGE tracking (`tools/update-stats.mjs`),
 2. regrades every player and writes `data_current.txt` and `data_meta.json`,
+   and refreshes cap hits from CapWages (`tools/update-caps.mjs` → `data_cap.txt`),
 3. rebuilds the site (`build.py`) and commits the result, which Netlify then deploys.
 
 If the NHL data looks incomplete, the update stops and the site keeps its last good data.
 To run it by hand: GitHub → **Actions** → **Monthly stats update** → **Run workflow**.
+To refresh only cap hits (after big trades or signings): **Actions** → **Update cap hits** → **Run workflow**.
 
 ## Files
 | File | What it is |
