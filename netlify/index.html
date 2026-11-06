@@ -256,6 +256,8 @@ button:focus-visible, [tabindex]:focus-visible { outline: 3px solid var(--gold);
 .notepad ul { list-style: none; margin: 0; padding: 0; }
 .notepad li { font: 500 15px/26px var(--body); }
 .notepad li + li { margin-top: 0; }
+.notepad .u { display: block; padding-left: 14px; text-indent: -14px; }
+.notepad .u::before { content: "– "; color: var(--lamp); font-weight: 700; }
 .notepad time { display: block; font: 700 13px/26px var(--data); text-transform: uppercase; letter-spacing: .06em; color: var(--lamp); }
 @media (max-width: 600px) { .notepad { max-width: none; margin: 4px 0 18px; transform: none; } }
 .lb-preview { background: var(--boards); border: 1px solid var(--rule); border-radius: 6px; padding: 14px 16px; }
@@ -378,7 +380,7 @@ body.fx .p-meta { color: #c7d4e2; }
 
   <!-- SETUP -->
   <section class="setup" id="setup">
-    <aside class="notepad" aria-label="Updates"><h2>Updates</h2><ul><li><time datetime="2026-11-06">Nov 6, 2026</time><span>Forwards in Current NHL get a 7th category: Grit (net-front presence, tips, screens, puck battles and offensive physicality). Modern Era Stars stays at 6.</span></li><li><time datetime="2026-11-06">Nov 6, 2026</time><span>Defensemen Physicality now counts puck battles: takeaways, and takeaways vs. giveaways. Player grades also refreshed with the latest games.</span></li></ul></aside>
+    <aside class="notepad" aria-label="Updates"><h2>Updates</h2><ul><li><time datetime="2026-11-06">Nov 6, 2026</time><span class="u">New forward category: Grit (Current NHL).</span><span class="u">D Physicality now counts puck battles.</span><span class="u">Grades refreshed with the latest games.</span></li></ul></aside>
     <div class="step">
       <h2>How to play <small>Step 1</small></h2>
       <div class="choices" role="group" aria-label="How to play">

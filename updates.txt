@@ -1,2 +1,3 @@
-2026-11-06|Forwards in Current NHL get a 7th category: Grit (net-front presence, tips, screens, puck battles and offensive physicality). Modern Era Stars stays at 6.
-2026-11-06|Defensemen Physicality now counts puck battles: takeaways, and takeaways vs. giveaways. Player grades also refreshed with the latest games.
+2026-11-06|New forward category: Grit (Current NHL).
+2026-11-06|D Physicality now counts puck battles.
+2026-11-06|Grades refreshed with the latest games.

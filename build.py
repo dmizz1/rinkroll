@@ -87,10 +87,12 @@ import datetime, html as _h
 def _upd():
     try: rows = [l.rstrip('\n').split('|', 1) for l in open(P('updates.txt'), encoding='utf-8') if '|' in l]
     except FileNotFoundError: return ''
-    rows = sorted(rows, key=lambda r: r[0], reverse=True)[:4]
+    rows = sorted(rows, key=lambda r: r[0], reverse=True)
     if not rows: return ''
     fmt = lambda d: (lambda x: f"{x:%b} {x.day}, {x.year}")(datetime.date.fromisoformat(d.strip()))
-    li = ''.join(f'<li><time datetime="{d.strip()}">{fmt(d)}</time><span>{_h.escape(s.strip())}</span></li>' for d, s in rows)
+    days = {}  # one date heading per day, with that day's updates listed under it
+    for d, s in rows: days.setdefault(d.strip(), []).append(s.strip())
+    li = ''.join(f'<li><time datetime="{d}">{fmt(d)}</time>' + ''.join(f'<span class="u">{_h.escape(s)}</span>' for s in ss) + '</li>' for d, ss in list(days.items())[:3])
     return f'    <aside class="notepad" aria-label="Updates"><h2>Updates</h2><ul>{li}</ul></aside>\n'
 _np = _upd()
 if _np:
@@ -104,6 +106,8 @@ if _np:
 .notepad ul { list-style: none; margin: 0; padding: 0; }
 .notepad li { font: 500 15px/26px var(--body); }
 .notepad li + li { margin-top: 0; }
+.notepad .u { display: block; padding-left: 14px; text-indent: -14px; }
+.notepad .u::before { content: "– "; color: var(--lamp); font-weight: 700; }
 .notepad time { display: block; font: 700 13px/26px var(--data); text-transform: uppercase; letter-spacing: .06em; color: var(--lamp); }
 @media (max-width: 600px) { .notepad { max-width: none; margin: 4px 0 18px; transform: none; } }
 .lb-preview {""")
