@@ -379,7 +379,7 @@ Eeli Tolvanen|NYR|R|17|D C+ D+ D C- D- F|440|96|100|0
 Joseph Veleno|NYR|C|90|A- D- F D- F C+ D|371|40|46|0
 Mika Zibanejad|NYR|C|93|C+ A+ A B- A B- C+|1028|351|480|1
 Sean Durzi|NYR|D|5|B+ B+ C- D C|316|32|117|0
-Adam Fox|NYR|D|23|D- B- D F A|503|74|369|1
+Adam Fox|NYR|D|23|B+ B D D+ S|503|74|369|1
 Vladislav Gavrikov|NYR|D|44|A- B+ B B+ A|534|44|132|1
 Scott Morrow|NYR|D|60|D- D+ C C+ C+|48|1|12|0
 Marcus Pettersson|NYR|D|26|F D- D+ C- D+|621|21|162|1

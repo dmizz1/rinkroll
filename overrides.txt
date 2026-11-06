@@ -9,3 +9,7 @@ Mikko Rantanen|Build|S
 Patrick Kane|Sense|A
 J.T. Miller|Grit|A-
 Tage Thompson|Build|S
+Adam Fox|Speed|B+
+Adam Fox|Shot|B
+Adam Fox|Build|D+
+Adam Fox|Stick-checking|S
