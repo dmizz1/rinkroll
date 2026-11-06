@@ -54,8 +54,14 @@ function drawOptions() {
   const [g, label] = LINE_SLOTS[line.step];
   const pool = (line.variant === 'cap' ? capPool(g) : POOLS[line.mode][g]).filter(p => !line.used.has(p.name));
   const pick = [];
-  const bag = pool.slice();
-  while (pick.length < 3 && bag.length) pick.push(bag.splice(Math.floor(Math.random() * bag.length), 1)[0]);
+  // 90% of offers come from teams' top two lines (current NHL); the rest from anyone
+  const topBag = line.mode === 'current' ? pool.filter(p => p.top) : [];
+  const restBag = line.mode === 'current' ? pool.filter(p => !p.top) : pool.slice();
+  const take = b => b.splice(Math.floor(Math.random() * b.length), 1)[0];
+  while (pick.length < 3 && (topBag.length || restBag.length)) {
+    const fromTop = topBag.length && (!restBag.length || Math.random() < 0.9);
+    pick.push(take(fromTop ? topBag : restBag));
+  }
   if (line.variant === 'cap' && !pick.some(affordable)) {
     const cheap = pool.filter(p => affordable(p) && !pick.includes(p));
     if (cheap.length) pick[2] = cheap[Math.floor(Math.random() * cheap.length)];

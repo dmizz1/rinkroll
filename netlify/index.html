@@ -1568,7 +1568,7 @@ const POSNAME = { F: 'forward', D: 'defenseman', G: 'goaltender' };
 function grp(pos) { return pos === 'G' ? 'G' : pos === 'D' ? 'D' : 'F'; }
 const POOLS = { current: { F: [], D: [], G: [] }, alltime: { F: [], D: [], G: [] } };
 CURRENT_RAW.trim().split('\n').forEach(line => {
-  const [name, team, pos, num, grades, a, b, c] = line.split('|');
+  const [name, team, pos, num, grades, a, b, c, top] = line.split('|');
   if (+a < MIN_GP) return;
   const g = grp(pos);
   if (g === 'F' && ((+b) + (+c)) / (+a) < MIN_FWD_PPG) return;
@@ -1576,7 +1576,7 @@ CURRENT_RAW.trim().split('\n').forEach(line => {
   if (+a === 0) stat = 'NHL debut pending';
   else if (g === 'G') stat = `${a} GP · ${b ? b.replace(/^0/, '') : '—'} SV% · ${c} W`;
   else stat = `${a} GP · ${b} G · ${c} A`;
-  POOLS.current[g].push({ name, team, pos: pos === 'L' ? 'LW' : pos === 'R' ? 'RW' : pos, num, grades: grades.split(' '), stat });
+  POOLS.current[g].push({ name, team, pos: pos === 'L' ? 'LW' : pos === 'R' ? 'RW' : pos, num, grades: grades.split(' '), stat, top: top === '1' });
 });
 ALLTIME_RAW.trim().split('\n').forEach(line => {
   const [name, pos, grades, team, years] = line.split('|');
@@ -2174,8 +2174,14 @@ function drawOptions() {
   const [g, label] = LINE_SLOTS[line.step];
   const pool = (line.variant === 'cap' ? capPool(g) : POOLS[line.mode][g]).filter(p => !line.used.has(p.name));
   const pick = [];
-  const bag = pool.slice();
-  while (pick.length < 3 && bag.length) pick.push(bag.splice(Math.floor(Math.random() * bag.length), 1)[0]);
+  // 90% of offers come from teams' top two lines (current NHL); the rest from anyone
+  const topBag = line.mode === 'current' ? pool.filter(p => p.top) : [];
+  const restBag = line.mode === 'current' ? pool.filter(p => !p.top) : pool.slice();
+  const take = b => b.splice(Math.floor(Math.random() * b.length), 1)[0];
+  while (pick.length < 3 && (topBag.length || restBag.length)) {
+    const fromTop = topBag.length && (!restBag.length || Math.random() < 0.9);
+    pick.push(take(fromTop ? topBag : restBag));
+  }
   if (line.variant === 'cap' && !pick.some(affordable)) {
     const cheap = pool.filter(p => affordable(p) && !pick.includes(p));
     if (cheap.length) pick[2] = cheap[Math.floor(Math.random() * cheap.length)];

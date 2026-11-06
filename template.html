@@ -520,7 +520,7 @@ const POSNAME = { F: 'forward', D: 'defenseman', G: 'goaltender' };
 function grp(pos) { return pos === 'G' ? 'G' : pos === 'D' ? 'D' : 'F'; }
 const POOLS = { current: { F: [], D: [], G: [] }, alltime: { F: [], D: [], G: [] } };
 CURRENT_RAW.trim().split('\n').forEach(line => {
-  const [name, team, pos, num, grades, a, b, c] = line.split('|');
+  const [name, team, pos, num, grades, a, b, c, top] = line.split('|');
   if (+a < MIN_GP) return;
   const g = grp(pos);
   if (g === 'F' && ((+b) + (+c)) / (+a) < MIN_FWD_PPG) return;
@@ -528,7 +528,7 @@ CURRENT_RAW.trim().split('\n').forEach(line => {
   if (+a === 0) stat = 'NHL debut pending';
   else if (g === 'G') stat = `${a} GP · ${b ? b.replace(/^0/, '') : '—'} SV% · ${c} W`;
   else stat = `${a} GP · ${b} G · ${c} A`;
-  POOLS.current[g].push({ name, team, pos: pos === 'L' ? 'LW' : pos === 'R' ? 'RW' : pos, num, grades: grades.split(' '), stat });
+  POOLS.current[g].push({ name, team, pos: pos === 'L' ? 'LW' : pos === 'R' ? 'RW' : pos, num, grades: grades.split(' '), stat, top: top === '1' });
 });
 ALLTIME_RAW.trim().split('\n').forEach(line => {
   const [name, pos, grades, team, years] = line.split('|');

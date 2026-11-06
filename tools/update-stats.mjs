@@ -66,6 +66,12 @@ await pool(players, CONCURRENCY, async p => {
   const st = (l.seasonTotals || []).filter(s => s.leagueAbbrev === 'NHL' && s.gameTypeId === 2 && SEASONS.includes(s.season));
   const sum = k => st.reduce((a, s) => a + (s[k] || 0), 0);
   p.gp = sum('gamesPlayed');
+  // recent usage for depth-chart tagging: this season counts double
+  const cur = st.find(s => s.season === CURRENT) || {}, last = st.find(s => s.season === LAST_FULL) || {};
+  const cg = cur.gamesPlayed || 0, lg = last.gamesPlayed || 0;
+  p.recentGames = 2 * cg + lg;
+  if (!isG) p.recentToi = p.recentGames ? (2 * cg * toSec(cur.avgToi) + lg * toSec(last.avgToi)) / p.recentGames : 0;
+  else p.recentStarts = 2 * (cur.gamesStarted || cg) + (last.gamesStarted || lg);
   const ct = (l.careerTotals && l.careerTotals.regularSeason) || {};
   p.cgp = ct.gamesPlayed || 0;
   if (isG) { p.sa = sum('shotsAgainst'); p.ga = sum('goalsAgainst'); p.csv = ct.savePctg; p.cw = ct.wins || 0; }
@@ -167,14 +173,23 @@ for (const G of ['F', 'D', 'G']) {
   }
 }
 
-// ---------- 4. write ----------
+// ---------- 4. top-two-lines tag (per team: 6 F and 4 D by recent ice time, 1 starting G) ----------
+const TOP_N = { F: 6, D: 4, G: 1 };
+for (const team of teams) for (const G of ['F', 'D', 'G']) {
+  const roster = players.filter(p => p.team === team && grp(p) === G && (p.recentGames || 0) >= 10);
+  roster.sort((a, b) => G === 'G' ? (b.recentStarts || 0) - (a.recentStarts || 0) : (b.recentToi || 0) - (a.recentToi || 0));
+  roster.slice(0, TOP_N[G]).forEach(p => { p.top = true; });
+}
+console.log(`Top-two-lines tagged: ${players.filter(p => p.top).length}`);
+
+// ---------- 5. write ----------
 const exclude = new Set(existsSync(join(ROOT, 'exclude.txt'))
   ? readFileSync(join(ROOT, 'exclude.txt'), 'utf8').split('\n').map(s => s.replace(/#.*/, '').trim()).filter(Boolean) : []);
 const clean = s => String(s).replace(/[|`\n\r]/g, '').replace(/\$\{/g, '');
 const lines = players.filter(p => p.gr && !exclude.has(p.name)).map(p => {
   const g = grp(p);
   const stats = g === 'G' ? `${p.cgp || 0}|${p.csv ? p.csv.toFixed(3) : ''}|${p.cw || 0}` : `${p.cgp || 0}|${p.cg || 0}|${p.ca || 0}`;
-  return [clean(p.name), p.team, p.pos, p.num, ORDER[g].map(c => p.gr[c]).join(' '), stats].join('|');
+  return [clean(p.name), p.team, p.pos, p.num, ORDER[g].map(c => p.gr[c]).join(' '), stats, p.top ? 1 : 0].join('|');
 });
 if (lines.length < MIN_PLAYERS) throw new Error(`Only ${lines.length} graded players; leaving data unchanged.`);
 writeFileSync(join(ROOT, 'data_current.txt'), lines.join('\n') + '\n');
