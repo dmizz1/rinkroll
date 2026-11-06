@@ -165,6 +165,76 @@ button:focus-visible, [tabindex]:focus-visible { outline: 3px solid var(--gold);
 .toast { font-family: var(--data); font-size: 13px; color: var(--g-b); }
 .foot { margin-top: 36px; padding-top: 16px; border-top: 1px solid var(--rule); color: var(--frost); font-size: 13px; display: grid; gap: 6px; max-width: 80ch; }
 
+/* result extras */
+.plays-like { margin: 14px 0 0; font-size: 16px; color: var(--frost); }
+.plays-like b { color: var(--ice); font-family: var(--display); font-size: 22px; font-weight: 800; text-transform: uppercase; letter-spacing: .02em; }
+.plays-like span { font-family: var(--data); font-size: 13px; letter-spacing: .08em; text-transform: uppercase; }
+.awards { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+.trophy { display: inline-flex; align-items: center; gap: 6px; padding: 5px 12px 5px 8px; border-radius: 999px; background: rgba(244,201,93,.12); border: 1px solid rgba(244,201,93,.55); color: var(--gold); font-family: var(--display); font-weight: 800; font-size: 17px; text-transform: uppercase; letter-spacing: .03em; }
+.trophy svg { width: 18px; height: 18px; fill: var(--gold); }
+.no-hw { font-size: 14px; color: var(--frost); }
+.tcard-wrap h3 { margin-bottom: 10px; }
+.tcard-wrap img { display: block; width: 100%; max-width: 420px; height: auto; border-radius: 12px; border: 1px solid var(--rule); box-shadow: 0 18px 40px rgba(0,0,0,.45); }
+
+/* line builder */
+.line-game { padding-block: 24px; display: grid; gap: 20px; }
+.line-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; flex-wrap: wrap; }
+.line-head .arch { font-size: clamp(32px, 6vw, 48px); }
+.capbar { flex: 1 1 280px; max-width: 420px; display: grid; gap: 6px; }
+.cap-nums { font-family: var(--data); font-size: 14px; letter-spacing: .04em; color: var(--frost); font-variant-numeric: tabular-nums; }
+.cap-nums b { color: var(--ice); }
+.cap-track { height: 12px; border-radius: 6px; background: var(--boards); border: 1px solid var(--rule); overflow: hidden; }
+.cap-fill { height: 100%; background: linear-gradient(90deg, var(--g-b), var(--gold) 75%, var(--lamp)); transition: width .4s ease; }
+.line-grid { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 24px; align-items: start; }
+@media (max-width: 760px) { .line-grid { grid-template-columns: 1fr; } }
+.pick-panel h3, .season h3 { font-family: var(--display); font-weight: 800; font-size: 22px; letter-spacing: .06em; text-transform: uppercase; margin: 0 0 10px; display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+.pick-panel h3 small { font-family: var(--data); font-size: 13px; color: var(--frost); letter-spacing: .08em; }
+.options { display: grid; gap: 10px; }
+.opt { text-align: left; display: grid; gap: 3px; padding: 14px 16px; background: var(--boards); border: 2px solid var(--rule); border-radius: 8px; animation: dealin .35s ease-out both; }
+.opt:hover:not(:disabled) { border-color: var(--lamp); background: var(--boards-2); }
+.opt:disabled { opacity: .45; cursor: not-allowed; }
+@keyframes dealin { from { transform: translateY(10px) rotateX(35deg); opacity: 0; } to { transform: none; opacity: 1; } }
+.opt-name { font-family: var(--display); font-weight: 800; font-size: 26px; line-height: 1; text-transform: uppercase; }
+.opt-meta, .opt-stat { font-family: var(--data); font-size: 13px; letter-spacing: .06em; text-transform: uppercase; color: var(--frost); }
+.opt-cap { font-family: var(--display); font-weight: 900; font-size: 30px; color: var(--g-b); font-variant-numeric: tabular-nums; margin-top: 4px; }
+.opt-warn { font-family: var(--data); font-size: 13px; color: var(--g-f); text-transform: uppercase; letter-spacing: .08em; }
+.opt-grades { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; }
+.opt-grades .gr { font-size: 15px; }
+.lb { display: grid; gap: 6px; }
+.lb-row { display: grid; grid-template-columns: 6.5em minmax(0,1fr) auto; gap: 10px; align-items: center; padding: 10px 12px; background: var(--boards); border: 2px solid var(--rule); border-radius: 6px; min-height: 52px; }
+.lb-row.next { border-style: dashed; border-color: var(--frost); }
+.lb-row.on { background: var(--boards-2); }
+.lb-k { font-family: var(--display); font-weight: 800; font-size: 17px; text-transform: uppercase; color: var(--frost); }
+.lb-who { font-family: var(--data); font-size: 15px; min-width: 0; overflow-wrap: anywhere; }
+.lb-who small { color: var(--frost); }
+.lb-cap { font-family: var(--display); font-weight: 800; font-size: 20px; color: var(--g-b); font-variant-numeric: tabular-nums; }
+.season { display: grid; gap: 24px; }
+.record { font-family: var(--display); font-weight: 900; font-size: clamp(56px, 12vw, 92px); line-height: .9; font-variant-numeric: tabular-nums; }
+.season-pts { font-family: var(--data); font-size: 14px; letter-spacing: .1em; text-transform: uppercase; color: var(--frost); margin: 6px 0 12px; }
+.path { list-style: none; padding: 0; margin: 0 0 12px; display: grid; gap: 6px; }
+.path li { display: flex; justify-content: space-between; gap: 12px; padding: 8px 12px; border-radius: 6px; background: var(--boards); font-family: var(--data); font-size: 15px; animation: dealin .3s ease-out both; }
+.path li b { font-family: var(--display); font-size: 18px; text-transform: uppercase; }
+.path li.won b { color: var(--g-b); }
+.path li.lost b { color: var(--g-f); }
+.total-row { background: var(--boards-2) !important; }
+
+/* leaderboard */
+.lboard h3, .lb-h { font-family: var(--display); font-weight: 800; font-size: 22px; letter-spacing: .06em; text-transform: uppercase; margin: 0 0 10px; display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+.lboard h3 small, .lb-h small { font-family: var(--data); font-size: 13px; color: var(--frost); letter-spacing: .08em; }
+.lb-form { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-bottom: 8px; }
+.lb-form label { font-family: var(--data); font-size: 14px; color: var(--frost); letter-spacing: .06em; text-transform: uppercase; }
+.lb-form .name-input { flex: 1 1 180px; min-width: 0; background: #060c16; border: 2px solid var(--rule); border-radius: 4px; padding: 8px 12px; color: var(--ice); font: 600 17px var(--body); }
+.lb-list { list-style: none; padding: 0; margin: 0; display: grid; gap: 6px; }
+.lb-list li { display: grid; grid-template-columns: 2.2em minmax(0, 1fr) auto; gap: 10px; align-items: center; padding: 10px 12px; background: var(--boards); border: 1px solid var(--rule); border-radius: 6px; }
+.lb-list li.me { border-color: var(--gold); box-shadow: 0 0 0 2px rgba(244,201,93,.25); }
+.lb-rank { font-family: var(--display); font-weight: 900; font-size: 24px; color: var(--frost); text-align: center; font-variant-numeric: tabular-nums; }
+.lb-main { display: grid; gap: 4px; min-width: 0; }
+.lb-name { font-family: var(--display); font-weight: 800; font-size: 20px; text-transform: uppercase; overflow-wrap: anywhere; }
+.lb-chips { display: flex; flex-wrap: wrap; gap: 3px; }
+.lb-chips .gr { font-size: 13px; min-width: 1.9em; }
+.lb-players { font-family: var(--data); font-size: 12px; color: var(--frost); overflow-wrap: anywhere; }
+.lb-preview { background: var(--boards); border: 1px solid var(--rule); border-radius: 6px; padding: 14px 16px; }
+
 /* nav, daily */
 .site-nav { display: flex; gap: 18px; margin-top: 10px; font-family: var(--data); font-size: 14px; letter-spacing: .1em; text-transform: uppercase; }
 .site-nav a { color: var(--frost); text-decoration: none; border-bottom: 1px solid var(--rule); }
@@ -244,19 +314,34 @@ button:focus-visible, [tabindex]:focus-visible { outline: 3px solid var(--gold);
       <div class="choices" role="group" aria-label="How to play">
         <button class="choice" data-play="solo" aria-pressed="true"><span class="t">Solo</span><span class="d">Spin and build at your own pace.</span></button>
         <button class="choice" data-play="daily" aria-pressed="false"><span class="t">Daily</span><span class="d">Same spins for everyone, one try a day. Compare builds with friends.</span></button>
+        <button class="choice" data-play="line" aria-pressed="false"><span class="t">Line Builder</span><span class="d">Draft 3 forwards, 2 defensemen and a goalie, then sim an 82-game season and the playoffs.</span></button>
         <button class="choice" data-play="online" aria-pressed="false"><span class="t">Head-to-head</span><span class="d">Make a lobby, send the code, and draft against a friend. Each of you gets your own spins, and grades stay hidden.</span></button>
       </div>
     </div>
     <div class="daily-panel" id="daily-panel" hidden></div>
+    <div class="lb-preview" id="lb-preview" hidden></div>
+    <div class="online-panel" id="line-panel" hidden>
+      <div class="op-col">
+        <h3>Cap Line</h3>
+        <p class="note">Current NHL players with their real 2026–27 cap hits. Pick 1 of 3 at each spot and stay under a $26M cap. You see salaries, not grades.</p>
+        <button class="go" id="start-cap">Start Cap Line</button>
+        <p class="op-msg" id="cap-msg"></p>
+      </div>
+      <div class="op-col">
+        <h3>Skill Line</h3>
+        <p class="note">No cap. Pick 1 of 3 at each spot with every player's grades showing. Uses the player pool you pick below.</p>
+        <button class="go" id="start-skill">Start Skill Line</button>
+      </div>
+    </div>
     <div class="custom-steps" id="custom-steps">
-    <div class="step">
+    <div class="step" id="pool-step">
       <h2>Player pool <small>Step 2</small></h2>
       <div class="choices" role="group" aria-label="Player pool">
         <button class="choice" data-mode="current" aria-pressed="true"><span class="t">Current NHL</span><span class="d">Every rostered player with 82+ career NHL games, 2026–27. Graded from NHL EDGE tracking and the last three seasons of stats.</span></button>
         <button class="choice" data-mode="alltime" aria-pressed="false"><span class="t">All-Time Greats</span><span class="d">The modern era, 1980 to today: top 100 forwards, top 100 defensemen and top 35 goalies, graded against each other.</span></button>
       </div>
     </div>
-    <div class="step">
+    <div class="step" id="pos-step">
       <h2>Position <small>Step 3</small></h2>
       <div class="choices" role="group" aria-label="Position" id="pos-choices">
         <button class="choice" data-pos="F" aria-pressed="true"><span class="t">Forward</span><span class="d">Centers and wingers.</span><span class="cats">Speed · Shot · Hands · Sense · Playmaking · Build</span></button>
@@ -329,6 +414,55 @@ button:focus-visible, [tabindex]:focus-visible { outline: 3px solid var(--gold);
     </div>
   </section>
 
+  <!-- LINE BUILDER -->
+  <section class="line-game" id="line" hidden>
+    <div class="line-head">
+      <div><p class="tag" id="line-kicker">Cap Line</p><h2 class="arch">Build your line</h2></div>
+      <div class="capbar" id="capbar" hidden></div>
+    </div>
+    <div class="line-grid" id="line-build">
+      <div class="pick-panel">
+        <h3><span id="pick-title">Forward 1</span><small id="pick-sub">Pick 1 of 6</small></h3>
+        <div class="options" id="options"></div>
+        <p class="prompt" id="line-prompt"></p>
+        <div class="row-actions"><button class="btn" id="line-redraw">Re-draw (1)</button><button class="btn" id="line-quit">Menu</button></div>
+      </div>
+      <div class="slots">
+        <h3><span>Your line</span><small id="line-filled">0 / 6</small></h3>
+        <div class="lb" id="line-board"></div>
+      </div>
+    </div>
+    <div class="season" id="season" hidden>
+      <div class="card">
+        <div class="ovr"><span class="gr" id="line-ovr">B</span><span class="l">Line grade</span></div>
+        <div>
+          <p class="tag">82-game season</p>
+          <div class="record" id="season-record">0–0–0</div>
+          <p class="season-pts" id="season-pts"></p>
+          <ol class="path" id="season-path"></ol>
+          <p class="verdict" id="season-finish"></p>
+          <div class="awards" id="season-awards"></div>
+        </div>
+      </div>
+      <div>
+        <h3>Your line</h3>
+        <div class="recap" id="line-recap"></div>
+      </div>
+      <div class="tcard-wrap" id="line-card-wrap" hidden>
+        <h3>Your card</h3>
+        <img id="line-card-img" alt="Your Rink Roll line card" width="1080" height="1350">
+      </div>
+      <div class="row-actions">
+        <button class="go" id="line-again">Build another line</button>
+        <button class="btn" id="line-resim">Sim another season</button>
+        <button class="btn hot" id="line-share">Share result</button>
+        <button class="btn" id="line-save">Save card</button>
+        <button class="btn" id="line-menu">Menu</button>
+        <span class="toast" id="line-toast" aria-live="polite"></span>
+      </div>
+    </div>
+  </section>
+
   <!-- RESULT -->
   <section class="result" id="result" hidden>
     <div class="card">
@@ -338,6 +472,8 @@ button:focus-visible, [tabindex]:focus-visible { outline: 3px solid var(--gold);
         <h2 class="arch" id="res-arch">Power Forward</h2>
         <p class="arch-sub" id="res-sub"></p>
         <div class="proj" id="res-proj"></div>
+        <p class="plays-like" id="plays-like" hidden></p>
+        <div class="awards" id="awards"></div>
       </div>
     </div>
     <div class="h2h" id="h2h" hidden>
@@ -345,9 +481,23 @@ button:focus-visible, [tabindex]:focus-visible { outline: 3px solid var(--gold);
       <p class="verdict" id="verdict">Waiting for your opponent to finish…</p>
       <div class="h2h-table" id="h2h-table"></div>
     </div>
+    <div class="lboard" id="lboard" hidden>
+      <h3><span>Today's leaderboard</span><small id="lb-count"></small></h3>
+      <form class="lb-form" id="lb-form">
+        <label for="lb-name">Post your build as</label>
+        <input id="lb-name" class="name-input" maxlength="16" autocomplete="nickname" placeholder="Your name">
+        <button class="btn hot" id="lb-submit" type="submit">Post to leaderboard</button>
+      </form>
+      <p class="op-msg" id="lb-msg" aria-live="polite"></p>
+      <div id="lb-list"></div>
+    </div>
     <div id="parts">
       <h3>The parts list</h3>
       <div class="recap" id="recap"></div>
+    </div>
+    <div class="tcard-wrap" id="tcard-wrap" hidden>
+      <h3>Your card</h3>
+      <img id="tcard-img" alt="Your Rink Roll trading card" width="1080" height="1350" hidden>
     </div>
     <p class="note" id="daily-note" hidden></p>
     <div class="row-actions">
@@ -355,6 +505,7 @@ button:focus-visible, [tabindex]:focus-visible { outline: 3px solid var(--gold);
       <button class="go" id="rematch" hidden>Rematch</button>
       <button class="btn" id="leave-result" hidden>Leave lobby</button>
       <button class="btn hot" id="share">Share result</button>
+      <button class="btn" id="save-card">Save card</button>
       <button class="btn" id="copy">Copy build</button>
       <span class="toast" id="toast" aria-live="polite"></span>
     </div>
@@ -1400,6 +1551,7 @@ Jean-Sébastien Giguère|G|B A A- A A|ANA|1996–2014
 Olaf Kölzig|G|B A A A A|WSH|1989–2009
 Andy Moog|G|A A A- A B+|EDM|1980–1998
 Juuse Saros|G|S A A A- A|NSH|2015–`;
+const CAP_RAW = ``;
 
 const MIN_GP = 82;
 const MIN_FWD_PPG = 0.30; // drop career fourth-liners
@@ -1453,7 +1605,7 @@ function updateBug() {
   $('bug-rr').textContent = state.slots.length ? state.rerolls : 1;
 }
 
-function show(id) { ['setup', 'lobby', 'game', 'result'].forEach(s => $(s).hidden = s !== id); window.scrollTo({ top: 0, behavior: 'smooth' }); }
+function show(id) { ['setup', 'lobby', 'game', 'result', 'line'].forEach(s => $(s).hidden = s !== id); window.scrollTo({ top: 0, behavior: 'smooth' }); }
 
 function startGame() { state.online = false; state.daily = null; state.seq = null; initBuild(null); }
 
@@ -1721,6 +1873,8 @@ function finish() {
     const w = Math.round(14 + avg * 2.4);
     proj = [[sv, 'Save %'], [gaa, 'GAA'], [w, 'Wins']];
   }
+  const projObj = state.pos === 'G' ? {} : { goals: proj[0][0], assists: proj[1][0], points: proj[0][0] + proj[1][0] };
+  state.result = { vals, avg, ovr, arch, sub, proj, projObj };
   $('res-proj').innerHTML = proj.map(([n, l]) => `<div><b>${n}</b><span>${l}</span></div>`).join('') + `<div style="align-self:end"><span>Projected 82 games</span></div>`;
   $('recap').innerHTML = state.slots.map(s => `<div class="recap-row"><span class="k">${s.k}</span><span class="who">${esc(s.player.name)} · ${s.player.team} · ${s.player.pos}</span>${chip(s.grade)}</div>`).join('');
   $('toast').textContent = '';
@@ -1731,6 +1885,8 @@ function finish() {
   $('daily-note').hidden = !state.daily;
   if (state.daily) { dailySaveProgress(true); $('daily-note').textContent = `Next daily in ${untilMidnight()}. Share your grid and see who built better.`; }
   show('result');
+  renderBuildExtras(state.result);
+  showDailyLeaderboard();
   if (state.online) { saveProgress(true, avg); renderH2H(); }
   else fanfare(avg >= 7);
 }
@@ -1759,16 +1915,525 @@ function seededSeq(pool, seed) {
   return a;
 }
 
+/* ---------- result extras: trophies, player comparison, trading card ---------- */
+const TROPHY_INFO = {
+  'Hart Trophy': 'League MVP',
+  'Art Ross Trophy': 'Most points',
+  'Rocket Richard Trophy': 'Most goals',
+  'Ted Lindsay Award': 'Players\' choice for best player',
+  'Selke Trophy': 'Best defensive forward',
+  'Lady Byng Trophy': 'Skill and sportsmanship',
+  'Norris Trophy': 'Best defenseman',
+  'Vezina Trophy': 'Best goaltender',
+  'William M. Jennings Trophy': 'Fewest goals allowed',
+  'Conn Smythe Trophy': 'Playoff MVP',
+  'Stanley Cup': 'League champions',
+  'Presidents\' Trophy': 'Best regular season'
+};
+
+// v: category -> numeric grade (0 F … 13 S); avg: average; proj: { goals, assists, points }
+function trophiesFor(pos, v, avg, proj) {
+  const t = [];
+  if (pos === 'F') {
+    if (avg >= 11.5) t.push('Hart Trophy');
+    if (proj.points >= 110) t.push('Art Ross Trophy');
+    if (proj.goals >= 50) t.push('Rocket Richard Trophy');
+    if (avg >= 11 && v.Sense >= 11) t.push('Ted Lindsay Award');
+    if (v.Sense >= 11 && v.Build >= 9 && v.Speed >= 8) t.push('Selke Trophy');
+    if (v.Build <= 4 && avg >= 9 && v.Hands >= 10) t.push('Lady Byng Trophy');
+  } else if (pos === 'D') {
+    if (avg >= 10.5) t.push('Norris Trophy');
+    if (avg >= 12.3) t.push('Hart Trophy');
+    if (avg >= 12) t.push('Ted Lindsay Award');
+  } else {
+    if (avg >= 10.5) t.push('Vezina Trophy');
+    if (v.Rebounding >= 11 && v.Reflexes >= 10) t.push('William M. Jennings Trophy');
+    if (avg >= 12.3) t.push('Hart Trophy');
+  }
+  return t;
+}
+
+// Closest real player in the same pool and position by grade profile
+function playsLike(pos, mode, grades) {
+  const pool = POOLS[mode][pos];
+  const n = grades.length, dmax = Math.sqrt(n * 13 * 13);
+  let best = null, bestD = Infinity;
+  for (const p of pool) {
+    let d = 0;
+    for (let i = 0; i < n; i++) { const x = gv(p.grades[i]) - grades[i]; d += x * x; }
+    d = Math.sqrt(d);
+    if (d < bestD) { bestD = d; best = p; }
+  }
+  return best ? { player: best, match: Math.max(1, Math.round(100 * (1 - bestD / dmax))) } : null;
+}
+
+function trophyChips(list) {
+  if (!list.length) return '<span class="no-hw">No hardware this season. The awards voters were not impressed.</span>';
+  return list.map(n => `<span class="trophy" title="${esc(TROPHY_INFO[n] || '')}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3h10v3h3v2a5 5 0 0 1-4.6 5A5 5 0 0 1 13 15.9V18h3v3H8v-3h3v-2.1A5 5 0 0 1 8.6 13 5 5 0 0 1 4 8V6h3zm0 5V8H6a3 3 0 0 0 1.2 2.4zm10 0v2.4A3 3 0 0 0 18 8z"/></svg>${esc(n)}</span>`).join('');
+}
+
+/* ----- trading card (canvas) ----- */
+const CARD_W = 1080, CARD_H = 1350;
+const TIER_COL = { S: '#f4c95d', A: '#6fd3ff', B: '#5ee0a8', C: '#c9d4e0', D: '#ff9f5a', F: '#ff5d6c' };
+function rr(ctx, x, y, w, h, r) { ctx.beginPath(); ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r); ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath(); }
+function fit(ctx, text, maxW, font, size, min) {
+  let s = size; ctx.font = `${font.replace('{s}', s)}`;
+  while (ctx.measureText(text).width > maxW && s > min) { s -= 2; ctx.font = font.replace('{s}', s); }
+  return s;
+}
+function chipOn(ctx, g, x, y, w, h, fontPx) {
+  const c = TIER_COL[tier(g)] || '#c9d4e0';
+  if (tier(g) === 'S') { ctx.save(); ctx.shadowColor = 'rgba(244,201,93,.7)'; ctx.shadowBlur = 24; }
+  ctx.fillStyle = c; rr(ctx, x, y, w, h, 10); ctx.fill();
+  if (tier(g) === 'S') ctx.restore();
+  ctx.fillStyle = '#0a1220'; ctx.font = `900 ${fontPx}px "Saira Extra Condensed", Impact, sans-serif`;
+  ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(g, x + w / 2, y + h / 2 + 2);
+  ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic';
+}
+
+// card: { kicker, title, sub, overall, rows:[{k, who, grade}], stats:[[value,label]], trophies:[], footer }
+async function drawCard(card) {
+  try { if (document.fonts && document.fonts.ready) await document.fonts.ready; } catch (e) {}
+  const cv = document.createElement('canvas'); cv.width = CARD_W; cv.height = CARD_H;
+  const ctx = cv.getContext('2d');
+  const D = '"Saira Extra Condensed", Impact, sans-serif', B = '"Barlow", "Segoe UI", sans-serif', N = '"Saira Semi Condensed", "Arial Narrow", sans-serif';
+  // ground + rink markings
+  const g = ctx.createLinearGradient(0, 0, CARD_W, CARD_H); g.addColorStop(0, '#1a2943'); g.addColorStop(.55, '#0f1a2d'); g.addColorStop(1, '#0a1220');
+  ctx.fillStyle = g; ctx.fillRect(0, 0, CARD_W, CARD_H);
+  ctx.fillStyle = 'rgba(230,57,70,.16)'; ctx.fillRect(CARD_W / 2 - 4, 0, 8, CARD_H);
+  ctx.fillStyle = 'rgba(59,123,234,.13)'; ctx.fillRect(CARD_W * 0.24, 0, 14, CARD_H); ctx.fillRect(CARD_W * 0.76 - 14, 0, 14, CARD_H);
+  ctx.strokeStyle = 'rgba(230,57,70,.18)'; ctx.lineWidth = 6; ctx.beginPath(); ctx.arc(CARD_W / 2, CARD_H * 0.47, 170, 0, Math.PI * 2); ctx.stroke();
+  // frame
+  ctx.strokeStyle = '#26385a'; ctx.lineWidth = 6; rr(ctx, 24, 24, CARD_W - 48, CARD_H - 48, 28); ctx.stroke();
+  ctx.strokeStyle = '#e63946'; ctx.lineWidth = 3; rr(ctx, 40, 40, CARD_W - 80, CARD_H - 80, 20); ctx.stroke();
+  // header
+  ctx.fillStyle = '#eaf2f7'; ctx.font = `900 64px ${D}`; ctx.fillText('RINK', 80, 128);
+  const w1 = ctx.measureText('RINK').width; ctx.fillStyle = '#e63946'; ctx.fillText('·', 80 + w1 + 4, 128);
+  const w2 = ctx.measureText('·').width; ctx.fillStyle = '#eaf2f7'; ctx.fillText('ROLL', 80 + w1 + w2 + 8, 128);
+  ctx.fillStyle = '#9fb3c8'; ctx.font = `600 26px ${N}`; ctx.textAlign = 'right'; ctx.fillText(card.kicker.toUpperCase(), CARD_W - 80, 124); ctx.textAlign = 'left';
+  // overall box + title
+  const ov = card.overall;
+  chipOn(ctx, ov, 80, 170, 230, 230, 150);
+  ctx.fillStyle = '#9fb3c8'; ctx.font = `600 24px ${N}`; ctx.textAlign = 'center'; ctx.fillText('OVERALL', 195, 432); ctx.textAlign = 'left';
+  const ts = fit(ctx, card.title.toUpperCase(), 640, `900 {s}px ${D}`, 104, 56);
+  ctx.fillStyle = '#eaf2f7'; ctx.font = `900 ${ts}px ${D}`; ctx.fillText(card.title.toUpperCase(), 350, 170 + ts * 0.9);
+  ctx.fillStyle = '#9fb3c8'; ctx.font = `500 30px ${B}`;
+  wrapText(ctx, card.sub, 350, 170 + ts * 0.9 + 52, 650, 38, 3);
+  // rows
+  let y = 490; const rowH = Math.min(96, Math.floor(560 / Math.max(5, card.rows.length)));
+  card.rows.forEach(r => {
+    ctx.fillStyle = 'rgba(18,30,51,.92)'; rr(ctx, 80, y, CARD_W - 160, rowH - 12, 14); ctx.fill();
+    ctx.fillStyle = '#eaf2f7'; ctx.font = `800 ${Math.round(rowH * 0.42)}px ${D}`; ctx.fillText(r.k.toUpperCase(), 108, y + rowH * 0.58);
+    ctx.fillStyle = '#9fb3c8'; const ws = fit(ctx, r.who, 470, `600 {s}px ${N}`, Math.round(rowH * 0.32), 18);
+    ctx.font = `600 ${ws}px ${N}`; ctx.fillText(r.who, 420, y + rowH * 0.56);
+    chipOn(ctx, r.grade, CARD_W - 80 - 28 - 120, y + 10, 120, rowH - 32, Math.round(rowH * 0.46));
+    y += rowH;
+  });
+  // stats
+  y += 14;
+  const sw = (CARD_W - 160) / card.stats.length;
+  card.stats.forEach(([val, label], i) => {
+    const x = 80 + sw * i;
+    ctx.fillStyle = '#eaf2f7'; ctx.font = `900 64px ${D}`; ctx.fillText(String(val), x, y + 60);
+    ctx.fillStyle = '#9fb3c8'; ctx.font = `600 22px ${N}`; ctx.fillText(label.toUpperCase(), x, y + 92);
+  });
+  y += 130;
+  // trophies
+  if (card.trophies.length) {
+    ctx.fillStyle = '#f4c95d'; ctx.font = `800 30px ${D}`;
+    wrapText(ctx, '🏆 ' + card.trophies.join(' · ').toUpperCase(), 80, y, CARD_W - 160, 38, 2);
+  }
+  // footer
+  ctx.fillStyle = '#9fb3c8'; ctx.font = `600 24px ${N}`;
+  ctx.fillText(card.footer.toUpperCase(), 80, CARD_H - 76);
+  ctx.textAlign = 'right'; ctx.fillStyle = '#eaf2f7'; ctx.font = `800 30px ${D}`; ctx.fillText('RINKROLL.APP', CARD_W - 80, CARD_H - 74); ctx.textAlign = 'left';
+  return cv;
+}
+function wrapText(ctx, text, x, y, maxW, lh, maxLines) {
+  const words = String(text).split(' '); let line = '', n = 0;
+  for (let i = 0; i < words.length; i++) {
+    const test = line ? line + ' ' + words[i] : words[i];
+    if (ctx.measureText(test).width > maxW && line) {
+      ctx.fillText(line, x, y); y += lh; n++; line = words[i];
+      if (n >= maxLines - 1) { const rest = words.slice(i).join(' '); let s = rest; while (ctx.measureText(s + '…').width > maxW && s.length > 1) s = s.slice(0, -1); ctx.fillText(s === rest ? s : s + '…', x, y); return; }
+    } else line = test;
+  }
+  if (line) ctx.fillText(line, x, y);
+}
+
+let cardBlob = null, cardUrl = '';
+async function renderCard(card, imgId = 'tcard-img', wrapId = 'tcard-wrap') {
+  const img = $(imgId); if (!img) return;
+  try {
+    const cv = await drawCard(card);
+    cardUrl = cv.toDataURL('image/png');
+    img.src = cardUrl; img.hidden = false;
+    cardBlob = await new Promise(res => cv.toBlob(res, 'image/png'));
+    $(wrapId).hidden = false;
+  } catch (e) { $(wrapId).hidden = true; }
+}
+function saveCard(toastId = 'toast') {
+  if (!cardUrl) return;
+  if (siteUrl()) {
+    const a = document.createElement('a'); a.href = cardUrl; a.download = 'rinkroll-card.png';
+    document.body.appendChild(a); a.click(); a.remove();
+    $(toastId).textContent = 'Card saved.';
+  } else {
+    $(toastId).textContent = 'Press and hold (or right-click) the card to save it.';
+  }
+}
+$('save-card').addEventListener('click', () => saveCard('toast'));
+
+// Share text + card image anywhere the device supports
+async function shareAnywhere(text, toastId = 'toast') {
+  const done = () => { $(toastId).textContent = 'Result copied. Paste it anywhere.'; };
+  if (siteUrl() && navigator.share) {
+    try {
+      const file = cardBlob ? new File([cardBlob], 'rinkroll-card.png', { type: 'image/png' }) : null;
+      if (file && navigator.canShare && navigator.canShare({ files: [file] })) { await navigator.share({ text, files: [file] }); return; }
+      await navigator.share({ text }); return;
+    } catch (e) { if (e && e.name === 'AbortError') return; }
+  }
+  copyToClipboard(text, done, 'Copy is blocked here.', toastId);
+}
+
+// Called at the end of a single-player build
+function renderBuildExtras(r) {
+  const v = Object.fromEntries(state.slots.map((s, i) => [s.k, r.vals[i]]));
+  const trophies = trophiesFor(state.pos, v, r.avg, r.projObj);
+  state.result.trophies = trophies;
+  $('awards').innerHTML = trophyChips(trophies);
+  const pl = playsLike(state.pos, state.mode, r.vals);
+  state.result.playsLike = pl;
+  $('plays-like').innerHTML = pl ? `Plays like <b>${esc(pl.player.name)}</b> <span>${esc(pl.player.team)} · ${pl.match}% match</span>` : '';
+  $('plays-like').hidden = !pl;
+  renderCard({
+    kicker: state.daily ? `Daily #${state.daily.n}` : (state.online ? 'Head-to-head' : (state.mode === 'current' ? 'Current NHL' : 'All-Time Greats')),
+    title: r.arch, sub: `${cap(POSNAME[state.pos])}${pl ? ' · Plays like ' + pl.player.name : ''}`,
+    overall: r.ovr,
+    rows: state.slots.map(s => ({ k: s.k, who: s.player.name, grade: s.grade })),
+    stats: r.proj.map(([n, l]) => [n, l]),
+    trophies,
+    footer: 'Created by D.M · Projected 82 games'
+  });
+}
+
+/* ---------- line builder (3F 2D 1G) + season sim ---------- */
+const CAP_LIMIT = 26000000;
+const LINE_SLOTS = [['F', 'Forward 1'], ['F', 'Forward 2'], ['F', 'Forward 3'], ['D', 'Defense 1'], ['D', 'Defense 2'], ['G', 'Goalie']];
+const LINE_WEIGHT = [0.15, 0.15, 0.15, 0.125, 0.125, 0.30];
+const normName = s => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[^a-z]/g, '');
+
+// cap hits: name|team|dollars  →  attach to current pool players
+const CAPS = (() => {
+  const byNameTeam = new Map(), byName = new Map();
+  (CAP_RAW || '').trim().split('\n').filter(Boolean).forEach(l => {
+    const [name, team, cap] = l.split('|'); const n = normName(name), c = +cap;
+    if (!c) return;
+    byNameTeam.set(n + '|' + team, c);
+    byName.set(n, byName.has(n) ? -1 : c); // -1 marks an ambiguous name
+  });
+  let matched = 0;
+  ['F', 'D', 'G'].forEach(g => POOLS.current[g].forEach(p => {
+    const n = normName(p.name);
+    let c = byNameTeam.get(n + '|' + p.team);
+    if (!c) { const b = byName.get(n); if (b && b > 0) c = b; }
+    if (c) { p.cap = c; matched++; }
+  }));
+  return { matched };
+})();
+const capPool = g => POOLS.current[g].filter(p => p.cap);
+const ovrVal = p => p.grades.reduce((a, g) => a + gv(g), 0) / p.grades.length;
+const money = c => '$' + (c / 1e6).toFixed(c % 100000 ? 2 : 1).replace(/\.?0+$/, m => m.startsWith('.') ? '' : m) + 'M';
+const moneyFixed = c => '$' + (c / 1e6).toFixed(2) + 'M';
+
+const line = { variant: 'cap', mode: 'current', picks: [], options: [], used: new Set(), redraws: 1, step: 0, busy: false, season: null };
+
+function lineAvailable(variant) { return variant !== 'cap' || (capPool('F').length >= 10 && capPool('D').length >= 10 && capPool('G').length >= 5); }
+
+function startLine(variant) {
+  line.variant = variant; line.mode = variant === 'cap' ? 'current' : state.mode;
+  line.picks = []; line.used = new Set(); line.redraws = 1; line.step = 0; line.busy = false; line.season = null;
+  state.online = false; state.daily = null;
+  $('line-kicker').textContent = variant === 'cap' ? 'Cap Line · $26M cap · Current NHL' : `Skill Line · ${line.mode === 'current' ? 'Current NHL' : 'All-Time Greats'}`;
+  $('line-build').hidden = false; $('season').hidden = true;
+  audio();
+  show('line');
+  renderLineBoard(); drawOptions();
+}
+
+function capUsed() { return line.picks.reduce((a, p) => a + (p.cap || 0), 0); }
+function minCapFor(g) { const c = capPool(g).filter(p => !line.used.has(p.name)).map(p => p.cap); return c.length ? Math.min(...c) : 0; }
+function affordable(p) {
+  if (line.variant !== 'cap') return true;
+  const remaining = LINE_SLOTS.slice(line.step + 1).reduce((a, [g]) => a + minCapFor(g), 0);
+  return capUsed() + p.cap + remaining <= CAP_LIMIT;
+}
+
+function drawOptions() {
+  const [g, label] = LINE_SLOTS[line.step];
+  const pool = (line.variant === 'cap' ? capPool(g) : POOLS[line.mode][g]).filter(p => !line.used.has(p.name));
+  const pick = [];
+  const bag = pool.slice();
+  while (pick.length < 3 && bag.length) pick.push(bag.splice(Math.floor(Math.random() * bag.length), 1)[0]);
+  if (line.variant === 'cap' && !pick.some(affordable)) {
+    const cheap = pool.filter(p => affordable(p) && !pick.includes(p));
+    if (cheap.length) pick[2] = cheap[Math.floor(Math.random() * cheap.length)];
+  }
+  line.options = pick;
+  $('pick-title').textContent = label;
+  $('pick-sub').textContent = `Pick ${line.step + 1} of 6`;
+  $('line-redraw').textContent = `Re-draw (${line.redraws})`;
+  $('line-redraw').disabled = line.redraws < 1;
+  $('line-prompt').textContent = line.variant === 'cap'
+    ? 'Pick one. Grades stay hidden until the season. Stay under the cap.'
+    : 'Pick one. Build the strongest line you can.';
+  const box = $('options'); box.innerHTML = '';
+  pick.forEach((p, i) => {
+    const ok = affordable(p);
+    const b = document.createElement('button');
+    b.className = 'opt'; b.id = 'opt-' + i; b.disabled = !ok;
+    const detail = line.variant === 'cap'
+      ? `<span class="opt-cap">${moneyFixed(p.cap)}</span>${ok ? '' : '<span class="opt-warn">Over the cap</span>'}`
+      : `<span class="opt-grades">${p.grades.map((gr, k) => `<span title="${CATS[g][k][0]}">${chip(gr)}</span>`).join('')}</span>`;
+    b.innerHTML = `<span class="opt-name">${esc(p.name)}</span><span class="opt-meta">${esc(p.team)} · ${esc(p.pos)}${p.num ? ' · #' + esc(String(p.num)) : ''}</span><span class="opt-stat">${esc(p.stat)}</span>${detail}`;
+    b.style.animationDelay = (i * 90) + 'ms';
+    b.addEventListener('click', () => choose(i));
+    box.appendChild(b);
+  });
+  pick.forEach((_, i) => setTimeout(() => tick(0.6), i * 90));
+}
+
+function choose(i) {
+  if (line.busy) return;
+  const p = line.options[i]; if (!p || !affordable(p)) return;
+  line.picks.push(p); line.used.add(p.name); line.step++;
+  pop(); renderLineBoard();
+  if (line.step >= LINE_SLOTS.length) { line.busy = true; setTimeout(runSeason, 500); }
+  else drawOptions();
+}
+function redraw() { if (line.redraws < 1 || line.busy) return; line.redraws--; drawOptions(); }
+
+function renderLineBoard() {
+  const used = capUsed();
+  $('line-filled').textContent = `${line.picks.length} / 6`;
+  $('line-board').innerHTML = LINE_SLOTS.map(([g, label], i) => {
+    const p = line.picks[i];
+    const right = p ? (line.variant === 'cap' ? `<span class="lb-cap">${moneyFixed(p.cap)}</span>` : chip(SCALE[Math.round(ovrVal(p))])) : '';
+    return `<div class="lb-row${p ? ' on' : ''}${i === line.step ? ' next' : ''}"><span class="lb-k">${label}</span><span class="lb-who">${p ? esc(p.name) + ' <small>' + esc(p.team) + '</small>' : '—'}</span>${right}</div>`;
+  }).join('');
+  const cb = $('capbar');
+  if (line.variant === 'cap') {
+    const pct = Math.min(100, used / CAP_LIMIT * 100);
+    cb.hidden = false;
+    cb.innerHTML = `<div class="cap-nums"><b>${moneyFixed(used)}</b> used · <b>${moneyFixed(CAP_LIMIT - used)}</b> left of $26.00M</div><div class="cap-track"><div class="cap-fill" style="width:${pct.toFixed(1)}%"></div></div>`;
+  } else cb.hidden = true;
+}
+
+/* ----- season simulation ----- */
+function randn() { let u = 0, v = 0; while (!u) u = Math.random(); while (!v) v = Math.random(); return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v); }
+function winP(s, o) { return 1 / (1 + Math.exp(-2.4 * (s - o))); }
+function teamRating() { return line.picks.reduce((a, p, i) => a + ovrVal(p) * LINE_WEIGHT[i], 0); }
+
+function simSeason() {
+  const R = teamRating(), s = (R - 7.6) / 8; // ~8.4 (a solid line) ≈ 100 pts; ~10+ ≈ 115–125 pts
+  let W = 0, L = 0, OTL = 0;
+  const games = [];
+  for (let i = 0; i < 82; i++) {
+    const o = randn() * 0.42;
+    if (Math.random() < winP(s, o)) { W++; games.push('W'); }
+    else if (Math.random() < 0.22) { OTL++; games.push('O'); }
+    else { L++; games.push('L'); }
+  }
+  const pts = W * 2 + OTL;
+  // the rest of the league
+  const others = Array.from({ length: 31 }, () => Math.round(Math.max(52, Math.min(128, 92 + randn() * 13))));
+  const conf = others.slice(0, 15);
+  const confRank = 1 + conf.filter(x => x > pts || (x === pts && Math.random() < 0.5)).length;
+  const presidents = others.every(x => x < pts);
+  const path = [];
+  let cup = false;
+  if (confRank <= 8) {
+    const rounds = ['First Round', 'Second Round', 'Conference Final', 'Stanley Cup Final'];
+    const rivals = conf.slice().sort((a, b) => b - a).slice(0, 7); // the other playoff teams
+    for (let r = 0; r < 4; r++) {
+      let oppPts;
+      if (r < 3) { const cand = rivals.slice(0, Math.max(1, 7 - r * 2)); const k = Math.floor(Math.random() * cand.length); oppPts = cand[k] ?? 95; rivals.splice(k, 1); }
+      else oppPts = Math.round(98 + Math.abs(randn()) * 10);
+      const o = (oppPts - 92) / 68; // same scale as our own strength (≈ points above average / 68)
+      let w = 0, l = 0;
+      while (w < 4 && l < 4) { if (Math.random() < winP(s, o)) w++; else l++; }
+      path.push({ round: rounds[r], won: w === 4, score: `${Math.max(w, l)}–${Math.min(w, l)}`, oppPts });
+      if (w < 4) break;
+      if (r === 3) cup = true;
+    }
+  }
+  let finish;
+  if (confRank > 8) finish = `Missed the playoffs (${ordinal(confRank)} in the conference)`;
+  else if (cup) finish = 'Won the Stanley Cup';
+  else { const last = path[path.length - 1]; finish = `Lost in the ${last.round} (${last.score})`; }
+  const trophies = [];
+  if (presidents) trophies.push('Presidents\' Trophy');
+  if (cup) { trophies.push('Stanley Cup'); trophies.push('Conn Smythe Trophy'); }
+  const best = line.picks.slice().sort((a, b) => ovrVal(b) - ovrVal(a))[0];
+  return { R, W, L, OTL, pts, games, confRank, path, cup, finish, trophies, smythe: cup ? best : null, presidents };
+}
+function ordinal(n) { const s = ['th', 'st', 'nd', 'rd'], v = n % 100; return n + (s[(v - 20) % 10] || s[v] || s[0]); }
+
+function runSeason() {
+  const S = simSeason(); line.season = S;
+  $('line-build').hidden = true; $('season').hidden = false;
+  const R = S.R, grade = SCALE[Math.max(0, Math.min(13, Math.round(R)))];
+  $('line-ovr').textContent = grade; $('line-ovr').dataset.t = tier(grade);
+  $('season-path').innerHTML = ''; $('season-awards').innerHTML = ''; $('season-finish').textContent = 'Simulating the season…';
+  $('line-recap').innerHTML = line.picks.map((p, i) => `<div class="recap-row"><span class="k">${LINE_SLOTS[i][1]}</span><span class="who">${esc(p.name)} · ${esc(p.team)}${line.variant === 'cap' ? ' · ' + moneyFixed(p.cap) : ''}</span>${chip(SCALE[Math.round(ovrVal(p))])}</div>`).join('')
+    + (line.variant === 'cap' ? `<div class="recap-row total-row"><span class="k">Cap total</span><span class="who">${moneyFixed(capUsed())} of $26.00M</span><span></span></div>` : '');
+  $('line-toast').textContent = '';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  // tick the record up game by game
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let i = 0, w = 0, l = 0, o = 0;
+  const step = () => {
+    const n = reduce ? 82 : Math.min(82, i + 2);
+    for (; i < n; i++) { const g = S.games[i]; if (g === 'W') w++; else if (g === 'L') l++; else o++; }
+    $('season-record').textContent = `${w}–${l}–${o}`;
+    $('season-pts').textContent = `${w * 2 + o} PTS · GP ${i}`;
+    if (!reduce && i % 6 === 0) tick(0.3);
+    if (i < 82) setTimeout(step, 45); else revealPlayoffs(S);
+  };
+  step();
+}
+
+function revealPlayoffs(S) {
+  $('season-pts').textContent = `${S.pts} PTS · ${ordinal(S.confRank)} in conference`;
+  const items = S.path.map(r => `<li class="${r.won ? 'won' : 'lost'}"><span>${r.round}</span><b>${r.won ? 'Won' : 'Lost'} ${r.score}</b></li>`);
+  if (!S.path.length) items.push('<li class="lost"><span>Playoffs</span><b>Missed</b></li>');
+  let k = 0;
+  const next = () => {
+    if (k < items.length) { $('season-path').insertAdjacentHTML('beforeend', items[k++]); tick(0.8); setTimeout(next, 650); return; }
+    $('season-finish').textContent = S.finish;
+    $('season-finish').className = 'verdict ' + (S.cup ? 'win' : S.confRank > 8 ? 'loss' : '');
+    $('season-awards').innerHTML = S.trophies.length ? trophyChips(S.trophies) + (S.smythe ? `<span class="no-hw">Conn Smythe: ${esc(S.smythe.name)}</span>` : '') : trophyChips([]);
+    if (S.cup) horn(); fanfare(S.cup || S.path.length >= 2);
+    line.busy = false;
+    renderCard({
+      kicker: line.variant === 'cap' ? 'Cap Line' : 'Skill Line',
+      title: S.cup ? 'Stanley Cup Champs' : S.confRank > 8 ? 'Lottery Bound' : S.path.length >= 3 ? 'Deep Playoff Run' : 'Playoff Team',
+      sub: `${S.W}–${S.L}–${S.OTL} · ${S.pts} points · ${S.finish}`,
+      overall: $('line-ovr').textContent,
+      rows: line.picks.map((p, i) => ({ k: LINE_SLOTS[i][1], who: p.name + (line.variant === 'cap' ? ' · ' + moneyFixed(p.cap) : ''), grade: SCALE[Math.round(ovrVal(p))] })),
+      stats: [[`${S.W}–${S.L}–${S.OTL}`, 'Record'], [S.pts, 'Points'], line.variant === 'cap' ? [moneyFixed(capUsed()), 'Cap used'] : [ordinal(S.confRank), 'In conference']],
+      trophies: S.trophies,
+      footer: 'Created by D.M · Simulated 82-game season'
+    }, 'line-card-img', 'line-card-wrap');
+  };
+  setTimeout(next, 400);
+}
+
+function lineShareText() {
+  const S = line.season; if (!S) return '';
+  const lines = [`Rink Roll · ${line.variant === 'cap' ? 'Cap Line ($26M)' : 'Skill Line'}`, `${S.W}-${S.L}-${S.OTL} · ${S.pts} pts · ${S.finish}`];
+  if (S.trophies.length) lines.push('🏆 ' + S.trophies.join(', '));
+  lines.push(line.picks.map(p => p.name).join(', '));
+  const url = siteUrl(); if (url) lines.push(url);
+  return lines.join('\n');
+}
+
+$('line-redraw').addEventListener('click', redraw);
+$('line-quit').addEventListener('click', () => { show('setup'); setPlay('line'); });
+$('line-again').addEventListener('click', () => startLine(line.variant));
+$('line-menu').addEventListener('click', () => { show('setup'); setPlay('line'); });
+$('line-resim').addEventListener('click', () => { if (!line.busy && line.picks.length === 6) { line.busy = true; runSeason(); } });
+$('line-share').addEventListener('click', () => shareAnywhere(lineShareText(), 'line-toast'));
+$('line-save').addEventListener('click', () => saveCard('line-toast'));
+
+/* ---------- daily leaderboard (public site only) ---------- */
+const LB_ON = true && !!siteUrl();
+function deviceId() {
+  try {
+    let d = localStorage.getItem('rinkroll-device');
+    if (!d) { d = 'd' + Math.random().toString(36).slice(2) + Date.now().toString(36); localStorage.setItem('rinkroll-device', d); }
+    return d;
+  } catch (e) { return 'd' + Math.random().toString(36).slice(2) + 'tmp'; }
+}
+async function lbGet(day) {
+  const r = await fetch('/api/leaderboard?day=' + encodeURIComponent(day), { cache: 'no-store' });
+  if (!r.ok) throw new Error('load');
+  return r.json();
+}
+function lbRowsHtml(entries, limit, highlightT) {
+  if (!entries.length) return '<p class="note">No builds posted yet today. Be the first.</p>';
+  return '<ol class="lb-list">' + entries.slice(0, limit).map((e, i) => {
+    const ovr = SCALE[Math.max(0, Math.min(13, Math.round(e.avg)))];
+    const chips = e.grades.map(g => `<span class="gr" data-t="${tier(g)}">${esc(g)}</span>`).join('');
+    return `<li class="${e.t === highlightT ? 'me' : ''}"><span class="lb-rank">${i + 1}</span><span class="lb-main"><span class="lb-name">${esc(e.name)}</span><span class="lb-chips">${chips}</span><span class="lb-players">${e.players.map(esc).join(' · ')}</span></span><span class="gr" data-t="${tier(ovr)}">${ovr}</span></li>`;
+  }).join('') + '</ol>';
+}
+function lbMine(day) { try { return JSON.parse(localStorage.getItem('rinkroll-lb-' + day) || 'null'); } catch (e) { return null; } }
+
+async function showDailyLeaderboard() {
+  const box = $('lboard');
+  if (!LB_ON || !state.daily) { box.hidden = true; return; }
+  box.hidden = false;
+  const day = state.daily.key, mine = lbMine(day);
+  try { const n = localStorage.getItem('rinkroll-name'); if (n && !$('lb-name').value) $('lb-name').value = n; } catch (e) {}
+  $('lb-form').hidden = !!mine;
+  $('lb-msg').textContent = mine ? `You're #${mine.rank} of ${mine.total} today.` : '';
+  $('lb-list').innerHTML = '<p class="note">Loading today\'s leaderboard…</p>';
+  try {
+    const data = await lbGet(day);
+    $('lb-list').innerHTML = lbRowsHtml(data.entries, 50, mine && mine.t);
+    $('lb-count').textContent = `${data.total} ${data.total === 1 ? 'build' : 'builds'}`;
+  } catch (e) { $('lb-list').innerHTML = '<p class="note">Couldn\'t load the leaderboard. Check your connection and try again.</p>'; }
+}
+
+async function submitDaily(ev) {
+  ev.preventDefault();
+  if (!state.daily) return;
+  const name = $('lb-name').value.trim();
+  if (name.length < 2) { $('lb-msg').textContent = 'Enter a name with at least 2 characters.'; return; }
+  try { localStorage.setItem('rinkroll-name', name.slice(0, 16)); } catch (e) {}
+  $('lb-submit').disabled = true; $('lb-msg').textContent = 'Posting…';
+  const body = { day: state.daily.key, pos: state.pos, name, device: deviceId(), grades: state.slots.map(s => s.grade), players: state.slots.map(s => s.player.name) };
+  try {
+    const r = await fetch('/api/leaderboard', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) });
+    const data = await r.json();
+    if (!r.ok) { $('lb-msg').textContent = data.error || 'Couldn\'t post your build. Try again.'; $('lb-submit').disabled = false; return; }
+    const list = await lbGet(state.daily.key).catch(() => null);
+    const meT = list && list.entries.find(e => e.name === name.slice(0, 16) && e.grades.join() === body.grades.join());
+    try { localStorage.setItem('rinkroll-lb-' + state.daily.key, JSON.stringify({ rank: data.rank, total: data.total, t: meT ? meT.t : null })); } catch (e) {}
+    $('lb-form').hidden = true;
+    $('lb-msg').textContent = data.already ? `You already posted today. You're #${data.rank} of ${data.total}.` : `Posted! You're #${data.rank} of ${data.total} today.`;
+    if (list) { $('lb-list').innerHTML = lbRowsHtml(list.entries, 50, meT && meT.t); $('lb-count').textContent = `${list.total} builds`; }
+    pop();
+  } catch (e) { $('lb-msg').textContent = 'Couldn\'t reach the leaderboard. Check your connection and try again.'; }
+  $('lb-submit').disabled = false;
+}
+$('lb-form').addEventListener('submit', submitDaily);
+
+async function loadDailyPreview() {
+  const el = $('lb-preview'); if (!el) return;
+  if (!LB_ON) { el.hidden = true; return; }
+  el.hidden = false; el.innerHTML = '<p class="note">Loading today\'s top builds…</p>';
+  try {
+    const data = await lbGet(dailyInfo().key);
+    el.innerHTML = `<h3 class="lb-h">Today's top builds <small>${data.total} posted</small></h3>` + lbRowsHtml(data.entries, 5, null);
+  } catch (e) { el.innerHTML = ''; el.hidden = true; }
+}
+
 /* ---------- play modes, daily, share ---------- */
 function setPlay(play) {
   state.play = play;
   document.querySelectorAll('[data-play]').forEach(x => x.setAttribute('aria-pressed', x.dataset.play === play));
   $('online-panel').hidden = play !== 'online';
   $('custom-steps').hidden = play === 'daily';
-  $('rules-step').hidden = play === 'online';
+  $('rules-step').hidden = play === 'online' || play === 'line';
+  $('pos-step').hidden = play === 'line';
+  $('line-panel').hidden = play !== 'line';
+  if (play === 'line' && typeof lineAvailable === 'function') { const ok = lineAvailable('cap'); $('start-cap').disabled = !ok; $('cap-msg').textContent = ok ? '' : 'Cap hits are loading in the next update. Try Skill Line for now.'; }
   $('daily-panel').hidden = play !== 'daily';
-  $('start').hidden = play === 'online';
-  if (play === 'daily') renderDailyPanel();
+  $('start').hidden = play === 'online' || play === 'line';
+  if (play === 'daily') { renderDailyPanel(); if (typeof loadDailyPreview === 'function') loadDailyPreview(); } else $('lb-preview').hidden = true;
   $('start').textContent = play === 'daily' ? (dailyDone() ? 'See today\'s result' : dailyStarted() ? 'Resume today\'s daily' : 'Play today\'s daily') : 'Drop the puck';
   if (play !== 'online') updateBug();
 }
@@ -1826,25 +2491,20 @@ function shareText() {
   const head = state.daily ? `Rink Roll Daily #${state.daily.n} · ${cap(POSNAME[state.pos])}` : `Rink Roll · ${cap(POSNAME[state.pos])} · ${pool}`;
   const grid = state.slots.map(s => EMO[tier(s.grade)]).join('');
   const lines = [head, `${grid} ${$('ovr-grade').textContent} overall`, $('res-arch').textContent];
+  if (state.result && state.result.trophies && state.result.trophies.length) lines.push('🏆 ' + state.result.trophies.join(', '));
   if (state.online) { const v = $('verdict').textContent; if (v && !/^Waiting|disconnected/.test(v)) lines.push('Head-to-head: ' + v); }
   const url = siteUrl(); if (url) lines.push(url);
   return lines.join('\n');
 }
-function copyToClipboard(text, done, failText) {
+function copyToClipboard(text, done, failText, toastId = 'toast') {
   const fb = () => {
     const ta = document.createElement('textarea'); ta.value = text; ta.setAttribute('readonly', ''); ta.style.position = 'fixed'; ta.style.opacity = '0';
     document.body.appendChild(ta); ta.select(); let ok = false; try { ok = document.execCommand('copy'); } catch (e) {} ta.remove();
-    ok ? done() : ($('toast').textContent = failText);
+    ok ? done() : ($(toastId).textContent = failText);
   };
   try { navigator.clipboard.writeText(text).then(done, fb); } catch (e) { fb(); }
 }
-function shareResult() {
-  const text = shareText();
-  const done = () => { $('toast').textContent = 'Result copied. Paste it anywhere.'; };
-  if (siteUrl() && navigator.share && matchMedia('(pointer: coarse)').matches) {
-    navigator.share({ text }).catch(() => copyToClipboard(text, done, 'Copy is blocked here.'));
-  } else copyToClipboard(text, done, 'Copy is blocked here.');
-}
+function shareResult() { shareAnywhere(shareText()); }
 $('share').addEventListener('click', shareResult);
 
 /* ---------- head-to-head (peer-to-peer, no accounts) ---------- */
@@ -2146,6 +2806,8 @@ window.addEventListener('beforeunload', teardown);
   if (CODE_RE.test(h)) { setPlay('online'); $('join-code').value = h; msg('online-msg', `You've been invited to lobby ${h}. Enter your name and press Join.`); }
 })();
 
+$('start-cap').addEventListener('click', () => startLine('cap'));
+$('start-skill').addEventListener('click', () => startLine('skill'));
 $('start').addEventListener('click', () => state.play === 'daily' ? startDaily() : startGame());
 $('spin').addEventListener('click', spin);
 $('reroll').addEventListener('click', reroll);

@@ -154,6 +154,76 @@ button:focus-visible, [tabindex]:focus-visible { outline: 3px solid var(--gold);
 .toast { font-family: var(--data); font-size: 13px; color: var(--g-b); }
 .foot { margin-top: 36px; padding-top: 16px; border-top: 1px solid var(--rule); color: var(--frost); font-size: 13px; display: grid; gap: 6px; max-width: 80ch; }
 
+/* result extras */
+.plays-like { margin: 14px 0 0; font-size: 16px; color: var(--frost); }
+.plays-like b { color: var(--ice); font-family: var(--display); font-size: 22px; font-weight: 800; text-transform: uppercase; letter-spacing: .02em; }
+.plays-like span { font-family: var(--data); font-size: 13px; letter-spacing: .08em; text-transform: uppercase; }
+.awards { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+.trophy { display: inline-flex; align-items: center; gap: 6px; padding: 5px 12px 5px 8px; border-radius: 999px; background: rgba(244,201,93,.12); border: 1px solid rgba(244,201,93,.55); color: var(--gold); font-family: var(--display); font-weight: 800; font-size: 17px; text-transform: uppercase; letter-spacing: .03em; }
+.trophy svg { width: 18px; height: 18px; fill: var(--gold); }
+.no-hw { font-size: 14px; color: var(--frost); }
+.tcard-wrap h3 { margin-bottom: 10px; }
+.tcard-wrap img { display: block; width: 100%; max-width: 420px; height: auto; border-radius: 12px; border: 1px solid var(--rule); box-shadow: 0 18px 40px rgba(0,0,0,.45); }
+
+/* line builder */
+.line-game { padding-block: 24px; display: grid; gap: 20px; }
+.line-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; flex-wrap: wrap; }
+.line-head .arch { font-size: clamp(32px, 6vw, 48px); }
+.capbar { flex: 1 1 280px; max-width: 420px; display: grid; gap: 6px; }
+.cap-nums { font-family: var(--data); font-size: 14px; letter-spacing: .04em; color: var(--frost); font-variant-numeric: tabular-nums; }
+.cap-nums b { color: var(--ice); }
+.cap-track { height: 12px; border-radius: 6px; background: var(--boards); border: 1px solid var(--rule); overflow: hidden; }
+.cap-fill { height: 100%; background: linear-gradient(90deg, var(--g-b), var(--gold) 75%, var(--lamp)); transition: width .4s ease; }
+.line-grid { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 24px; align-items: start; }
+@media (max-width: 760px) { .line-grid { grid-template-columns: 1fr; } }
+.pick-panel h3, .season h3 { font-family: var(--display); font-weight: 800; font-size: 22px; letter-spacing: .06em; text-transform: uppercase; margin: 0 0 10px; display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+.pick-panel h3 small { font-family: var(--data); font-size: 13px; color: var(--frost); letter-spacing: .08em; }
+.options { display: grid; gap: 10px; }
+.opt { text-align: left; display: grid; gap: 3px; padding: 14px 16px; background: var(--boards); border: 2px solid var(--rule); border-radius: 8px; animation: dealin .35s ease-out both; }
+.opt:hover:not(:disabled) { border-color: var(--lamp); background: var(--boards-2); }
+.opt:disabled { opacity: .45; cursor: not-allowed; }
+@keyframes dealin { from { transform: translateY(10px) rotateX(35deg); opacity: 0; } to { transform: none; opacity: 1; } }
+.opt-name { font-family: var(--display); font-weight: 800; font-size: 26px; line-height: 1; text-transform: uppercase; }
+.opt-meta, .opt-stat { font-family: var(--data); font-size: 13px; letter-spacing: .06em; text-transform: uppercase; color: var(--frost); }
+.opt-cap { font-family: var(--display); font-weight: 900; font-size: 30px; color: var(--g-b); font-variant-numeric: tabular-nums; margin-top: 4px; }
+.opt-warn { font-family: var(--data); font-size: 13px; color: var(--g-f); text-transform: uppercase; letter-spacing: .08em; }
+.opt-grades { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; }
+.opt-grades .gr { font-size: 15px; }
+.lb { display: grid; gap: 6px; }
+.lb-row { display: grid; grid-template-columns: 6.5em minmax(0,1fr) auto; gap: 10px; align-items: center; padding: 10px 12px; background: var(--boards); border: 2px solid var(--rule); border-radius: 6px; min-height: 52px; }
+.lb-row.next { border-style: dashed; border-color: var(--frost); }
+.lb-row.on { background: var(--boards-2); }
+.lb-k { font-family: var(--display); font-weight: 800; font-size: 17px; text-transform: uppercase; color: var(--frost); }
+.lb-who { font-family: var(--data); font-size: 15px; min-width: 0; overflow-wrap: anywhere; }
+.lb-who small { color: var(--frost); }
+.lb-cap { font-family: var(--display); font-weight: 800; font-size: 20px; color: var(--g-b); font-variant-numeric: tabular-nums; }
+.season { display: grid; gap: 24px; }
+.record { font-family: var(--display); font-weight: 900; font-size: clamp(56px, 12vw, 92px); line-height: .9; font-variant-numeric: tabular-nums; }
+.season-pts { font-family: var(--data); font-size: 14px; letter-spacing: .1em; text-transform: uppercase; color: var(--frost); margin: 6px 0 12px; }
+.path { list-style: none; padding: 0; margin: 0 0 12px; display: grid; gap: 6px; }
+.path li { display: flex; justify-content: space-between; gap: 12px; padding: 8px 12px; border-radius: 6px; background: var(--boards); font-family: var(--data); font-size: 15px; animation: dealin .3s ease-out both; }
+.path li b { font-family: var(--display); font-size: 18px; text-transform: uppercase; }
+.path li.won b { color: var(--g-b); }
+.path li.lost b { color: var(--g-f); }
+.total-row { background: var(--boards-2) !important; }
+
+/* leaderboard */
+.lboard h3, .lb-h { font-family: var(--display); font-weight: 800; font-size: 22px; letter-spacing: .06em; text-transform: uppercase; margin: 0 0 10px; display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+.lboard h3 small, .lb-h small { font-family: var(--data); font-size: 13px; color: var(--frost); letter-spacing: .08em; }
+.lb-form { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-bottom: 8px; }
+.lb-form label { font-family: var(--data); font-size: 14px; color: var(--frost); letter-spacing: .06em; text-transform: uppercase; }
+.lb-form .name-input { flex: 1 1 180px; min-width: 0; background: #060c16; border: 2px solid var(--rule); border-radius: 4px; padding: 8px 12px; color: var(--ice); font: 600 17px var(--body); }
+.lb-list { list-style: none; padding: 0; margin: 0; display: grid; gap: 6px; }
+.lb-list li { display: grid; grid-template-columns: 2.2em minmax(0, 1fr) auto; gap: 10px; align-items: center; padding: 10px 12px; background: var(--boards); border: 1px solid var(--rule); border-radius: 6px; }
+.lb-list li.me { border-color: var(--gold); box-shadow: 0 0 0 2px rgba(244,201,93,.25); }
+.lb-rank { font-family: var(--display); font-weight: 900; font-size: 24px; color: var(--frost); text-align: center; font-variant-numeric: tabular-nums; }
+.lb-main { display: grid; gap: 4px; min-width: 0; }
+.lb-name { font-family: var(--display); font-weight: 800; font-size: 20px; text-transform: uppercase; overflow-wrap: anywhere; }
+.lb-chips { display: flex; flex-wrap: wrap; gap: 3px; }
+.lb-chips .gr { font-size: 13px; min-width: 1.9em; }
+.lb-players { font-family: var(--data); font-size: 12px; color: var(--frost); overflow-wrap: anywhere; }
+.lb-preview { background: var(--boards); border: 1px solid var(--rule); border-radius: 6px; padding: 14px 16px; }
+
 /* nav, daily */
 .site-nav { display: flex; gap: 18px; margin-top: 10px; font-family: var(--data); font-size: 14px; letter-spacing: .1em; text-transform: uppercase; }
 .site-nav a { color: var(--frost); text-decoration: none; border-bottom: 1px solid var(--rule); }
@@ -226,19 +296,34 @@ button:focus-visible, [tabindex]:focus-visible { outline: 3px solid var(--gold);
       <div class="choices" role="group" aria-label="How to play">
         <button class="choice" data-play="solo" aria-pressed="true"><span class="t">Solo</span><span class="d">Spin and build at your own pace.</span></button>
         <button class="choice" data-play="daily" aria-pressed="false"><span class="t">Daily</span><span class="d">Same spins for everyone, one try a day. Compare builds with friends.</span></button>
+        <button class="choice" data-play="line" aria-pressed="false"><span class="t">Line Builder</span><span class="d">Draft 3 forwards, 2 defensemen and a goalie, then sim an 82-game season and the playoffs.</span></button>
         <button class="choice" data-play="online" aria-pressed="false"><span class="t">Head-to-head</span><span class="d">Make a lobby, send the code, and draft against a friend. Each of you gets your own spins, and grades stay hidden.</span></button>
       </div>
     </div>
     <div class="daily-panel" id="daily-panel" hidden></div>
+    <div class="lb-preview" id="lb-preview" hidden></div>
+    <div class="online-panel" id="line-panel" hidden>
+      <div class="op-col">
+        <h3>Cap Line</h3>
+        <p class="note">Current NHL players with their real 2026–27 cap hits. Pick 1 of 3 at each spot and stay under a $26M cap. You see salaries, not grades.</p>
+        <button class="go" id="start-cap">Start Cap Line</button>
+        <p class="op-msg" id="cap-msg"></p>
+      </div>
+      <div class="op-col">
+        <h3>Skill Line</h3>
+        <p class="note">No cap. Pick 1 of 3 at each spot with every player's grades showing. Uses the player pool you pick below.</p>
+        <button class="go" id="start-skill">Start Skill Line</button>
+      </div>
+    </div>
     <div class="custom-steps" id="custom-steps">
-    <div class="step">
+    <div class="step" id="pool-step">
       <h2>Player pool <small>Step 2</small></h2>
       <div class="choices" role="group" aria-label="Player pool">
         <button class="choice" data-mode="current" aria-pressed="true"><span class="t">Current NHL</span><span class="d">Every rostered player with 82+ career NHL games, 2026–27. Graded from NHL EDGE tracking and the last three seasons of stats.</span></button>
         <button class="choice" data-mode="alltime" aria-pressed="false"><span class="t">All-Time Greats</span><span class="d">The modern era, 1980 to today: top 100 forwards, top 100 defensemen and top 35 goalies, graded against each other.</span></button>
       </div>
     </div>
-    <div class="step">
+    <div class="step" id="pos-step">
       <h2>Position <small>Step 3</small></h2>
       <div class="choices" role="group" aria-label="Position" id="pos-choices">
         <button class="choice" data-pos="F" aria-pressed="true"><span class="t">Forward</span><span class="d">Centers and wingers.</span><span class="cats">Speed · Shot · Hands · Sense · Playmaking · Build</span></button>
@@ -310,6 +395,55 @@ button:focus-visible, [tabindex]:focus-visible { outline: 3px solid var(--gold);
     </div>
   </section>
 
+  <!-- LINE BUILDER -->
+  <section class="line-game" id="line" hidden>
+    <div class="line-head">
+      <div><p class="tag" id="line-kicker">Cap Line</p><h2 class="arch">Build your line</h2></div>
+      <div class="capbar" id="capbar" hidden></div>
+    </div>
+    <div class="line-grid" id="line-build">
+      <div class="pick-panel">
+        <h3><span id="pick-title">Forward 1</span><small id="pick-sub">Pick 1 of 6</small></h3>
+        <div class="options" id="options"></div>
+        <p class="prompt" id="line-prompt"></p>
+        <div class="row-actions"><button class="btn" id="line-redraw">Re-draw (1)</button><button class="btn" id="line-quit">Menu</button></div>
+      </div>
+      <div class="slots">
+        <h3><span>Your line</span><small id="line-filled">0 / 6</small></h3>
+        <div class="lb" id="line-board"></div>
+      </div>
+    </div>
+    <div class="season" id="season" hidden>
+      <div class="card">
+        <div class="ovr"><span class="gr" id="line-ovr">B</span><span class="l">Line grade</span></div>
+        <div>
+          <p class="tag">82-game season</p>
+          <div class="record" id="season-record">0–0–0</div>
+          <p class="season-pts" id="season-pts"></p>
+          <ol class="path" id="season-path"></ol>
+          <p class="verdict" id="season-finish"></p>
+          <div class="awards" id="season-awards"></div>
+        </div>
+      </div>
+      <div>
+        <h3>Your line</h3>
+        <div class="recap" id="line-recap"></div>
+      </div>
+      <div class="tcard-wrap" id="line-card-wrap" hidden>
+        <h3>Your card</h3>
+        <img id="line-card-img" alt="Your Rink Roll line card" width="1080" height="1350">
+      </div>
+      <div class="row-actions">
+        <button class="go" id="line-again">Build another line</button>
+        <button class="btn" id="line-resim">Sim another season</button>
+        <button class="btn hot" id="line-share">Share result</button>
+        <button class="btn" id="line-save">Save card</button>
+        <button class="btn" id="line-menu">Menu</button>
+        <span class="toast" id="line-toast" aria-live="polite"></span>
+      </div>
+    </div>
+  </section>
+
   <!-- RESULT -->
   <section class="result" id="result" hidden>
     <div class="card">
@@ -319,6 +453,8 @@ button:focus-visible, [tabindex]:focus-visible { outline: 3px solid var(--gold);
         <h2 class="arch" id="res-arch">Power Forward</h2>
         <p class="arch-sub" id="res-sub"></p>
         <div class="proj" id="res-proj"></div>
+        <p class="plays-like" id="plays-like" hidden></p>
+        <div class="awards" id="awards"></div>
       </div>
     </div>
     <div class="h2h" id="h2h" hidden>
@@ -326,9 +462,23 @@ button:focus-visible, [tabindex]:focus-visible { outline: 3px solid var(--gold);
       <p class="verdict" id="verdict">Waiting for your opponent to finish…</p>
       <div class="h2h-table" id="h2h-table"></div>
     </div>
+    <div class="lboard" id="lboard" hidden>
+      <h3><span>Today's leaderboard</span><small id="lb-count"></small></h3>
+      <form class="lb-form" id="lb-form">
+        <label for="lb-name">Post your build as</label>
+        <input id="lb-name" class="name-input" maxlength="16" autocomplete="nickname" placeholder="Your name">
+        <button class="btn hot" id="lb-submit" type="submit">Post to leaderboard</button>
+      </form>
+      <p class="op-msg" id="lb-msg" aria-live="polite"></p>
+      <div id="lb-list"></div>
+    </div>
     <div id="parts">
       <h3>The parts list</h3>
       <div class="recap" id="recap"></div>
+    </div>
+    <div class="tcard-wrap" id="tcard-wrap" hidden>
+      <h3>Your card</h3>
+      <img id="tcard-img" alt="Your Rink Roll trading card" width="1080" height="1350" hidden>
     </div>
     <p class="note" id="daily-note" hidden></p>
     <div class="row-actions">
@@ -336,6 +486,7 @@ button:focus-visible, [tabindex]:focus-visible { outline: 3px solid var(--gold);
       <button class="go" id="rematch" hidden>Rematch</button>
       <button class="btn" id="leave-result" hidden>Leave lobby</button>
       <button class="btn hot" id="share">Share result</button>
+      <button class="btn" id="save-card">Save card</button>
       <button class="btn" id="copy">Copy build</button>
       <span class="toast" id="toast" aria-live="polite"></span>
     </div>
@@ -352,6 +503,7 @@ button:focus-visible, [tabindex]:focus-visible { outline: 3px solid var(--gold);
 <script>
 const CURRENT_RAW = `__CURRENT__`;
 const ALLTIME_RAW = `__ALLTIME__`;
+const CAP_RAW = `__CAPS__`;
 
 const MIN_GP = 82;
 const MIN_FWD_PPG = 0.30; // drop career fourth-liners
@@ -405,7 +557,7 @@ function updateBug() {
   $('bug-rr').textContent = state.slots.length ? state.rerolls : 1;
 }
 
-function show(id) { ['setup', 'lobby', 'game', 'result'].forEach(s => $(s).hidden = s !== id); window.scrollTo({ top: 0, behavior: 'smooth' }); }
+function show(id) { ['setup', 'lobby', 'game', 'result', 'line'].forEach(s => $(s).hidden = s !== id); window.scrollTo({ top: 0, behavior: 'smooth' }); }
 
 function startGame() { state.online = false; state.daily = null; state.seq = null; initBuild(null); }
 
@@ -673,6 +825,8 @@ function finish() {
     const w = Math.round(14 + avg * 2.4);
     proj = [[sv, 'Save %'], [gaa, 'GAA'], [w, 'Wins']];
   }
+  const projObj = state.pos === 'G' ? {} : { goals: proj[0][0], assists: proj[1][0], points: proj[0][0] + proj[1][0] };
+  state.result = { vals, avg, ovr, arch, sub, proj, projObj };
   $('res-proj').innerHTML = proj.map(([n, l]) => `<div><b>${n}</b><span>${l}</span></div>`).join('') + `<div style="align-self:end"><span>Projected 82 games</span></div>`;
   $('recap').innerHTML = state.slots.map(s => `<div class="recap-row"><span class="k">${s.k}</span><span class="who">${esc(s.player.name)} · ${s.player.team} · ${s.player.pos}</span>${chip(s.grade)}</div>`).join('');
   $('toast').textContent = '';
@@ -683,6 +837,8 @@ function finish() {
   $('daily-note').hidden = !state.daily;
   if (state.daily) { dailySaveProgress(true); $('daily-note').textContent = `Next daily in ${untilMidnight()}. Share your grid and see who built better.`; }
   show('result');
+  renderBuildExtras(state.result);
+  showDailyLeaderboard();
   if (state.online) { saveProgress(true, avg); renderH2H(); }
   else fanfare(avg >= 7);
 }
@@ -711,16 +867,22 @@ function seededSeq(pool, seed) {
   return a;
 }
 
+/*__EXTRAS__*/
+/*__LINE__*/
+/*__LBJS__*/
 /* ---------- play modes, daily, share ---------- */
 function setPlay(play) {
   state.play = play;
   document.querySelectorAll('[data-play]').forEach(x => x.setAttribute('aria-pressed', x.dataset.play === play));
   $('online-panel').hidden = play !== 'online';
   $('custom-steps').hidden = play === 'daily';
-  $('rules-step').hidden = play === 'online';
+  $('rules-step').hidden = play === 'online' || play === 'line';
+  $('pos-step').hidden = play === 'line';
+  $('line-panel').hidden = play !== 'line';
+  if (play === 'line' && typeof lineAvailable === 'function') { const ok = lineAvailable('cap'); $('start-cap').disabled = !ok; $('cap-msg').textContent = ok ? '' : 'Cap hits are loading in the next update. Try Skill Line for now.'; }
   $('daily-panel').hidden = play !== 'daily';
-  $('start').hidden = play === 'online';
-  if (play === 'daily') renderDailyPanel();
+  $('start').hidden = play === 'online' || play === 'line';
+  if (play === 'daily') { renderDailyPanel(); if (typeof loadDailyPreview === 'function') loadDailyPreview(); } else $('lb-preview').hidden = true;
   $('start').textContent = play === 'daily' ? (dailyDone() ? 'See today\'s result' : dailyStarted() ? 'Resume today\'s daily' : 'Play today\'s daily') : 'Drop the puck';
   if (play !== 'online') updateBug();
 }
@@ -778,25 +940,20 @@ function shareText() {
   const head = state.daily ? `Rink Roll Daily #${state.daily.n} · ${cap(POSNAME[state.pos])}` : `Rink Roll · ${cap(POSNAME[state.pos])} · ${pool}`;
   const grid = state.slots.map(s => EMO[tier(s.grade)]).join('');
   const lines = [head, `${grid} ${$('ovr-grade').textContent} overall`, $('res-arch').textContent];
+  if (state.result && state.result.trophies && state.result.trophies.length) lines.push('🏆 ' + state.result.trophies.join(', '));
   if (state.online) { const v = $('verdict').textContent; if (v && !/^Waiting|disconnected/.test(v)) lines.push('Head-to-head: ' + v); }
   const url = siteUrl(); if (url) lines.push(url);
   return lines.join('\n');
 }
-function copyToClipboard(text, done, failText) {
+function copyToClipboard(text, done, failText, toastId = 'toast') {
   const fb = () => {
     const ta = document.createElement('textarea'); ta.value = text; ta.setAttribute('readonly', ''); ta.style.position = 'fixed'; ta.style.opacity = '0';
     document.body.appendChild(ta); ta.select(); let ok = false; try { ok = document.execCommand('copy'); } catch (e) {} ta.remove();
-    ok ? done() : ($('toast').textContent = failText);
+    ok ? done() : ($(toastId).textContent = failText);
   };
   try { navigator.clipboard.writeText(text).then(done, fb); } catch (e) { fb(); }
 }
-function shareResult() {
-  const text = shareText();
-  const done = () => { $('toast').textContent = 'Result copied. Paste it anywhere.'; };
-  if (siteUrl() && navigator.share && matchMedia('(pointer: coarse)').matches) {
-    navigator.share({ text }).catch(() => copyToClipboard(text, done, 'Copy is blocked here.'));
-  } else copyToClipboard(text, done, 'Copy is blocked here.');
-}
+function shareResult() { shareAnywhere(shareText()); }
 $('share').addEventListener('click', shareResult);
 
 /* ---------- head-to-head ---------- */
@@ -1042,6 +1199,8 @@ $('copy-code').addEventListener('click', () => {
 });
 initNet();
 
+$('start-cap').addEventListener('click', () => startLine('cap'));
+$('start-skill').addEventListener('click', () => startLine('skill'));
 $('start').addEventListener('click', () => state.play === 'daily' ? startDaily() : startGame());
 $('spin').addEventListener('click', spin);
 $('reroll').addEventListener('click', reroll);

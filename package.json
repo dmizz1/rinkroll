@@ -1,0 +1,9 @@
+{
+  "name": "rinkroll",
+  "private": true,
+  "type": "module",
+  "description": "Rink Roll site functions",
+  "dependencies": {
+    "@netlify/blobs": "10.7.13"
+  }
+}

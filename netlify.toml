@@ -1,7 +1,11 @@
-# Netlify serves the pre-built site in /netlify. No build step needed.
+# Netlify serves the pre-built site in /netlify and the leaderboard API from /functions.
 [build]
   publish = "netlify"
   command = ""
+
+[functions]
+  directory = "functions"
+  node_bundler = "esbuild"
 
 [[headers]]
   for = "/*"

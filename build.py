@@ -16,11 +16,17 @@ NAV = '<nav class="site-nav" aria-label="Site"><a href="how-to-play.html">How to
 CONTACT = 'shlumpedd13@gmail.com'
 SITE = 'https://rinkroll.app/'
 
+EXTRAS = read('extras.js')
+LINE = read('line.js')
+LBJS = read('lb.js')
+CAPS = read('data_cap.txt').strip() if os.path.exists(P('data_cap.txt')) else ''
+assert '`' not in CAPS and '${' not in CAPS
+
 def inject(t):
-    return t.replace('__CURRENT__', cur).replace('__ALLTIME__', alt).replace('__DATA_DATE__', DATA_DATE)
+    return t.replace('/*__EXTRAS__*/', EXTRAS).replace('/*__LINE__*/', LINE).replace('/*__LBJS__*/', LBJS).replace('__CAPS__', CAPS).replace('__CURRENT__', cur).replace('__ALLTIME__', alt).replace('__DATA_DATE__', DATA_DATE)
 
 # ---------- 1. Claude artifact ----------
-art = inject(tpl.replace('__NAV__', ''))
+art = inject(tpl.replace('__NAV__', '')).replace('__LB__', 'false')
 open(P('rink-roll.html'), 'w', encoding='utf-8').write(art)
 
 # ---------- 2. standalone game ----------
@@ -66,7 +72,7 @@ def document(title_and_styles_and_body, description):
 
 os.makedirs(P('netlify'), exist_ok=True)
 game = document(t, 'Spin real NHL players, take one graded skill from each, and build your own forward, defenseman or goalie. Play solo, the daily challenge, or head-to-head with a friend.')
-open(P('netlify', 'index.html'), 'w', encoding='utf-8').write(inject(game))
+open(P('netlify', 'index.html'), 'w', encoding='utf-8').write(inject(game).replace('__LB__', 'true'))
 
 # ---------- 3. content pages ----------
 style = tpl[tpl.index('<style>'):tpl.index('</style>') + len('</style>')]
