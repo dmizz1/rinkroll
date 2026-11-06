@@ -277,7 +277,7 @@ Arttu Hyry|DAL|R|25|D C D C- D- B|40|7|5|0
 Wyatt Johnston|DAL|C|53|C- A S B+ A- D+|341|137|139|1
 Joel Kiviranta|DAL|L|22|B D- F B F F|360|40|32|0
 David Perron|DAL|L|16|D+ B- B- B- C C|1241|332|480|0
-Mikko Rantanen|DAL|R|96|B- A A+ A- A+ A+|731|324|476|1
+Mikko Rantanen|DAL|R|96|B- A A+ A- A+ S|731|324|476|1
 Jason Robertson|DAL|L|21|C+ A+ A+ A+ A B|471|221|287|1
 Tyler Seguin|DAL|C|91|D- B+ B+ C+ B+ B-|1031|370|462|0
 Sam Steel|DAL|C|18|C- D+ C- C C+ D+|504|62|116|1

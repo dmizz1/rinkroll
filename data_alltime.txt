@@ -63,7 +63,7 @@ David Pastrnak|RW|A S A+ A A B|BOS|2014–
 Mitch Marner|RW|A B+ S S S C|TOR|2016–
 Artemi Panarin|LW|B+ A S A+ S D+|NYR|2015–
 Kirill Kaprizov|LW|A- S S A+ A B|MIN|2020–
-Mikko Rantanen|RW|B A+ A+ A A+ A|COL|2015–
+Mikko Rantanen|RW|B A+ A+ A A+ S|COL|2015–
 John Tavares|C|B+ A+ A+ A A- B|NYI|2009–
 Ryan Getzlaf|C|B A- A+ A+ S S|ANA|2005–2022
 Jack Eichel|C|A A A A+ A+ A-|VGK|2015–
