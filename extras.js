@@ -191,7 +191,7 @@ function renderBuildExtras(r) {
   $('plays-like').innerHTML = pl ? `Plays like <b>${esc(pl.player.name)}</b> <span>${esc(pl.player.team)} · ${pl.match}% match</span>` : '';
   $('plays-like').hidden = !pl;
   renderCard({
-    kicker: state.daily ? `Daily #${state.daily.n}` : (state.online ? 'Head-to-head' : (state.mode === 'current' ? 'Current NHL' : 'All-Time Greats')),
+    kicker: state.daily ? `Daily #${state.daily.n}` : (state.online ? 'Head-to-head' : (state.mode === 'current' ? 'Current NHL' : 'Modern Era Stars')),
     title: r.arch, sub: `${cap(POSNAME[state.pos])}${pl ? ' · Plays like ' + pl.player.name : ''}`,
     overall: r.ovr,
     rows: state.slots.map(s => ({ k: s.k, who: s.player.name, grade: s.grade })),

@@ -24,7 +24,7 @@ To refresh only cap hits (after big trades or signings): **Actions** → **Updat
 | `online_peer.js` | Head-to-head play (PeerJS) for the public site |
 | `pages/*.body.html` | How to Play and Privacy page content |
 | `data_current.txt` | Current NHL players and grades (rewritten monthly) |
-| `data_alltime.txt` | All-Time Greats, graded by hand |
+| `data_alltime.txt` | Modern Era Stars (1980 and up: 75 F, 75 D, 35 G), graded by hand |
 | `exclude.txt` | Players to always leave out of the Current pool |
 | `data_cap.txt` | Current cap hits (name\|team\|dollars) for the Cap Line |
 | `extras.js` | Trophies, player comparison, trading card, sharing |

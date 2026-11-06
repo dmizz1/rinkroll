@@ -63,6 +63,7 @@ button:focus-visible, [tabindex]:focus-visible { outline: 3px solid var(--gold);
 .choice[aria-pressed="true"] { border-color: var(--lamp); background: var(--boards-2); box-shadow: 0 0 0 4px var(--lamp-glow); }
 .choice .t { font-family: var(--display); font-size: 28px; font-weight: 800; text-transform: uppercase; line-height: 1; }
 .choice .d { color: var(--frost); font-size: 14px; }
+.choice .fine { font-family: var(--data); font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--gold); margin-top: -2px; }
 .choice .cats { font-family: var(--data); font-size: 12px; letter-spacing: .06em; text-transform: uppercase; color: var(--frost); margin-top: 6px; }
 .toggle { display: flex; align-items: center; gap: 12px; color: var(--frost); font-size: 15px; }
 .toggle input { width: 20px; height: 20px; accent-color: var(--lamp); }
@@ -364,7 +365,7 @@ body.fx .p-meta { color: #c7d4e2; }
       <h2>Player pool <small>Step 2</small></h2>
       <div class="choices" role="group" aria-label="Player pool">
         <button class="choice" data-mode="current" aria-pressed="true"><span class="t">Current NHL</span><span class="d">Every rostered player with 82+ career NHL games, 2026–27. Graded from NHL EDGE tracking and the last three seasons of stats.</span></button>
-        <button class="choice" data-mode="alltime" aria-pressed="false"><span class="t">All-Time Greats</span><span class="d">The modern era, 1980 to today: top 100 forwards, top 100 defensemen and top 35 goalies, graded against each other.</span></button>
+        <button class="choice" data-mode="alltime" aria-pressed="false"><span class="t">Modern Era Stars</span><span class="fine">1980 and up</span><span class="d">The top 75 forwards, top 75 defensemen and top 35 goalies of the modern era, graded against each other.</span></button>
       </div>
     </div>
     <div class="step" id="pos-step">
@@ -544,7 +545,7 @@ body.fx .p-meta { color: #c7d4e2; }
   <footer class="foot">
     <div><b>Fan-made game.</b> Rink Roll is not affiliated with, endorsed by, or sponsored by the National Hockey League, the NHL Players' Association, or any team. Player names and statistics are used for reference only.</div>
     <div><b>How the grades work.</b> Current players are ranked against everyone at their position, then curved: roughly the top 2% earn S and the bottom 8% get F. Speed blends max skating speed and 20+ mph bursts. Shot blends shot velocity, goal rate and shooting %. Hands, Sense and Playmaking use finishing from the slot, offensive-zone time, points, assists and power-play production. Build is height and weight. Defense adds Physicality (size, penalty minutes, shot power) and Stick-checking (ice time, plus/minus, clean play). Goalie grades come from save % by shot distance, three-season save %, and career save %. Small samples are pulled toward average.</div>
-    <div>Public NHL data doesn't split saves by glove or blocker side, so goalies are graded on save % by shot distance instead: Mid-range and Long-range. All-Time Greats covers players whose careers fall mostly between 1980 and 2026 (100 forwards, 100 defensemen, 35 goalies), graded by hand from each player's career and reputation.</div>
+    <div>Public NHL data doesn't split saves by glove or blocker side, so goalies are graded on save % by shot distance instead: Mid-range and Long-range. Modern Era Stars covers players whose careers fall mostly between 1980 and 2026 (75 forwards, 75 defensemen, 35 goalies), graded by hand from each player's career and reputation.</div>
     <div>Current mode only includes players with at least 82 career NHL regular-season games, and forwards need at least 0.30 career points per game. Data: NHL rosters, stats and EDGE tracking updated __DATA_DATE__.</div>
   </footer>
 </div>
@@ -856,7 +857,7 @@ function finish() {
   const key = top.map(t => t.k).join('+');
   const [arch, sub] = ARCH[state.pos][key] || ARCH[state.pos]._;
   $('ovr-grade').textContent = ovr; $('ovr-grade').dataset.t = tier(ovr);
-  $('res-kicker').textContent = state.daily ? `Daily #${state.daily.n} · Your ${POSNAME[state.pos]}` : `Your ${POSNAME[state.pos]} · ${state.mode === 'current' ? 'Current NHL' : 'All-Time Greats'}`;
+  $('res-kicker').textContent = state.daily ? `Daily #${state.daily.n} · Your ${POSNAME[state.pos]}` : `Your ${POSNAME[state.pos]} · ${state.mode === 'current' ? 'Current NHL' : 'Modern Era Stars'}`;
   $('res-arch').textContent = arch;
   $('res-sub').textContent = sub;
   const v = Object.fromEntries(state.slots.map((s, i) => [s.k, vals[i]]));
@@ -897,7 +898,7 @@ function finish() {
 }
 
 function copyText() {
-  const lines = [`Rink Roll · ${POSNAME[state.pos]} (${state.mode === 'current' ? 'Current NHL' : 'All-Time Greats'})`, `Overall ${$('ovr-grade').textContent} · ${$('res-arch').textContent}`]
+  const lines = [`Rink Roll · ${POSNAME[state.pos]} (${state.mode === 'current' ? 'Current NHL' : 'Modern Era Stars'})`, `Overall ${$('ovr-grade').textContent} · ${$('res-arch').textContent}`]
     .concat(state.slots.map(s => `${s.k}: ${s.grade} (${s.player.name})`));
   const text = lines.join('\n');
   const done = () => { $('toast').textContent = 'Copied'; };
@@ -990,7 +991,7 @@ function siteUrl() {
   return '';
 }
 function shareText() {
-  const pool = state.mode === 'current' ? 'Current NHL' : 'All-Time';
+  const pool = state.mode === 'current' ? 'Current NHL' : 'Modern Era';
   const head = state.daily ? `Rink Roll Daily #${state.daily.n} · ${cap(POSNAME[state.pos])}` : `Rink Roll · ${cap(POSNAME[state.pos])} · ${pool}`;
   const grid = state.slots.map(s => EMO[tier(s.grade)]).join('');
   const lines = [head, `${grid} ${$('ovr-grade').textContent} overall`, $('res-arch').textContent];
@@ -1148,7 +1149,7 @@ async function evaluate() {
 }
 
 async function renderLobby(L, me, oid, opp) {
-  $('lobby-info').textContent = `${L.mode === 'current' ? 'Current NHL' : 'All-Time Greats'} · ${POSNAME[L.pos]} · grades hidden`;
+  $('lobby-info').textContent = `${L.mode === 'current' ? 'Current NHL' : 'Modern Era Stars'} · ${POSNAME[L.pos]} · grades hidden`;
   const seat = (role, name, filled) => `<div class="seat${filled ? '' : ' empty'}"><span class="r">${role}</span><span class="n">${esc(name)}</span></div>`;
   const hostId = L.host;
   const hostName = await nameOf(hostId);

@@ -85,6 +85,7 @@ button:focus-visible, [tabindex]:focus-visible { outline: 3px solid var(--gold);
 .choice[aria-pressed="true"] { border-color: var(--lamp); background: var(--boards-2); box-shadow: 0 0 0 4px var(--lamp-glow); }
 .choice .t { font-family: var(--display); font-size: 28px; font-weight: 800; text-transform: uppercase; line-height: 1; }
 .choice .d { color: var(--frost); font-size: 14px; }
+.choice .fine { font-family: var(--data); font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--gold); margin-top: -2px; }
 .choice .cats { font-family: var(--data); font-size: 12px; letter-spacing: .06em; text-transform: uppercase; color: var(--frost); margin-top: 6px; }
 .toggle { display: flex; align-items: center; gap: 12px; color: var(--frost); font-size: 15px; }
 .toggle input { width: 20px; height: 20px; accent-color: var(--lamp); }
@@ -393,7 +394,7 @@ body.fx .p-meta { color: #c7d4e2; }
       <h2>Player pool <small>Step 2</small></h2>
       <div class="choices" role="group" aria-label="Player pool">
         <button class="choice" data-mode="current" aria-pressed="true"><span class="t">Current NHL</span><span class="d">Every rostered player with 82+ career NHL games, 2026–27. Graded from NHL EDGE tracking and the last three seasons of stats.</span></button>
-        <button class="choice" data-mode="alltime" aria-pressed="false"><span class="t">All-Time Greats</span><span class="d">The modern era, 1980 to today: top 100 forwards, top 100 defensemen and top 35 goalies, graded against each other.</span></button>
+        <button class="choice" data-mode="alltime" aria-pressed="false"><span class="t">Modern Era Stars</span><span class="fine">1980 and up</span><span class="d">The top 75 forwards, top 75 defensemen and top 35 goalies of the modern era, graded against each other.</span></button>
       </div>
     </div>
     <div class="step" id="pos-step">
@@ -574,7 +575,7 @@ body.fx .p-meta { color: #c7d4e2; }
   <footer class="foot">
     <div><b>Fan-made game.</b> Rink Roll is not affiliated with, endorsed by, or sponsored by the National Hockey League, the NHL Players' Association, or any team. Player names and statistics are used for reference only.</div>
     <div><b>How the grades work.</b> Current players are ranked against everyone at their position, then curved: roughly the top 2% earn S and the bottom 8% get F. Speed blends max skating speed and 20+ mph bursts. Shot blends shot velocity, goal rate and shooting %. Hands, Sense and Playmaking use finishing from the slot, offensive-zone time, points, assists and power-play production. Build is height and weight. Defense adds Physicality (size, penalty minutes, shot power) and Stick-checking (ice time, plus/minus, clean play). Goalie grades come from save % by shot distance, three-season save %, and career save %. Small samples are pulled toward average.</div>
-    <div>Public NHL data doesn't split saves by glove or blocker side, so goalies are graded on save % by shot distance instead: Mid-range and Long-range. All-Time Greats covers players whose careers fall mostly between 1980 and 2026 (100 forwards, 100 defensemen, 35 goalies), graded by hand from each player's career and reputation.</div>
+    <div>Public NHL data doesn't split saves by glove or blocker side, so goalies are graded on save % by shot distance instead: Mid-range and Long-range. Modern Era Stars covers players whose careers fall mostly between 1980 and 2026 (75 forwards, 75 defensemen, 35 goalies), graded by hand from each player's career and reputation.</div>
     <div>Current mode only includes players with at least 82 career NHL regular-season games, and forwards need at least 0.30 career points per game. Data: NHL rosters, stats and EDGE tracking updated November 6, 2026.</div>
     <div>Head-to-head connects the two browsers directly through PeerJS. No accounts, and nothing is stored on a server. <a href="how-to-play.html">How to play</a> · <a href="privacy.html">Privacy policy</a></div>
   </footer>
@@ -1425,56 +1426,31 @@ Dave Andreychuk|LW|C A A+ B+ B A|BUF|1982–2006
 Doug Gilmour|C|A- B+ A S A+ C|TOR|1983–2003
 Pierre Turgeon|C|B+ A A+ A S B|NYI|1987–2007
 Mark Recchi|RW|B+ A A A A C|PHI|1988–2011
-Bernie Nicholls|C|B+ A A A A- B|LAK|1981–1999
 Michel Goulet|LW|A A+ A A B+ B|QUE|1979–1994
 Cam Neely|RW|B S A A- B S|BOS|1983–1996
-Theo Fleury|RW|S A A A A- D|CGY|1988–2003
 Alexander Mogilny|RW|S A+ S A A- B|BUF|1989–2006
 Daniel Sedin|LW|C A A+ S A+ B|VAN|2000–2018
 Henrik Sedin|C|C B+ S S S B|VAN|2000–2018
 Marian Hossa|RW|A- A+ A S A A-|CHI|1997–2017
-Marian Gaborik|RW|S A+ A A- B B|MIN|2000–2018
-Ilya Kovalchuk|LW|A S A+ B+ A- A|ATL|2001–2019
 Martin St. Louis|RW|S A+ A+ A+ A D|TBL|1998–2015
-Vincent Lecavalier|C|A- A A+ A A A|TBL|1998–2016
-Eric Staal|C|B+ A A A A- A|CAR|2003–2023
-Patrick Marleau|LW|S A A- A B+ A-|SJS|1997–2021
 Anže Kopitar|C|B+ A- A+ S A+ A|LAK|2006–
 Patrice Bergeron|C|B+ A A S A B+|BOS|2003–2023
 Henrik Zetterberg|C|A- A A+ S A+ B+|DET|2003–2018
-Rick Nash|LW|A- A+ A+ A- B A+|CBJ|2002–2018
-Zach Parise|LW|A A- A A B+ C+|NJD|2005–2023
 Daniel Alfredsson|RW|A- A A- A+ A B|OTT|1995–2014
-Keith Tkachuk|LW|B A A- B+ B+ S|PHX|1991–2010
-John LeClair|LW|B A+ A B+ B S|PHI|1990–2006
-Peter Bondra|RW|S A+ A- B+ B- B|WSH|1990–2007
-Jeremy Roenick|C|A A A A A B+|CHI|1988–2009
-Claude Giroux|C|B A- A+ S S C+|PHI|2007–
 Brad Marchand|LW|A- A A+ A+ A C+|BOS|2009–
 David Pastrnak|RW|A S A+ A A B|BOS|2014–
 Mitch Marner|RW|A B+ S S S C|TOR|2016–
 Artemi Panarin|LW|B+ A S A+ S D+|NYR|2015–
 Kirill Kaprizov|LW|A- S S A+ A B|MIN|2020–
 Mikko Rantanen|RW|B A+ A+ A A+ A|COL|2015–
-Jamie Benn|LW|B A A A A S|DAL|2009–
-Tyler Seguin|C|A A+ A A- A- B|DAL|2010–
 John Tavares|C|B+ A+ A+ A A- B|NYI|2009–
-Johnny Gaudreau|LW|S A S S S D|CGY|2014–2024
-Taylor Hall|LW|S A A A A- B|EDM|2010–
-Phil Kessel|RW|A S A B+ A B|TOR|2006–2023
-Corey Perry|RW|B A A+ A B A|ANA|2005–
 Ryan Getzlaf|C|B A- A+ A+ S S|ANA|2005–2022
 Jack Eichel|C|A A A A+ A+ A-|VGK|2015–
 Matthew Tkachuk|LW|B A- A+ S A+ A|FLA|2016–
 Aleksander Barkov|C|A A A+ S A+ A|FLA|2013–
 Brayden Point|C|S A+ A+ A+ A- C+|TBL|2016–
-Mark Stone|RW|C A A+ S A+ B|VGK|2015–
-Jason Spezza|C|C A A+ A+ S A-|OTT|2002–2023
-Joe Pavelski|C|C+ A A+ S A B|SJS|2006–2024
-Dany Heatley|LW|B S A+ A- B+ A|OTT|2001–2015
 Nicklas Bäckström|C|B B+ A+ S S B|WSH|2007–2024
 Jack Hughes|C|S A S A+ S D|NJD|2019–
-Steve Larmer|RW|B+ A A A A- B|CHI|1980–1995
 Mark Scheifele|C|B+ A+ A+ A+ A A-|WPG|2011–
 Ray Bourque|D|A- S A A S|BOS|1979–2001
 Paul Coffey|D|S A C+ C+ B|EDM|1980–2001
@@ -1512,7 +1488,6 @@ Rasmus Dahlin|D|A A+ A A A|BUF|2018–
 Mark Giordano|D|B A B B A|CGY|2006–2024
 Dougie Hamilton|D|B S A S B|NJD|2012–
 John Carlson|D|B+ S B A A|WSH|2009–
-Kevin Shattenkirk|D|B+ A C C+ B|STL|2010–2024
 Dion Phaneuf|D|B+ S S A B|CGY|2005–2019
 Brian Campbell|D|S A- D+ C B+|CHI|2000–2016
 Dan Boyle|D|A A B- C+ A-|SJS|1998–2016
@@ -1521,19 +1496,13 @@ Adam Foote|D|B C+ S A A+|COL|1991–2008
 Derian Hatcher|D|C B S S A|DAL|1991–2008
 Kevin Lowe|D|B B- A A A+|EDM|1979–1998
 Gary Suter|D|A A B B B+|CGY|1985–2002
-Mathieu Schneider|D|A A- B C+ B+|MTL|1987–2010
 Kevin Hatcher|D|B+ A+ A S B|WSH|1984–2001
 Eric Desjardins|D|B+ A- B+ B+ A+|PHI|1988–2006
 Brian Rafalski|D|A A- C D+ A|NJD|1999–2011
 Niklas Kronwall|D|B+ B S B A|DET|2003–2019
 Kimmo Timonen|D|A- A- B C A|NSH|1998–2015
-Wade Redden|D|A- A- B B A|OTT|1996–2013
-Ed Jovanovski|D|A A S A B|FLA|1995–2014
-Bryan McCabe|D|B S A A- B|TOR|1995–2011
-Tomas Kaberle|D|A- A- C- B A|TOR|1998–2013
 Teppo Numminen|D|B+ B C+ B A+|PHX|1988–2009
 Jay Bouwmeester|D|S B+ B A A|FLA|2002–2019
-Mike Green|D|S S C+ C+ C|WSH|2005–2020
 Keith Yandle|D|A A B- C+ B+|ARI|2006–2022
 Ryan McDonagh|D|A B B A S|NYR|2010–
 Brent Seabrook|D|B A A A A-|CHI|2005–2020
@@ -1541,7 +1510,6 @@ Marc-Édouard Vlasic|D|A B B A S|SJS|2006–2025
 Jaccob Slavin|D|A B+ B A S|CAR|2015–
 Charlie McAvoy|D|A A- A A A|BOS|2016–
 Josh Morrissey|D|A A B- C+ A|WPG|2015–
-Morgan Rielly|D|A+ B+ B- B B|TOR|2013–
 Seth Jones|D|A A B A A-|CBJ|2013–
 Aaron Ekblad|D|B+ A A A A|FLA|2014–
 Thomas Chabot|D|A A B B A-|OTT|2016–
@@ -1552,29 +1520,12 @@ Moritz Seider|D|B A S A A|DET|2021–
 Evan Bouchard|D|B+ S B B A|EDM|2018–
 Lane Hutson|D|S A D D+ A|MTL|2024–
 Noah Dobson|D|A A B A A|NYI|2019–
-Darnell Nurse|D|S A A A B|EDM|2014–
 Jake Sanderson|D|S A B B+ S|OTT|2022–
-Brandon Montour|D|A S B C+ B|FLA|2016–
-Gustav Forsling|D|S A B C+ A|FLA|2016–
-Torey Krug|D|A A B- D A-|BOS|2011–
-Jeff Petry|D|A A- B A B+|MTL|2010–
-Tyson Barrie|D|A A C D B+|COL|2011–
 Andrei Markov|D|A A- B- B A|MTL|2000–2017
-Sami Salo|D|B S B B B+|VAN|1998–2014
-Sheldon Souray|D|B S S A B|MTL|1997–2013
-Willie Mitchell|D|C C A A A+|VAN|1999–2017
-Robyn Regehr|D|B C S A A|CGY|1999–2015
-Chris Phillips|D|B B A A A|OTT|1997–2015
 Dustin Byfuglien|D|A S S S B|WPG|2007–2020
-Hal Gill|D|C C A S A|PIT|1997–2014
-Darryl Sydor|D|B+ B B B+ A|DAL|1991–2010
 Ulf Samuelsson|D|B C S A A+|PIT|1984–2000
-Calle Johansson|D|A B+ C B A|WSH|1987–2003
 Vladimir Konstantinov|D|A B S B A+|DET|1991–1997
 Mattias Öhlund|D|A A A A A|VAN|1997–2011
-Cam Fowler|D|A B+ B- B B|ANA|2010–
-Jacob Trouba|D|B+ A S A B|NYR|2013–
-Radko Gudas|D|C B S B+ B|FLA|2012–
 Mikhail Sergachev|D|A A+ A- A- A|TBL|2016–
 Patrick Roy|G|A S S A+ S|COL|1984–2003
 Dominik Hašek|G|S S A S A|BUF|1990–2008
@@ -2738,7 +2689,7 @@ function finish() {
   const key = top.map(t => t.k).join('+');
   const [arch, sub] = ARCH[state.pos][key] || ARCH[state.pos]._;
   $('ovr-grade').textContent = ovr; $('ovr-grade').dataset.t = tier(ovr);
-  $('res-kicker').textContent = state.daily ? `Daily #${state.daily.n} · Your ${POSNAME[state.pos]}` : `Your ${POSNAME[state.pos]} · ${state.mode === 'current' ? 'Current NHL' : 'All-Time Greats'}`;
+  $('res-kicker').textContent = state.daily ? `Daily #${state.daily.n} · Your ${POSNAME[state.pos]}` : `Your ${POSNAME[state.pos]} · ${state.mode === 'current' ? 'Current NHL' : 'Modern Era Stars'}`;
   $('res-arch').textContent = arch;
   $('res-sub').textContent = sub;
   const v = Object.fromEntries(state.slots.map((s, i) => [s.k, vals[i]]));
@@ -2779,7 +2730,7 @@ function finish() {
 }
 
 function copyText() {
-  const lines = [`Rink Roll · ${POSNAME[state.pos]} (${state.mode === 'current' ? 'Current NHL' : 'All-Time Greats'})`, `Overall ${$('ovr-grade').textContent} · ${$('res-arch').textContent}`]
+  const lines = [`Rink Roll · ${POSNAME[state.pos]} (${state.mode === 'current' ? 'Current NHL' : 'Modern Era Stars'})`, `Overall ${$('ovr-grade').textContent} · ${$('res-arch').textContent}`]
     .concat(state.slots.map(s => `${s.k}: ${s.grade} (${s.player.name})`));
   const text = lines.join('\n');
   const done = () => { $('toast').textContent = 'Copied'; };
@@ -2995,7 +2946,7 @@ function renderBuildExtras(r) {
   $('plays-like').innerHTML = pl ? `Plays like <b>${esc(pl.player.name)}</b> <span>${esc(pl.player.team)} · ${pl.match}% match</span>` : '';
   $('plays-like').hidden = !pl;
   renderCard({
-    kicker: state.daily ? `Daily #${state.daily.n}` : (state.online ? 'Head-to-head' : (state.mode === 'current' ? 'Current NHL' : 'All-Time Greats')),
+    kicker: state.daily ? `Daily #${state.daily.n}` : (state.online ? 'Head-to-head' : (state.mode === 'current' ? 'Current NHL' : 'Modern Era Stars')),
     title: r.arch, sub: `${cap(POSNAME[state.pos])}${pl ? ' · Plays like ' + pl.player.name : ''}`,
     overall: r.ovr,
     rows: state.slots.map(s => ({ k: s.k, who: s.player.name, grade: s.grade })),
@@ -3191,7 +3142,7 @@ function startLine(variant) {
   line.variant = variant; line.mode = variant === 'cap' ? 'current' : state.mode;
   line.picks = []; line.used = new Set(); line.redraws = 1; line.step = 0; line.busy = false; line.season = null;
   state.online = false; state.daily = null;
-  $('line-kicker').textContent = variant === 'cap' ? 'Cap Line · $26M cap · Current NHL' : `Skill Line · ${line.mode === 'current' ? 'Current NHL' : 'All-Time Greats'}`;
+  $('line-kicker').textContent = variant === 'cap' ? 'Cap Line · $26M cap · Current NHL' : `Skill Line · ${line.mode === 'current' ? 'Current NHL' : 'Modern Era Stars'}`;
   $('line-build').hidden = false; $('season').hidden = true;
   audio();
   show('line');
@@ -3531,7 +3482,7 @@ function siteUrl() {
   return '';
 }
 function shareText() {
-  const pool = state.mode === 'current' ? 'Current NHL' : 'All-Time';
+  const pool = state.mode === 'current' ? 'Current NHL' : 'Modern Era';
   const head = state.daily ? `Rink Roll Daily #${state.daily.n} · ${cap(POSNAME[state.pos])}` : `Rink Roll · ${cap(POSNAME[state.pos])} · ${pool}`;
   const grid = state.slots.map(s => EMO[tier(s.grade)]).join('');
   const lines = [head, `${grid} ${$('ovr-grade').textContent} overall`, $('res-arch').textContent];

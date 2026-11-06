@@ -85,6 +85,7 @@ button:focus-visible, [tabindex]:focus-visible { outline: 3px solid var(--gold);
 .choice[aria-pressed="true"] { border-color: var(--lamp); background: var(--boards-2); box-shadow: 0 0 0 4px var(--lamp-glow); }
 .choice .t { font-family: var(--display); font-size: 28px; font-weight: 800; text-transform: uppercase; line-height: 1; }
 .choice .d { color: var(--frost); font-size: 14px; }
+.choice .fine { font-family: var(--data); font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--gold); margin-top: -2px; }
 .choice .cats { font-family: var(--data); font-size: 12px; letter-spacing: .06em; text-transform: uppercase; color: var(--frost); margin-top: 6px; }
 .toggle { display: flex; align-items: center; gap: 12px; color: var(--frost); font-size: 15px; }
 .toggle input { width: 20px; height: 20px; accent-color: var(--lamp); }
@@ -403,7 +404,7 @@ body.fx .p-meta { color: #c7d4e2; }
 
   <h2>Player pools</h2>
   <p><b>Current NHL</b> includes rostered NHL players with at least 82 career regular-season games. Forwards also need at least 0.30 career points per game, which keeps the pool to players with a real offensive role.</p>
-  <p><b>All-Time Greats</b> covers the modern era, from about 1980 to today: the top 100 forwards, top 100 defensemen and top 35 goaltenders, graded against each other.</p>
+  <p><b>Modern Era Stars</b> covers 1980 and up: the top 75 forwards, top 75 defensemen and top 35 goaltenders of the modern era, graded against each other.</p>
 
   <h2>The categories</h2>
   <div class="cat-grid">
@@ -444,7 +445,7 @@ body.fx .p-meta { color: #c7d4e2; }
   <h2>The grade scale</h2>
   <p>Grades run from F up to S, with plus and minus steps from D through A:</p>
   <p class="scale"><span class="gr" data-t="F">F</span><span class="gr" data-t="D">D-</span><span class="gr" data-t="D">D</span><span class="gr" data-t="D">D+</span><span class="gr" data-t="C">C-</span><span class="gr" data-t="C">C</span><span class="gr" data-t="C">C+</span><span class="gr" data-t="B">B-</span><span class="gr" data-t="B">B</span><span class="gr" data-t="B">B+</span><span class="gr" data-t="A">A-</span><span class="gr" data-t="A">A</span><span class="gr" data-t="A">A+</span><span class="gr" data-t="S">S</span></p>
-  <p>For current players, each player is ranked against everyone at his position, then the rankings are curved. Roughly the top 2% in a category earn an S and the bottom 8% get an F. Players with small samples are pulled toward the middle, so a hot stretch in a few dozen games does not earn an elite grade. All-Time Greats are graded by hand from each player's career, and their grades are relative to other legends: a C in that pool is still a very good NHL player.</p>
+  <p>For current players, each player is ranked against everyone at his position, then the rankings are curved. Roughly the top 2% in a category earn an S and the bottom 8% get an F. Players with small samples are pulled toward the middle, so a hot stretch in a few dozen games does not earn an elite grade. Modern Era Stars are graded by hand from each player's career, and their grades are relative to other legends: a C in that pool is still a very good NHL player.</p>
 
   <h2>Strategy tips</h2>
   <ul class="tips">

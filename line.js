@@ -35,7 +35,7 @@ function startLine(variant) {
   line.variant = variant; line.mode = variant === 'cap' ? 'current' : state.mode;
   line.picks = []; line.used = new Set(); line.redraws = 1; line.step = 0; line.busy = false; line.season = null;
   state.online = false; state.daily = null;
-  $('line-kicker').textContent = variant === 'cap' ? 'Cap Line · $26M cap · Current NHL' : `Skill Line · ${line.mode === 'current' ? 'Current NHL' : 'All-Time Greats'}`;
+  $('line-kicker').textContent = variant === 'cap' ? 'Cap Line · $26M cap · Current NHL' : `Skill Line · ${line.mode === 'current' ? 'Current NHL' : 'Modern Era Stars'}`;
   $('line-build').hidden = false; $('season').hidden = true;
   audio();
   show('line');
