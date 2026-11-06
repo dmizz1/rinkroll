@@ -247,6 +247,17 @@ button:focus-visible, [tabindex]:focus-visible { outline: 3px solid var(--gold);
 .lb-players { font-family: var(--data); font-size: 12px; color: var(--frost); overflow-wrap: anywhere; }
 .lb-locked { margin: 0; font-size: 15px; }
 .lb-locked::before { content: '\1F512  '; }
+.notepad { position: relative; max-width: 460px; margin: 4px 0 22px auto; padding: 14px 18px 12px 46px; color: #1d2433; transform: rotate(-.6deg);
+  background: repeating-linear-gradient(#fdf8e1 0 25px, #b9cbe4 25px 26px) 0 38px / 100% calc(100% - 38px) no-repeat, #fdf8e1;
+  border-radius: 3px 3px 6px 6px; box-shadow: 0 10px 22px rgba(0,0,0,.35), 0 1px 0 rgba(255,255,255,.4) inset; }
+.notepad::before { content: ""; position: absolute; top: 0; bottom: 0; left: 32px; width: 2px; background: rgba(230,57,70,.55); }
+.notepad::after { content: ""; position: absolute; top: -9px; left: 50%; width: 86px; height: 20px; transform: translateX(-50%) rotate(2deg); background: rgba(244,201,93,.75); box-shadow: 0 1px 3px rgba(0,0,0,.2); }
+.notepad h2 { margin: 0 0 6px; font: 800 22px/1 var(--display); text-transform: uppercase; letter-spacing: .05em; color: #121e33; }
+.notepad ul { list-style: none; margin: 0; padding: 0; }
+.notepad li { font: 500 15px/26px var(--body); }
+.notepad li + li { margin-top: 0; }
+.notepad time { display: block; font: 700 13px/26px var(--data); text-transform: uppercase; letter-spacing: .06em; color: var(--lamp); }
+@media (max-width: 600px) { .notepad { max-width: none; margin: 4px 0 18px; transform: none; } }
 .lb-preview { background: var(--boards); border: 1px solid var(--rule); border-radius: 6px; padding: 14px 16px; }
 
 .optimal .note { margin: 0 0 10px; font-size: 15px; }
@@ -367,6 +378,7 @@ body.fx .p-meta { color: #c7d4e2; }
 
   <!-- SETUP -->
   <section class="setup" id="setup">
+    <aside class="notepad" aria-label="Updates"><h2>Updates</h2><ul><li><time datetime="2026-11-06">Nov 6, 2026</time><span>Defensemen Physicality now counts puck battles: takeaways, and takeaways vs. giveaways. Player grades also refreshed with the latest games.</span></li></ul></aside>
     <div class="step">
       <h2>How to play <small>Step 1</small></h2>
       <div class="choices" role="group" aria-label="How to play">
@@ -576,7 +588,7 @@ body.fx .p-meta { color: #c7d4e2; }
 
   <footer class="foot">
     <div><b>Fan-made game.</b> Rink Roll is not affiliated with, endorsed by, or sponsored by the National Hockey League, the NHL Players' Association, or any team. Player names and statistics are used for reference only.</div>
-    <div><b>How the grades work.</b> Current players are ranked against everyone at their position, then curved: roughly the top 2% earn S and the bottom 8% get F. Speed blends max skating speed and 20+ mph bursts. Shot blends shot velocity, goal rate and shooting %. Hands, Sense and Playmaking use finishing from the slot, offensive-zone time, points, assists and power-play production. Build is height and weight. Defense adds Physicality (size, penalty minutes, shot power) and Stick-checking (ice time, plus/minus, clean play). Goalie grades come from save % by shot distance, three-season save %, and career save %. Small samples are pulled toward average.</div>
+    <div><b>How the grades work.</b> Current players are ranked against everyone at their position, then curved: roughly the top 2% earn S and the bottom 8% get F. Speed blends max skating speed and 20+ mph bursts. Shot blends shot velocity, goal rate and shooting %. Hands, Sense and Playmaking use finishing from the slot, offensive-zone time, points, assists and power-play production. Build is height and weight. Defense adds Physicality (size, penalty minutes, shot power, puck battles) and Stick-checking (ice time, plus/minus, clean play). Goalie grades come from save % by shot distance, three-season save %, and career save %. Small samples are pulled toward average.</div>
     <div>Public NHL data doesn't split saves by glove or blocker side, so goalies are graded on save % by shot distance instead: Mid-range and Long-range. Modern Era Stars covers players whose careers fall mostly between 1980 and 2026 (75 forwards, 75 defensemen, 35 goalies), graded by hand from each player's career and reputation.</div>
     <div>Current mode only includes players with at least 82 career NHL regular-season games, and forwards need at least 0.40 career points per game. Data: NHL rosters, stats and EDGE tracking updated November 6, 2026.</div>
     <div>Head-to-head lobbies run through this site, so it works on any network, with no accounts. <a href="how-to-play.html">How to play</a> · <a href="privacy.html">Privacy policy</a></div>
@@ -584,60 +596,30 @@ body.fx .p-meta { color: #c7d4e2; }
 </div>
 
 <script>
-const CURRENT_RAW = `Sebastian Aho|CAR|C|20|C+ A A S A+ C-|773|319|413|1
-Jackson Blake|CAR|R|53|D C+ B A B D|179|43|61|1
-William Carrier|CAR|L|28|B F D- B D+ B|543|69|75|0
+const CURRENT_RAW = `Sebastian Aho|CAR|C|20|C+ A A S A+ C-|774|319|415|1
+Jackson Blake|CAR|R|53|D C+ B A B D|180|43|62|1
+William Carrier|CAR|L|28|B F D- B D+ B|544|70|76|0
 Nicolas Deslauriers|CAR|L|44|F D- F D F B+|720|55|54|0
-Nikolaj Ehlers|CAR|L|27|A A- B+ A+ A F|773|255|350|1
-Taylor Hall|CAR|L|71|A- B B B+ B+ B|997|305|487|0
-Mark Jankowski|CAR|L|77|D+ C C B F B|495|87|67|0
-Seth Jarvis|CAR|R|24|A A- A A+ A- F|381|129|157|1
-Jesperi Kotkaniemi|CAR|C|82|D- D- D B+ C A-|533|82|128|0
-Jordan Martinook|CAR|L|48|B- D D A- C- B-|814|109|160|0
-Eric Robinson|CAR|L|50|A C- D+ B+ D- B|472|68|80|0
+Nikolaj Ehlers|CAR|L|27|A A- B+ A+ A F|774|255|350|1
+Taylor Hall|CAR|L|71|A- B B B+ B+ B|998|305|487|0
+Mark Jankowski|CAR|L|77|D+ C C B F B|496|87|67|0
+Seth Jarvis|CAR|R|24|A A- A- A+ A- F|382|129|157|1
+Jesperi Kotkaniemi|CAR|C|82|D- D- D B+ C A-|534|83|128|0
+Jordan Martinook|CAR|L|48|B- D D A- C- B-|815|109|161|0
+Eric Robinson|CAR|L|50|A C- D+ B+ D- B|473|68|80|0
 Jordan Staal|CAR|C|11|B B+ B A C A-|1409|318|429|1
-Logan Stankoven|CAR|C|22|C- B- B- A B- F|200|51|61|0
-Andrei Svechnikov|CAR|R|37|A- A A A A- B+|574|188|260|1
-Jalen Chatfield|CAR|D|5|B B B- C A-|352|24|55|1
-Shayne Gostisbehere|CAR|D|4|D+ A D F B+|761|119|355|0
-K'Andre Miller|CAR|D|19|A+ B+ B+ B+ A-|457|45|128|1
-Alexander Nikishin|CAR|D|21|B A B+ B+ B+|81|11|22|0
+Logan Stankoven|CAR|C|22|C- B- B- A B- F|201|52|61|0
+Andrei Svechnikov|CAR|R|37|A- A A A A- B+|575|189|261|1
+Jalen Chatfield|CAR|D|5|B B B C A-|353|25|56|1
+Shayne Gostisbehere|CAR|D|4|D+ A C- F B|762|119|355|0
+K'Andre Miller|CAR|D|19|A+ B+ A B+ A-|458|45|129|1
+Alexander Nikishin|CAR|D|21|B A A- B+ B+|81|11|22|0
 Mike Reilly|CAR|D|6|D C- D+ D+ B-|468|19|116|0
-Jaccob Slavin|CAR|D|74|C- B+ C B- S|801|56|255|1
-Juuso Välimäki|CAR|D|8|F D D C B-|278|13|62|0
-Sean Walker|CAR|D|26|B A- C- D- B-|493|43|109|1
-Brandon Bussi|CAR|G|32|D+ C- D+ C- C-|45|0.891|33|1
+Jaccob Slavin|CAR|D|74|C- B+ B B- S|802|56|255|1
+Juuso Välimäki|CAR|D|8|F D C- C C+|279|13|62|0
+Sean Walker|CAR|D|26|B A- C+ D- B-|494|43|109|1
+Brandon Bussi|CAR|G|32|C- C- D+ C- C-|46|0.891|34|1
 Pyotr Kochetkov|CAR|G|52|B- C C+ B- B-|136|0.906|81|0
-Colton Dach|EDM|C|34|C D- D- D- D A|98|10|14|0
-Jason Dickinson|EDM|C|16|C+ D D- D- D B-|573|76|99|0
-Leon Draisaitl|EDM|C|29|A A+ S S A+ A-|871|447|635|1
-Alex Formenton|EDM|L|26|C+ C- C- C- C- C+|125|25|19|0
-Trent Frederic|EDM|C|10|B- D- D- F F A|426|60|57|0
-Filip Hallander|EDM|C|19|C D D C- C B-|26|2|5|0
-Isaac Howard|EDM|L|53|C+ D- D- F D+ D-|42|3|5|0
-Zach Hyman|EDM|L|18|A- B+ A A+ C+ B-|717|262|234|1
-Mattias Janmark|EDM|C|13|C+ F F F C- C+|680|83|138|0
-Max Jones|EDM|L|46|C- D+ D D- F A|312|35|34|0
-Mathieu Joseph|EDM|R|21|B- F F D C- C-|487|64|103|0
-Kasperi Kapanen|EDM|R|42|A- C D+ D- D+ C|584|102|146|1
-Connor McDavid|EDM|C|97|S A- S S S C+|810|418|842|1
-Owen Michaels|EDM|R|43|D+ C C- D D+ D+|16|2|2|0
-Ryan Nugent-Hopkins|EDM|C|93|C+ B+ A- A- A D+|1038|295|518|1
-Vasily Podkolzin|EDM|R|92|A C+ C B+ D+ B|317|54|56|1
-Matt Savoie|EDM|C|22|B C- C+ B- C F|87|18|20|0
-Evan Bouchard|EDM|D|2|B S C- C- S|445|85|276|1
-Mattias Ekholm|EDM|D|14|B- A B+ B+ A+|980|94|313|1
-Ty Emberson|EDM|D|49|A- D- D+ C- D-|191|5|31|0
-Shakir Mukhamadullin|EDM|D|85|C C+ C B D-|94|8|15|0
-Connor Murphy|EDM|D|5|F C A- B+ D-|841|48|130|1
-Alec Regula|EDM|D|75|D+ F B+ A- F|51|1|3|0
-Ryan Shea|EDM|D|6|C- D+ D- D+ B|166|10|36|1
-Jake Walman|EDM|D|96|B+ A B C D+|330|40|72|0
-Frederik Andersen|EDM|G|30|D- D D- D+ D|552|0.913|324|1
-Brett Epp|EDM|G||C C C C C|0||0|0
-Tristan Jarry|EDM|G|35|D D+ D- D- D|334|0.907|174|0
-Devon Levi|EDM|G|27|D+ D D+ D+ D+|46|0.893|23|0
-Matt Tomkins|EDM|G|90|C C+ C+ C+ C+|7|0.901|4|0
 Matt Boldy|MIN|L|12|C S A+ A+ A B|378|151|194|1
 Bobby Brink|MIN|R|10|A- C- B- C B F|231|39|68|1
 Blake Coleman|MIN|L|20|C+ B- C+ B C- C-|710|174|158|1
@@ -649,187 +631,217 @@ Kirill Kaprizov|MIN|L|97|C+ A+ S A+ A D+|414|245|256|1
 Michael McCarron|MIN|C|47|C D D- C- D- S|398|39|48|0
 Tyler Pitlick|MIN|C|19|C- F F F D- B-|463|58|53|0
 Maxim Shabanov|MIN|R|49|D D+ C- D- B- F|60|10|18|0
-Nico Sturm|MIN|C|78|C- D D F D- B+|391|51|54|0
+Nico Sturm|MIN|C|78|C- D D F D- B|391|51|54|0
 Yakov Trenin|MIN|C|13|A- D- D- D- D B|474|61|61|0
-Danila Yurov|MIN|R|22|B+ B- C+ D D+ D+|90|18|16|0
+Danila Yurov|MIN|R|22|B+ B- C+ D D D+|90|18|16|0
 Zach Bogosian|MIN|D|24|C C A A- D|986|66|183|0
 Jonas Brodin|MIN|D|25|D+ C D C- A|932|62|222|1
-Cameron Crotty|MIN|D|34|D- D C+ B C-|11|0|1|0
+Cameron Crotty|MIN|D|34|D- D B- B C-|11|0|1|0
 Brock Faber|MIN|D|7|A+ A- D+ D+ A|242|33|94|1
-Quinn Hughes|MIN|D|43|A A D- F A|524|71|436|1
+Quinn Hughes|MIN|D|43|A A F F A|524|71|436|1
 Matt Kiersted|MIN|D|26|D D- F D- C+|54|2|7|0
 Olli Maatta|MIN|D|3|C D+ D+ C B|817|45|169|0
 David Spacek|MIN|D|82|D- D+ F F D+|11|0|1|0
 Jared Spurgeon|MIN|D|46|B B F F B+|1022|124|319|1
 Filip Gustavsson|MIN|G|32|A- A- A A A|219|0.911|111|0
-Calvin Pickard|MIN|G|31|D- D- D D D-|193|0.900|75|0
+Calvin Pickard|MIN|G|31|D- D- D D+ D-|193|0.900|75|0
 Jesper Wallstedt|MIN|G|30|S A A+ A+ A+|55|0.913|30|1
-Morgan Geekie|BOS|C|39|C- S A C+ B- B+|430|114|124|1
-James Hagens|BOS|C|44|F C- C- C+ C+ D|18|6|7|0
-Tanner Jeannot|BOS|L|84|C+ D D- D D A|387|56|63|0
-Mark Kastelic|BOS|C|47|B+ C- D D- D- S|303|33|34|0
-Marat Khusnutdinov|BOS|C|92|B+ C- C D D F|184|24|31|0
-Sean Kuraly|BOS|C|52|C+ D- F D- D B+|649|70|105|0
-Elias Lindholm|BOS|C|28|F B B+ C+ A- C+|985|257|408|1
-Fraser Minten|BOS|C|93|B C+ C+ B- D+ B|123|25|25|1
-Casey Mittelstadt|BOS|C|11|C C B C- B C|525|101|186|0
-David Pastrnak|BOS|R|88|D- A A- A- S C|849|428|525|1
-JJ Peterka|BOS|R|10|B+ B+ B+ A- B D|336|96|112|1
+Morgan Geekie|BOS|C|39|C- S A C+ B- B+|431|115|125|1
+James Hagens|BOS|C|44|F C- C- C+ C+ D|19|6|7|0
+Tanner Jeannot|BOS|L|84|C+ D D- D D+ A|388|56|64|0
+Mark Kastelic|BOS|C|47|B+ C- D D- D- S|304|34|34|0
+Marat Khusnutdinov|BOS|C|92|B+ C- C D D F|185|24|31|0
+Sean Kuraly|BOS|C|52|C+ D- F D- D B+|650|70|105|0
+Elias Lindholm|BOS|C|28|F B B+ C+ A- C+|986|258|408|1
+Fraser Minten|BOS|C|93|B C+ C+ B- D+ B|124|26|25|1
+Casey Mittelstadt|BOS|C|11|C C B C- B C|526|101|186|0
+David Pastrnak|BOS|R|88|D- A A- A- S C|850|428|527|1
+JJ Peterka|BOS|R|10|B+ B+ B+ A- B+ D|337|96|114|1
 Matthew Poitras|BOS|C|51|F D D+ B- C+ D+|81|11|23|0
-Pavel Zacha|BOS|C|18|C A- A C+ A- A-|721|158|259|1
-Jonathan Aspirot|BOS|D|45|B- C+ B+ C C|67|3|10|0
-Will Borgen|BOS|D|17|B D C C C|389|20|67|1
-Frederic Brunet|BOS|D|42|C C- C- C+ C+|11|1|3|0
-Connor Clifton|BOS|D|75|B F C D+ F|441|17|67|0
-Hampus Lindholm|BOS|D|27|B+ B A- A- B|845|79|264|1
-Mason Lohrei|BOS|D|6|C+ C C+ A C-|207|19|59|0
-Charlie McAvoy|BOS|D|73|B+ A- B+ C+ B|583|72|297|1
-Nikita Zadorov|BOS|D|91|A B S S B|819|53|142|1
-Michael DiPietro|BOS|G|30|B- C+ C+ C C+|8|0.887|3|0
+Pavel Zacha|BOS|C|18|C A A C+ A- A-|722|160|259|1
+Jonathan Aspirot|BOS|D|45|B- C+ B- C C|67|3|10|0
+Will Borgen|BOS|D|17|B D C C C|390|20|67|1
+Frederic Brunet|BOS|D|42|C D+ D+ C+ C+|12|1|4|0
+Connor Clifton|BOS|D|75|B F B- D+ F|441|17|67|0
+Hampus Lindholm|BOS|D|27|B+ B- A A- B+|846|79|265|1
+Mason Lohrei|BOS|D|6|C+ C B A C-|208|19|59|0
+Charlie McAvoy|BOS|D|73|B+ A- A- C+ B+|584|72|297|1
+Nikita Zadorov|BOS|D|91|A B S S B-|820|53|142|1
+Michael DiPietro|BOS|G|30|B- C+ C+ C+ C+|9|0.887|4|0
 Jeremy Swayman|BOS|G|1|A A- A C A-|257|0.910|140|1
-Ivan Barbashev|VGK|L|49|C+ B+ B+ A B+ D+|684|151|211|1
-Braeden Bowman|VGK|R|42|D- D C C- B- C+|71|11|21|0
-Trevor Connelly|VGK|L|24|B B- B- B C+ D|17|6|5|0
-Nic Dowd|VGK|C|26|D+ F D- C D+ B-|674|89|111|0
-Jack Eichel|VGK|C|9|A A- B+ S S C+|707|273|447|1
-Marc Gatcomb|VGK|C|17|B- D F F F C+|105|12|6|0
-Tomas Hertl|VGK|C|48|D+ B+ B+ A- B+ A-|890|283|335|1
-Brett Howden|VGK|C|21|A B- C+ C+ D B|506|79|92|0
-William Karlsson|VGK|C|71|C- C+ C+ B B D|769|186|273|1
+Colton Dach|EDM|C|34|C D- D- D- D A|99|10|14|0
+Jason Dickinson|EDM|C|16|C+ D D- D- D B-|574|76|99|0
+Leon Draisaitl|EDM|C|29|A A+ S S A+ A-|872|448|636|1
+Alex Formenton|EDM|L|26|C+ D+ C- C- C- C+|126|25|19|0
+Trent Frederic|EDM|C|10|B- D- D- F F A|426|60|57|0
+Filip Hallander|EDM|C|19|C D D C- C B|27|2|5|0
+Isaac Howard|EDM|L|53|C+ D- D- F D+ D-|42|3|5|0
+Zach Hyman|EDM|L|18|A- B+ A A+ C+ B-|717|262|234|1
+Mattias Janmark|EDM|C|13|C+ F F F C- C+|680|83|138|0
+Max Jones|EDM|L|46|C- D+ D D- F A|313|35|34|0
+Mathieu Joseph|EDM|R|21|B- F F D C- C-|488|64|103|0
+Kasperi Kapanen|EDM|R|42|A- C D+ D- D+ C|585|103|146|1
+Connor McDavid|EDM|C|97|S A- S S S C+|811|419|845|1
+Owen Michaels|EDM|R|43|C C D+ D D+ D+|17|2|2|0
+Ryan Nugent-Hopkins|EDM|C|93|C+ B+ A- A- A D+|1039|295|520|1
+Vasily Podkolzin|EDM|R|92|A C+ C B+ D+ B|318|54|56|1
+Matt Savoie|EDM|C|22|B C- C+ B- C F|87|18|20|0
+Evan Bouchard|EDM|D|2|B S C- C- S|446|86|277|1
+Mattias Ekholm|EDM|D|14|B- A A- B+ A+|981|94|314|1
+Ty Emberson|EDM|D|49|A- D- C+ C- D-|191|5|31|0
+Shakir Mukhamadullin|EDM|D|85|C C+ D+ B D-|95|8|15|0
+Connor Murphy|EDM|D|5|F C B+ B+ D-|842|48|130|1
+Alec Regula|EDM|D|75|D+ F A- A- F|51|1|3|0
+Ryan Shea|EDM|D|6|C- D+ D D+ B|167|10|36|1
+Jake Walman|EDM|D|96|B+ A B- C D+|331|40|72|0
+Frederik Andersen|EDM|G|30|D- D D- D+ D|552|0.913|324|1
+Brett Epp|EDM|G||C C C C C|0||0|0
+Tristan Jarry|EDM|G|35|D D+ D- D- D|334|0.907|174|0
+Devon Levi|EDM|G|27|D+ D D+ D+ D+|46|0.893|23|0
+Matt Tomkins|EDM|G|90|D+ C- C C C-|8|0.889|4|0
+Ivan Barbashev|VGK|L|49|C+ B+ B+ A B+ D+|685|151|211|1
+Braeden Bowman|VGK|R|42|D- D C C- B- C+|72|12|21|0
+Trevor Connelly|VGK|L|24|B B- B- B C+ D|18|7|5|0
+Nic Dowd|VGK|C|26|D+ F D- C D B-|675|89|111|0
+Jack Eichel|VGK|C|9|A A- B+ S S C+|708|273|448|1
+Marc Gatcomb|VGK|C|17|B- D F F F C+|106|12|6|0
+Tomas Hertl|VGK|C|48|D+ B+ B+ A- B+ A-|891|283|336|1
+Brett Howden|VGK|C|21|A B- C+ C+ D B|507|79|92|0
+William Karlsson|VGK|C|71|D+ C+ C+ B B D|770|186|273|1
 Raphael Lavoie|VGK|C|36|D- D- D- D- D+ A|28|1|2|0
-Mitch Marner|VGK|R|93|D B+ A A+ S D-|753|247|592|1
-Victor Olofsson|VGK|L|95|B B- C A- C F|452|122|125|0
-Mark Stone|VGK|R|61|C- S S S A+ B|783|269|457|1
-Rasmus Andersson|VGK|D|4|B- A+ B C- C|634|66|217|1
-Dylan Coghlan|VGK|D|52|F C- B- C+ B-|124|6|17|0
-Noah Hanifin|VGK|D|15|A+ B D+ C+ A|846|77|282|1
-Jeremy Lauzon|VGK|D|5|B+ D A A- D|401|15|44|0
-Brayden McNabb|VGK|D|3|F C+ B A- A|902|38|161|1
-Shea Theodore|VGK|D|27|B A- D+ C- A+|651|90|317|1
-Parker Wotherspoon|VGK|D|29|C- D- D+ D+ B-|194|4|42|0
-Carter Hart|VGK|G|79|D+ D+ D+ D+ C-|254|0.904|111|0
-Adin Hill|VGK|G|33|D D D C D|221|0.905|112|1
-Josh Anderson|MTL|R|17|A+ B C D F A+|703|167|116|0
+Mitch Marner|VGK|R|93|D B+ A A+ S D-|754|247|592|1
+Victor Olofsson|VGK|L|95|B B- C A- C F|453|122|126|0
+Mark Stone|VGK|R|61|C- S S S A+ B|784|269|457|1
+Rasmus Andersson|VGK|D|4|B- A+ C C- C|635|66|218|1
+Dylan Coghlan|VGK|D|52|F C- B- C+ B-|125|6|17|0
+Noah Hanifin|VGK|D|15|A+ B C- C+ A|847|77|282|1
+Jeremy Lauzon|VGK|D|5|B+ D A A- D|402|15|44|0
+Brayden McNabb|VGK|D|3|F C+ B A- A|903|38|161|1
+Shea Theodore|VGK|D|27|B A- D C- A+|652|90|317|1
+Parker Wotherspoon|VGK|D|29|C- D- D D+ B-|194|4|42|0
+Carter Hart|VGK|G|79|C- D+ D+ C- C-|255|0.905|112|0
+Adin Hill|VGK|G|33|D D D- C D|221|0.905|112|1
+Josh Anderson|MTL|R|17|A+ B C D F A+|704|167|116|0
 Owen Beck|MTL|C|62|C D- D- C+ D C-|33|2|3|0
-Zachary Bolduc|MTL|R|76|C C+ C B C- D+|190|41|41|0
-Cole Caufield|MTL|R|13|B- S A+ A+ B F|383|179|142|1
-Kirby Dach|MTL|C|77|B C C+ D C A+|319|51|88|0
-Phillip Danault|MTL|C|24|D- D D+ B B- C|801|132|285|1
+Zachary Bolduc|MTL|R|76|C C+ C B C- D+|191|41|41|0
+Cole Caufield|MTL|R|13|B- S A+ A+ B F|384|180|142|1
+Kirby Dach|MTL|C|77|B C C+ D C A+|320|52|89|0
+Phillip Danault|MTL|C|24|D- D D+ B B- C|802|132|285|1
 Ivan Demidov|MTL|R|93|B- B B B+ A- C|86|21|45|1
-Jake Evans|MTL|C|71|C D+ C- D+ C- D|433|54|103|0
-Oliver Kapanen|MTL|C|91|B- B C+ C- D- C+|108|23|17|0
-Chris Kreider|MTL|L|22|B A- A- B C+ A|973|350|290|1
-Alex Newhook|MTL|C|15|B B- C+ C- D+ C-|353|73|84|0
-Juraj Slafkovský|MTL|L|20|A- B+ A A- A- A|297|74|121|1
-Nick Suzuki|MTL|C|14|A+ A- A+ A+ S C-|546|172|316|1
-Alexandre Texier|MTL|L|85|D C- D+ C+ C- C|298|50|66|0
-Florian Xhekaj|MTL|L|63|D D+ D+ D+ C+ B|12|1|3|0
-Alexandre Carrier|MTL|D|45|C D F F C|384|21|94|0
-Noah Dobson|MTL|D|53|A- A- C+ B- B-|483|62|221|1
-Adam Engstrom|MTL|D|42|D D- D D+ B-|24|0|2|0
-Kaiden Guhle|MTL|D|21|B- C+ B- C+ B-|219|20|54|1
-Lane Hutson|MTL|D|48|A+ B F F S|181|21|139|1
-Mike Matheson|MTL|D|8|A A C+ C- B|713|82|224|1
-Arber Xhekaj|MTL|D|72|C- C- S A F|244|10|25|0
-Jakub Dobes|MTL|G|75|C+ C+ C C+ B-|65|0.899|38|1
-Jacob Fowler|MTL|G|32|A B+ A- A B+|26|0.915|16|0
+Jake Evans|MTL|C|71|C D+ C- D+ C- D|434|54|104|0
+Oliver Kapanen|MTL|C|91|B- B C+ C- D- C|109|23|17|0
+Chris Kreider|MTL|L|22|B A- A- B C+ A|974|350|290|1
+Alex Newhook|MTL|C|15|B B- C+ C- D+ C-|354|73|85|0
+Juraj Slafkovský|MTL|L|20|A- B+ A A- A- A|298|74|122|1
+Nick Suzuki|MTL|C|14|A+ A- A+ A+ S C-|547|173|318|1
+Alexandre Texier|MTL|L|85|D C- D+ C+ C- C+|299|50|66|0
+Florian Xhekaj|MTL|L|63|D D+ D+ D+ C+ B-|12|1|3|0
+Alexandre Carrier|MTL|D|45|C D D F C|385|21|94|0
+Noah Dobson|MTL|D|53|A- A- C+ B- B-|484|62|223|1
+Adam Engstrom|MTL|D|42|D D D- D+ B-|25|1|2|0
+Kaiden Guhle|MTL|D|21|B- C+ B+ C+ B-|220|20|54|1
+Lane Hutson|MTL|D|48|A+ B D F S|182|21|141|1
+Mike Matheson|MTL|D|8|A A C C- B|713|82|224|1
+Arber Xhekaj|MTL|D|72|C- C- A+ A F|245|11|25|0
+Jakub Dobes|MTL|G|75|C+ C+ C C+ B-|66|0.898|39|1
+Jacob Fowler|MTL|G|32|A A- A- A- B+|26|0.915|16|0
 Samuel Montembeault|MTL|G|35|D D- D D- D-|231|0.896|90|0
+Anthony Cirelli|TBL|C|71|C+ A- A- A B C|597|152|202|1
+Conor Geekie|TBL|C|94|C- C- D- D+ F A|81|13|8|0
+Zemgus Girgensons|TBL|C|28|B- D D- D F B|856|101|116|0
+Gage Goncalves|TBL|C|93|B- D+ C B- C+ C+|150|19|37|0
+Yanni Gourde|TBL|C|37|D+ D+ D+ B- B- D-|684|142|233|0
+Jake Guentzel|TBL|C|59|C+ A S A+ A- D-|696|314|360|1
+Brandon Hagel|TBL|L|38|A A A+ S A- C+|461|169|219|1
+Pontus Holmberg|TBL|R|29|B D+ D+ C+ D+ C|244|34|48|0
+Dominic James|TBL|C|17|B+ C- D+ C- C- D+|49|7|10|0
+Nikita Kucherov|TBL|R|86|B- S A+ S S D-|894|405|739|1
+Ilya Mikheyev|TBL|R|95|A+ B C+ D+ D C+|442|102|105|1
+Brayden Point|TBL|C|21|A+ B A A A- F|735|329|370|1
+Scott Sabourin|TBL|R|49|D D- D- D C- A-|76|3|11|0
+Jeffrey Viel|TBL|L|25|C+ F D- C- D+ B|111|6|11|0
+John Carlson|TBL|D|74|B S A- B+ A+|1174|175|618|1
+Erik Cernak|TBL|D|81|B- D- A+ A B-|516|26|99|0
+Max Crozier|TBL|D|24|C- D- C+ B- C|62|1|14|0
+Charle-Edouard D'Astous|TBL|D|51|C+ B+ A- C+ D|84|8|29|1
+Victor Hedman|TBL|D|77|C A+ B A+ A-|1178|176|641|0
+Emil Lilleberg|TBL|D|78|C D- B B- D|169|5|31|0
+Ryan McDonagh|TBL|D|27|D C C- C+ A|1073|88|357|1
+J.J. Moser|TBL|D|90|B C- D+ D+ A-|353|25|91|1
+Dennis Hildeby|TBL|G|35|A- B+ B+ B- B|29|0.904|10|0
+Andrei Vasilevskiy|TBL|G|88|S S S S S|610|0.916|378|1
+Jesper Boqvist|NJD|C|70|A- D- F D F C-|401|55|57|0
+Jesper Bratt|NJD|L|63|B+ C+ A- A S F|650|175|358|1
+Connor Brown|NJD|R|16|A- C- B- C+ C+ D|684|128|178|1
+Luke Evangelista|NJD|R|77|C D- C+ A- A- D|266|48|102|1
+Cody Glass|NJD|C|12|D+ C C+ D+ D- B|338|55|66|0
+Arseny Gritsyuk|NJD|R|81|B- C+ C- A- C C-|82|21|22|0
+Nico Hischier|NJD|C|13|B A- A- A- A- C|625|206|292|1
+Jack Hughes|NJD|C|86|B- B A- A+ A+ F|445|176|273|1
+Amadeus Lombardi|NJD|C|93|C+ D D+ C C+ D|14|0|4|0
+Anthony Mantha|NJD|R|39|B A+ A- B- B- A+|604|184|192|0
+Timo Meier|NJD|R|28|B- B+ B- B B- B+|714|242|242|1
+Stefan Noesen|NJD|R|11|F D D+ D C- B-|487|84|94|0
+Evan Rodrigues|NJD|C|17|D+ C- D+ B- C+ D|632|109|167|0
+Declan Chisholm|NJD|D|47|D D+ D+ C- D+|139|7|23|0
+Brenden Dillon|NJD|D|5|B D- A- A D-|1064|42|185|0
+Dougie Hamilton|NJD|D|7|D- A+ B+ A+ B|928|164|384|1
+Luke Hughes|NJD|D|43|A+ A C C- B|239|29|109|1
+Johnathan Kovacevic|NJD|D|8|F F A+ A C-|268|10|44|0
+Brett Pesce|NJD|D|22|D- D C+ C+ B-|752|44|185|1
+Jonas Siegenthaler|NJD|D|71|D+ F B B- D+|465|10|75|1
+Jake Allen|NJD|G|34|C+ B- A- A- B|505|0.907|230|0
+Connor Hellebuyck|NJD|G|37|A- B+ A- B+ B+|629|0.916|349|1
+Michael Carcone|UTA|L|53|A+ C C- C+ D+ F|244|51|39|0
+Logan Cooley|UTA|C|92|S A A B B+ C-|228|80|93|1
+Lawson Crouse|UTA|L|67|A- B+ C+ B- D- A|683|140|124|1
+Dylan Guenther|UTA|R|11|A A+ A B+ B+ C|244|97|98|1
+Barrett Hayton|UTA|C|27|B+ D C B B- B-|375|66|98|0
+Clayton Keller|UTA|R|9|B+ B+ A- A+ S F|700|226|392|1
+Anders Lee|UTA|L|72|C- B- B- B+ C+ A|940|311|245|0
+Jack McBain|UTA|C|22|D D- D+ C D+ A+|333|45|65|0
+Liam O'Brien|UTA|C|38|D F F D- F B+|269|14|25|0
+Nick Schmaltz|UTA|C|8|A+ A- A+ A A D|687|184|333|1
+Kevin Stenlund|UTA|C|82|D- D F D- D A-|385|47|48|0
+Vincent Trocheck|UTA|C|16|A- B+ B+ A- A- D+|885|242|399|1
+Kailer Yamamoto|UTA|R|56|C- B B- C+ D+ F|383|76|91|0
+Nick DeSimone|UTA|D|57|D+ D F D+ B-|104|5|16|0
+Maveric Lamoureux|UTA|D|10|D C- A A C|20|1|3|0
+John Marino|UTA|D|6|B+ C- D- D+ A|452|25|137|1
+Andrew Peeke|UTA|D|20|D- D+ C- B D|403|18|63|0
+Nate Schmidt|UTA|D|88|C B D D B|840|58|207|1
+Mikhail Sergachev|UTA|D|98|A+ A+ B B B|647|78|311|1
+Dmitri Simashev|UTA|D|26|C C+ D+ C+ F|45|3|3|0
+MacKenzie Weegar|UTA|D|52|C+ B B- D+ C+|646|65|218|1
+Sebastian Cossa|UTA|G|33|C C- D+ D+ D+|8|0.870|5|0
+Karel Vejmelka|UTA|G|70|D+ D+ C+ C+ C|274|0.898|114|1
 Michael Amadio|OTT|R|22|C+ C+ C B+ D+ C+|539|88|94|0
 Drake Batherson|OTT|R|19|C+ A+ A+ A A- B+|487|158|224|1
-Andre Burakovsky|OTT|L|95|C C- C+ D+ B B-|779|164|256|0
+Andre Burakovsky|OTT|L|95|C- C- C+ D+ B B-|779|164|256|0
 Nick Cousins|OTT|C|21|D+ D D B- D C-|740|87|133|0
 Dylan Cozens|OTT|C|24|S B+ B+ B+ B+ B+|461|114|168|1
 William Eklund|OTT|L|27|C+ C B B+ A D-|256|51|114|1
 Warren Foegele|OTT|L|37|B B- C- C D- B-|594|118|112|0
 Claude Giroux|OTT|R|28|D+ C+ B- A A D-|1362|382|793|0
-Ridly Greig|OTT|C|71|B+ D+ C- B+ C+ C-|261|43|65|1
+Ridly Greig|OTT|C|71|B+ D+ C B+ C+ C-|261|43|65|1
 Stephen Halliday|OTT|C|34|C- D+ C- C C- B+|47|7|9|0
 Hayden Hodgson|OTT|R|42|D+ D D C- D+ A-|25|1|2|0
 Shane Pinto|OTT|C|12|C+ A- B A- C B+|299|80|85|1
 Tim Stützle|OTT|C|18|S A+ S A+ A+ C-|464|158|273|1
 Fabian Zetterlund|OTT|L|20|B- B- C+ B+ C C-|346|70|86|0
 Thomas Chabot|OTT|D|72|B A- C C A+|582|79|263|1
-Tyler Kleven|OTT|D|43|C B A+ A D+|182|9|25|0
-Nikolas Matinpalo|OTT|D|33|A- D B B D|110|1|11|0
-Jake Sanderson|OTT|D|85|S A+ C- C A+|312|40|151|1
+Tyler Kleven|OTT|D|43|C B S A D+|182|9|25|0
+Nikolas Matinpalo|OTT|D|33|A- D B B D-|110|1|11|0
+Jake Sanderson|OTT|D|85|S A+ C+ C A+|312|40|151|1
 Jordan Spence|OTT|D|10|C B- F F A-|270|16|79|1
-Carter Yakemchuk|OTT|D|26|D B- B B+ D+|18|2|3|0
+Carter Yakemchuk|OTT|D|26|D B- B+ B+ D+|18|2|3|0
 Artem Zub|OTT|D|2|D- C+ B C+ A-|397|24|94|1
 Samuel Ersson|OTT|G|30|F F F F F|151|0.884|67|0
 Jonas Johansson|OTT|G|31|F F F D D-|109|0.887|44|0
-Linus Ullmark|OTT|G|35|C C- B- A- B|348|0.915|198|1
-Anthony Cirelli|TBL|C|71|C+ A- A- A B C|596|152|201|1
-Conor Geekie|TBL|C|94|C- C- D- D+ F A|80|13|8|0
-Zemgus Girgensons|TBL|C|28|B- D D- D- F B|855|101|115|0
-Gage Goncalves|TBL|C|93|B- D+ C B- C+ C+|149|19|37|0
-Yanni Gourde|TBL|C|37|D+ D+ D+ B- B- D-|684|142|233|0
-Jake Guentzel|TBL|C|59|C+ A S A+ A- D-|695|314|359|1
-Brandon Hagel|TBL|L|38|A A A+ S A- C+|460|169|218|1
-Pontus Holmberg|TBL|R|29|B D+ D+ C+ D+ C|243|34|47|0
-Dominic James|TBL|C|17|B+ C- D+ C- C- D+|49|7|10|0
-Nikita Kucherov|TBL|R|86|B- S A+ S S D-|893|405|739|1
-Ilya Mikheyev|TBL|R|95|A+ B C D+ D C+|441|100|105|1
-Brayden Point|TBL|C|21|A+ B A A A- F|734|329|369|1
-Scott Sabourin|TBL|R|49|D D- D- D C- A-|76|3|11|0
-Jeffrey Viel|TBL|L|25|C+ F D- C- D+ B|110|6|11|0
-John Carlson|TBL|D|74|B S B+ B+ A+|1173|175|618|1
-Erik Cernak|TBL|D|81|B- D- A A C+|515|26|97|0
-Max Crozier|TBL|D|24|C- D- B- B- C|61|1|14|0
-Charle-Edouard D'Astous|TBL|D|51|C+ B+ A- C+ D|83|8|29|1
-Victor Hedman|TBL|D|77|C A+ A A+ A-|1177|175|641|0
-Emil Lilleberg|TBL|D|78|C D- B+ B- D|169|5|31|0
-Ryan McDonagh|TBL|D|27|D C- C- C+ A|1072|87|357|1
-J.J. Moser|TBL|D|90|B D+ D+ D+ A-|352|25|91|1
-Dennis Hildeby|TBL|G|35|A- B+ B+ B- B-|29|0.904|10|0
-Andrei Vasilevskiy|TBL|G|88|S S S S S|609|0.916|377|1
-Jesper Boqvist|NJD|C|70|A- D- F D D- C-|400|54|57|0
-Jesper Bratt|NJD|L|63|B+ C+ A- A S F|649|174|357|1
-Connor Brown|NJD|R|16|A- C- B- C+ C+ D|683|128|178|1
-Luke Evangelista|NJD|R|77|C D- C+ A- A- D|265|48|102|1
-Cody Glass|NJD|C|12|D+ C C+ D+ D- B|337|55|66|0
-Arseny Gritsyuk|NJD|R|81|B- C+ C- A- C+ C-|81|21|22|0
-Nico Hischier|NJD|C|13|B A- A- A- A- C|624|206|292|1
-Jack Hughes|NJD|C|86|B- B A- A+ A+ F|444|176|271|1
-Amadeus Lombardi|NJD|C|93|C+ D C- C C+ D|13|0|4|0
-Anthony Mantha|NJD|R|39|B A+ A- B- B- A+|603|182|191|0
-Timo Meier|NJD|R|28|B- B+ B- B- B- B|713|242|242|1
-Stefan Noesen|NJD|R|11|F D D+ D C- B-|487|84|94|0
-Evan Rodrigues|NJD|C|17|D+ C- D+ B- C+ D|631|109|166|0
-Declan Chisholm|NJD|D|47|D D+ D C- D+|138|7|23|0
-Brenden Dillon|NJD|D|5|B D- A+ A D-|1064|42|185|0
-Dougie Hamilton|NJD|D|7|D- A+ A+ A+ B|927|164|383|1
-Luke Hughes|NJD|D|43|A+ A C- C- B|238|28|108|1
-Johnathan Kovacevic|NJD|D|8|F F A A C-|267|10|44|0
-Brett Pesce|NJD|D|22|D- D C- C+ C+|751|44|183|1
-Jonas Siegenthaler|NJD|D|71|D+ F B+ B- D+|464|10|75|1
-Jake Allen|NJD|G|34|C+ B- A- A- B+|505|0.907|230|0
-Connor Hellebuyck|NJD|G|37|A- A- A B+ B+|628|0.916|348|1
-Michael Carcone|UTA|L|53|A+ C C- C+ D+ F|243|51|39|0
-Logan Cooley|UTA|C|92|S A A B B+ C-|227|77|92|1
-Lawson Crouse|UTA|L|67|A- B+ C+ B- D- A|682|140|124|1
-Dylan Guenther|UTA|R|11|A A+ A B+ B+ C|243|97|97|1
-Barrett Hayton|UTA|C|27|B+ D C B B- B-|374|66|98|0
-Clayton Keller|UTA|R|9|B+ B+ A- A+ S F|699|226|391|1
-Anders Lee|UTA|L|72|C- B- B- B+ C+ A|939|311|245|0
-Jack McBain|UTA|C|22|D D- D+ C D+ A+|332|45|65|0
-Liam O'Brien|UTA|C|38|D F F D- F B+|268|14|25|0
-Nick Schmaltz|UTA|C|8|A+ A- A+ A A D|686|183|331|1
-Kevin Stenlund|UTA|C|82|D- D F D- D A-|384|47|48|0
-Vincent Trocheck|UTA|C|16|A- B+ B+ A- A- D+|884|242|398|1
-Kailer Yamamoto|UTA|R|56|C- B B- C+ D+ F|383|76|91|0
-Nick DeSimone|UTA|D|57|D+ D D- D+ B-|103|5|16|0
-Maveric Lamoureux|UTA|D|10|D C- A A C|20|1|3|0
-John Marino|UTA|D|6|B+ C- D D+ A|452|25|137|1
-Andrew Peeke|UTA|D|20|D- D+ C+ B D|402|18|63|0
-Nate Schmidt|UTA|D|88|C B D+ D B|839|58|206|1
-Mikhail Sergachev|UTA|D|98|A+ A+ A- B B+|646|78|310|1
-Dmitri Simashev|UTA|D|26|C C+ C+ C+ F|44|3|3|0
-MacKenzie Weegar|UTA|D|52|C+ B C+ D+ C+|645|65|218|1
-Sebastian Cossa|UTA|G|33|C+ C- C- C- C-|7|0.873|5|0
-Karel Vejmelka|UTA|G|70|D+ D+ C+ C+ C|274|0.898|114|1
+Linus Ullmark|OTT|G|35|C C B- A B|348|0.915|198|1
 Aleksander Barkov|FLA|C|16|F C C+ A+ A+ B+|806|286|496|0
 Sam Bennett|FLA|C|9|C B+ B B+ B- C+|783|192|209|1
-Lars Eller|FLA|C|20|C D- D- C- D+ B-|1200|194|253|0
+Lars Eller|FLA|C|20|C D- D C- D+ B-|1200|194|253|0
 Jonah Gadjovich|FLA|L|12|F F F F F A-|170|10|11|0
 Garnet Hathaway|FLA|R|21|C F F D- F A-|688|76|88|0
 Bokondji Imama|FLA|L|14|F F F C D- B+|49|2|0|0
@@ -843,42 +855,64 @@ Brady Tkachuk|FLA|L|8|D+ A- B+ A A- A+|588|221|259|0
 Matthew Tkachuk|FLA|L|19|F B A A A+ B|689|257|435|1
 Carter Verhaeghe|FLA|C|23|B B+ B+ B+ B+ C|504|181|191|1
 Sandis Vilmanis|FLA|L|95|D C C- C+ D+ C-|34|6|6|0
-Uvis Balinskis|FLA|D|26|B+ B C- D D-|164|10|27|0
-Aaron Ekblad|FLA|D|5|C- C+ A- A- B|818|123|288|1
-Gustav Forsling|FLA|D|42|A+ A C D+ A|572|60|162|1
-Radko Gudas|FLA|D|6|D+ C+ B+ C- C-|896|42|169|0
-Seth Jones|FLA|D|3|B- A- B- B+ B|928|109|383|1
-Dmitry Kulikov|FLA|D|7|F D- B- C C|1053|50|199|0
-Niko Mikkola|FLA|D|77|B D+ B B+ B|412|19|58|1
-Jacob Markstrom|FLA|G|25|D- D D- D D|586|0.906|268|1
-Akira Schmid|FLA|G|40|C D+ C- D D+|90|0.897|37|0
-Jamie Benn|DAL|L|14|F A B+ C B+ A-|1267|416|582|0
-Colin Blackwell|DAL|C|15|B F F D D+ F|380|45|62|0
+Uvis Balinskis|FLA|D|26|B+ B B- D D-|164|10|27|0
+Aaron Ekblad|FLA|D|5|C- C+ A A- B|818|123|288|1
+Gustav Forsling|FLA|D|42|A+ A B- D+ A|572|60|162|1
+Radko Gudas|FLA|D|6|D+ C+ C+ C- C-|896|42|169|0
+Seth Jones|FLA|D|3|B- A- C+ B+ B|928|109|383|1
+Dmitry Kulikov|FLA|D|7|F D- B+ C C|1053|50|199|0
+Niko Mikkola|FLA|D|77|B D+ C B+ B|412|19|58|1
+Jacob Markstrom|FLA|G|25|F D D- D D|586|0.906|268|1
+Akira Schmid|FLA|G|40|C D C- D D+|90|0.897|37|0
+Jamie Benn|DAL|L|14|F A A- C B+ A-|1268|416|582|0
+Colin Blackwell|DAL|C|15|B F F D D+ F|381|45|62|0
 Oskar Bäck|DAL|C|10|D F D- C D B|152|9|20|0
 Matt Duchene|DAL|C|95|D- A- A B+ A C-|1195|387|549|1
-Radek Faksa|DAL|C|12|D D- F D+ C- A-|777|96|138|0
-Roope Hintz|DAL|C|24|A+ A- A- A- A A-|536|196|238|1
-Justin Hryckowian|DAL|C|49|C- C C+ C D C-|101|16|17|0
-Arttu Hyry|DAL|R|25|D C D C- D- B|40|7|5|0
-Wyatt Johnston|DAL|C|53|C- A S B+ A- D+|341|137|139|1
-Joel Kiviranta|DAL|L|22|B D- F B F F|360|40|32|0
-David Perron|DAL|L|16|D+ B- B- B- C C|1241|332|480|0
-Mikko Rantanen|DAL|R|96|B- A A+ A- A+ S|731|324|476|1
-Jason Robertson|DAL|L|21|C+ A+ A+ A+ A B|471|221|287|1
-Tyler Seguin|DAL|C|91|D- B+ B+ C+ B+ B-|1031|370|462|0
+Radek Faksa|DAL|C|12|D D- F D+ C- A-|778|96|138|0
+Roope Hintz|DAL|C|24|A+ A- B+ A- A A-|537|196|238|1
+Justin Hryckowian|DAL|C|49|C- C C+ C D C-|102|16|17|0
+Arttu Hyry|DAL|R|25|D C D C- D- B|41|7|5|0
+Wyatt Johnston|DAL|C|53|C- A S B+ A- D+|342|137|140|1
+Joel Kiviranta|DAL|L|22|B D- F B F F|361|40|32|0
+David Perron|DAL|L|16|D+ B- B- C+ C C|1242|332|480|0
+Mikko Rantanen|DAL|R|96|B A A+ A- A+ S|732|325|476|1
+Jason Robertson|DAL|L|21|C+ A+ A+ A+ A B|472|221|287|1
+Tyler Seguin|DAL|C|91|D- B+ B+ C+ B+ B-|1032|370|462|0
 Sam Steel|DAL|C|18|C- D+ C- C C+ D+|504|62|116|1
-Lian Bichsel|DAL|D|6|D B- S S D-|103|8|10|0
-Kyle Capobianco|DAL|D|20|D C- C- C C-|112|7|10|0
-Thomas Harley|DAL|D|55|B- B C B A+|282|39|108|1
-Miro Heiskanen|DAL|D|4|A- B D C- A+|567|70|287|1
-Esa Lindell|DAL|D|23|D- D+ C- B+ A+|776|60|190|1
-Nils Lundkvist|DAL|D|5|B- C D+ D+ C|250|12|46|0
-Tyler Myers|DAL|D|57|B C+ A+ A+ D-|1154|100|308|1
-Casey DeSmith|DAL|G|1|B+ A- A- A+ A|223|0.909|100|0
+Lian Bichsel|DAL|D|6|D B- A+ S D-|104|8|10|0
+Kyle Capobianco|DAL|D|20|D C- C+ C C-|112|7|10|0
+Thomas Harley|DAL|D|55|B- B C+ B A+|283|39|108|1
+Miro Heiskanen|DAL|D|4|A- B C- C- A+|567|70|287|1
+Esa Lindell|DAL|D|23|D- D+ C B+ A+|777|60|190|1
+Nils Lundkvist|DAL|D|5|B- C D- D+ C+|251|12|46|0
+Tyler Myers|DAL|D|57|B C+ S A+ D-|1155|100|308|1
+Casey DeSmith|DAL|G|1|B+ A- A A+ A|224|0.910|100|0
 Jake Oettinger|DAL|G|29|B B+ C+ A- B+|317|0.910|192|1
+T.J. Hughes|COL|R|13|C- D+ C C+ C+ D|17|2|4|0
+Nazem Kadri|COL|C|91|D+ C+ B B- A- D+|1079|328|446|1
+Parker Kelly|COL|C|17|C+ B- C B F C-|356|49|47|0
+Zachary L'Heureux|COL|L|68|D- D D D+ D C|90|9|12|0
+Gabriel Landeskog|COL|L|92|C- B B- A- B B|815|267|349|1
+Artturi Lehkonen|COL|L|62|D B+ B A C+ D-|677|177|176|1
+Nathan MacKinnon|COL|C|29|S A+ A+ S S C|967|429|740|1
+Martin Necas|COL|C|88|S A+ A+ A+ A+ B-|536|169|276|1
+Brock Nelson|COL|C|11|B A A A+ B B+|1018|338|324|1
+Logan O'Connor|COL|R|25|C D F C- D- D|362|45|61|0
+Nicolas Roy|COL|C|10|F D C- C C B|454|78|118|0
+Jaden Schwartz|COL|L|71|D- B+ B- C- C+ F|878|240|325|0
+Fedor Svechkov|COL|C|9|B+ F D- C- C- D+|139|14|27|0
+Brent Burns|COL|D|84|C+ A A- A A-|1596|273|678|1
+Noah Juulsen|COL|D|47|F D- C C D-|221|4|25|0
+Brett Kulak|COL|D|27|B- C- D- D C|680|29|112|1
+Cale Makar|COL|D|8|S S D+ D- S|486|140|385|1
+Sam Malinski|COL|D|70|A B+ D+ F A-|197|16|56|0
+Josh Manson|COL|D|42|B- B A B+ B|718|45|160|0
+Devon Toews|COL|D|7|B B+ C- D S|558|70|247|1
+Mackenzie Blackwood|COL|G|39|B+ B+ B+ B B+|304|0.905|134|1
+Scott Wedgewood|COL|G|41|A A+ A+ S A+|204|0.908|94|0
 Matty Beniers|SEA|C|10|C B B B- B- D+|346|86|118|1
 Berkly Catton|SEA|C|27|B+ D D+ D C- D-|81|12|17|0
-Curtis Douglas|SEA|C|42|F F D- D- D S|47|1|3|0
+Curtis Douglas|SEA|C|42|F F D- F D S|47|1|3|0
 Jordan Eberle|SEA|R|7|D B A- B B+ D-|1155|338|455|1
 Jagger Firkus|SEA|R|57|C- C C C+ C+ D-|0|0|0|0
 Frederick Gaudreau|SEA|C|89|D+ D D+ D C- D-|493|75|111|1
@@ -892,49 +926,78 @@ Jake O'Brien|SEA|C|44|C- C C C+ C+ C|0|0|0|0
 Mackie Samoskevich|SEA|R|11|A C C B C+ D|170|33|41|0
 Chandler Stephenson|SEA|C|9|A C+ B+ D A C-|668|120|262|1
 Ryan Winterton|SEA|C|26|B F D- F C- C|104|6|19|0
-Matthew Wood|SEA|R|71|D C C+ C D+ B|92|18|16|0
+Matthew Wood|SEA|R|71|D+ C C+ C D+ B|92|18|16|0
 Vince Dunn|SEA|D|29|C A C D+ D+|638|88|251|1
-Ryker Evans|SEA|D|41|A- C D+ D D|191|17|41|1
-Cale Fleury|SEA|D|8|D D+ C- C- D|106|2|5|0
+Ryker Evans|SEA|D|41|A- C D D D|191|17|41|1
+Cale Fleury|SEA|D|8|D D+ C C- D|106|2|5|0
 Adam Larsson|SEA|D|6|C B+ B B- B|1027|59|209|1
-Ryan Lindgren|SEA|D|55|C- F D+ D- D+|485|16|95|0
-Josh Mahura|SEA|D|28|D+ D- D D- D+|290|12|48|0
-Brandon Montour|SEA|D|62|A S B- D C-|679|98|238|1
-Ville Ottavainen|SEA|D|46|C+ C+ B A C+|10|1|1|0
+Ryan Lindgren|SEA|D|55|C- F D- D- D+|485|16|95|0
+Josh Mahura|SEA|D|28|D+ D- D- D- D+|290|12|48|0
+Brandon Montour|SEA|D|62|A S C+ D C-|679|98|238|1
+Ville Ottavainen|SEA|D|46|C+ C+ B+ A C+|10|1|1|0
 Joey Daccord|SEA|G|35|C- C- B- C+ C+|181|0.903|73|1
-Philipp Grubauer|SEA|G|31|C- C B B- B-|411|0.908|184|0
-T.J. Hughes|COL|R|13|C- D+ C C+ C+ D|16|2|4|0
-Nazem Kadri|COL|C|91|D+ C+ B B- A- D+|1078|328|446|1
-Parker Kelly|COL|C|17|C+ B- C B F C-|355|48|47|0
-Zachary L'Heureux|COL|L|68|D- D D D+ D C|90|9|12|0
-Gabriel Landeskog|COL|L|92|C- B B- A- B B|814|267|349|1
-Artturi Lehkonen|COL|L|62|D B+ B A C+ D-|676|177|176|1
-Nathan MacKinnon|COL|C|29|S A+ A+ S S C|966|429|740|1
-Martin Necas|COL|C|88|S A+ A+ A+ A+ B-|535|169|275|1
-Brock Nelson|COL|C|11|B A A A+ B B+|1017|338|323|1
-Logan O'Connor|COL|R|25|C D F C- D- D|361|45|60|0
-Nicolas Roy|COL|C|10|F D C- C C B|453|78|118|0
-Jaden Schwartz|COL|L|71|D- B+ B- C- C+ F|877|239|325|0
-Fedor Svechkov|COL|C|9|B+ F D- C- C- D+|138|14|27|0
-Brent Burns|COL|D|84|C+ A A- A A-|1595|273|678|1
-Noah Juulsen|COL|D|47|F D- C- C D-|220|4|24|0
-Brett Kulak|COL|D|27|B- C- D- D C|679|29|112|1
-Cale Makar|COL|D|8|S S D- D- S|485|140|385|1
-Sam Malinski|COL|D|70|A B+ D- F A-|196|16|56|0
-Josh Manson|COL|D|42|B- B A B+ B|718|45|160|0
-Devon Toews|COL|D|7|B B+ D D S|557|70|247|1
-Mackenzie Blackwood|COL|G|39|B+ B+ B+ B A-|303|0.905|134|1
-Scott Wedgewood|COL|G|41|A A+ A+ S A+|204|0.908|94|0
+Philipp Grubauer|SEA|G|31|D+ C B B- B-|411|0.908|184|0
+Mavrik Bourque|NSH|C|22|B- C+ C+ B C- D-|168|31|37|1
+Ross Colton|NSH|C|79|A C+ D+ B D+ D+|420|93|90|0
+Jack Drury|NSH|C|18|D+ D- D B D+ D|284|32|54|1
+Adam Edstrom|NSH|C|84|B+ D D- D- F A|113|16|7|0
+Filip Forsberg|NSH|L|9|D A+ A+ A- A B-|878|363|412|1
+Nils Hoglander|NSH|L|21|D- D+ D- C+ D+ D-|347|63|62|0
+Alexander Kerfoot|NSH|C|14|C- C- C+ C+ C D|655|107|204|0
+Jonathan Marchessault|NSH|C|81|F B- B- C B+ D-|792|265|314|1
+Ryan O'Reilly|NSH|C|90|C- B+ A A- A C+|1249|335|580|1
+Vitali Pinchuk|NSH|C|51|D+ C- C- C C B|7|1|1|0
+Reid Schaefer|NSH|L|49|C C- D+ F F A|56|7|3|0
+Steven Stamkos|NSH|C|91|B+ S A+ B B C+|1262|633|640|1
+Shane Wright|NSH|C|15|B D+ C+ C C C-|185|39|43|0
+Nicolas Hague|NSH|D|41|C+ C+ S S D|439|23|76|1
+Daemon Hunt|NSH|D|52|D+ F F D F|62|0|8|0
+Roman Josi|NSH|D|59|C A+ C- D+ B-|1046|205|592|1
+Ilya Lyubushkin|NSH|D|46|F F C- C D+|487|7|63|0
+Nick Perbix|NSH|D|48|D- D C B C-|314|17|62|1
+Brady Skjei|NSH|D|76|A B- C+ B- C|789|81|230|1
+Jayden Struble|NSH|D|3|C- D- B+ D+ D-|186|9|28|0
+William Trudeau|NSH|D|85|D+ C- D D C|3|0|0|0
+Adam Wilsby|NSH|D|2|B+ D D+ D B-|97|2|25|0
+Justus Annunen|NSH|G|29|C+ B- C D+ C+|84|0.898|38|0
+Juuse Saros|NSH|G|74|C+ D+ B C- D+|478|0.912|234|1
+Oliver Bjorkstrand|NYR|R|28|D+ C C C- B- D-|721|190|235|0
+Jaroslav Chmelar|NYR|R|49|B- C- D+ D- D- A+|37|4|2|0
+Will Cuylle|NYR|L|50|B- B C+ B C A|266|57|56|1
+Pavel Dorofeyev|NYR|R|16|C A+ A- B+ C+ C|248|97|62|1
+Luke Glendening|NYR|C|43|A- F F F F D-|937|85|90|0
+Tye Kartye|NYR|L|24|D+ C- D+ C- D+ C|221|30|37|0
+Noah Laba|NYR|C|42|A- D- D+ C- C A-|91|9|19|0
+Alexis Lafrenière|NYR|L|13|C+ B B+ B+ B C|479|125|141|1
+J.T. Miller|NYR|C|10|B+ B+ A- B+ A+ B+|956|281|494|1
+Gabe Perreault|NYR|R|94|D C+ B C+ C+ F|71|17|18|1
+Matt Rempe|NYR|C|73|C- F F D+ F S|89|5|6|0
+Adam Sykora|NYR|L|38|D+ C+ C C D+ D+|11|3|1|0
+Eeli Tolvanen|NYR|R|17|D C+ D+ D C- D-|440|96|100|0
+Joseph Veleno|NYR|C|90|A- D- F D- F C+|371|40|46|0
+Mika Zibanejad|NYR|C|93|C+ A+ A B- A B-|1028|351|480|1
+Sean Durzi|NYR|D|5|B+ B+ C- D C|316|32|117|0
+Adam Fox|NYR|D|23|D- B- D F A|503|74|369|1
+Vladislav Gavrikov|NYR|D|44|A- B+ B B+ A|534|44|132|1
+Scott Morrow|NYR|D|60|D- D+ C C+ C+|48|1|12|0
+Marcus Pettersson|NYR|D|26|F D- D+ C- D+|621|21|162|1
+Matthew Robertson|NYR|D|29|B- B- B+ A- C-|74|6|12|0
+Braden Schneider|NYR|D|4|B C C B C|385|20|69|1
+Alberts Smits|NYR|D|12|D D+ B- B- D|17|0|0|0
+Dylan Garand|NYR|G|33|A- B B+ B B+|16|0.916|8|0
+Joonas Korpisalo|NYR|G|70|D+ C+ D D D+|334|0.900|140|0
+James Reimer|NYR|G|47|D- D+ D C- C-|540|0.909|232|0
+Igor Shesterkin|NYR|G|31|A+ S S A S|330|0.917|190|1
 Teddy Blueger|TOR|C|73|D+ D+ C- F C- D+|470|60|113|0
 Easton Cowan|TOR|R|53|D+ C C D+ B- C-|83|17|26|1
 Brandon Duhaime|TOR|L|24|A- F F D- F A-|392|34|40|0
-Bo Groulx|TOR|C|29|D+ C- D+ D+ D C+|85|4|6|0
-Dakota Joshua|TOR|C|81|F C- C F F A|298|50|46|0
+Bo Groulx|TOR|C|29|D+ C- C- D+ D C+|85|4|6|0
+Dakota Joshua|TOR|C|81|F C- C F D- A|298|50|46|0
 Vinni Lettieri|TOR|C|71|C D D F F D|163|16|17|0
 Zack MacEwen|TOR|R|19|F D+ F C+ F A+|251|19|19|0
 Kirill Marchenko|TOR|R|86|A+ B+ B+ A- A- B|306|108|114|1
 Auston Matthews|TOR|C|34|C S A- B+ A A-|706|439|367|1
-Gavin McKenna|TOR|L|92|B C+ B- C- B- F|17|5|6|0
+Gavin McKenna|TOR|L|92|B- C+ B- C- B- F|17|5|6|0
 William Nylander|TOR|R|88|A- S A+ B A C-|767|302|410|1
 Nick Paul|TOR|L|20|C+ D+ D+ C+ D+ A|554|106|114|0
 Jack Roslovic|TOR|C|96|A- B B- B- C C-|612|131|183|1
@@ -942,15 +1005,15 @@ Colton Sissons|TOR|C|15|B D- D- D D B-|773|103|134|0
 John Tavares|TOR|C|91|B- A+ A+ C+ A- B|1273|527|665|1
 Miles Wood|TOR|L|18|A D+ D F F B+|567|99|97|0
 Nick Blankenburg|TOR|D|3|D+ B- F F C|182|19|40|0
-Oliver Ekman-Larsson|TOR|D|95|D+ B C D+ C+|1154|156|384|1
-Jake McCabe|TOR|D|22|A- D+ C+ C- B|740|40|163|1
+Oliver Ekman-Larsson|TOR|D|95|D+ B D+ D+ C+|1154|156|384|1
+Jake McCabe|TOR|D|22|A- D+ D+ C- B|740|40|163|1
 Cole McWard|TOR|D|82|D+ C- D+ C- C+|9|1|0|0
 Dakota Mermis|TOR|D|36|D- D+ D+ D D-|92|5|9|0
-Darren Raddysh|TOR|D|43|C- A+ B- C- B+|266|35|117|1
+Darren Raddysh|TOR|D|43|C- A+ C- C- B+|266|35|117|1
 Morgan Rielly|TOR|D|44|A- B- C C+ C+|968|98|463|1
 Marshall Rifai|TOR|D|83|D+ C C+ C+ C|5|1|0|0
 Troy Stecher|TOR|D|28|B- D- F F D|641|27|109|0
-Chris Tanev|TOR|D|8|F F D- C B+|886|36|175|0
+Chris Tanev|TOR|D|8|F F F C B+|886|36|175|0
 Sergei Bobrovsky|TOR|G|72|D- D- D+ D+ D|817|0.912|459|1
 Anthony Stolarz|TOR|G|41|B+ B+ B B B-|174|0.914|79|0
 Zach Benson|BUF|L|6|C- D C+ B+ B+ D-|226|36|79|1
@@ -965,98 +1028,74 @@ Beck Malenstyn|BUF|L|29|S D- F D- F B+|277|19|31|0
 Ryan McLeod|BUF|C|71|A+ C+ C+ A- B+ C+|394|67|118|1
 Josh Norris|BUF|C|9|B+ A B+ B B- B-|298|106|89|0
 Noah Ostlund|BUF|C|86|D B- C+ B- C+ D-|83|15|21|1
-Jack Quinn|BUF|R|22|A C+ C+ C- B+ C-|275|67|95|1
+Jack Quinn|BUF|R|22|A C+ C+ C- B C-|275|67|95|1
 Tage Thompson|BUF|C|72|A- S A B B+ A+|544|226|198|1
 Jason Zucker|BUF|L|17|D B+ A- B- B C-|838|242|227|0
-Louis Crevier|BUF|D|46|A- B+ S S F|149|10|23|0
-Rasmus Dahlin|BUF|D|26|A- A+ B+ C+ A|598|104|339|1
-Matt Grzelcyk|BUF|D|24|D+ C- F F D+|597|26|161|0
-Zach Metsa|BUF|D|73|D- D+ D D C+|56|2|6|0
-Owen Power|BUF|D|25|B B+ B A+ B+|338|29|122|1
-Mattias Samuelsson|BUF|D|23|A A- A+ A A-|305|22|71|1
-Conor Timmins|BUF|D|21|D- C+ B+ B D+|198|6|48|1
-Olen Zellweger|BUF|D|8|A- B D- D- B-|178|19|38|0
+Louis Crevier|BUF|D|46|A- B+ A+ S F|149|10|23|0
+Rasmus Dahlin|BUF|D|26|B+ A+ B+ C+ A|598|104|339|1
+Matt Grzelcyk|BUF|D|24|D+ C- D F D+|597|26|161|0
+Zach Metsa|BUF|D|73|D- D D D C+|56|2|6|0
+Owen Power|BUF|D|25|B B B A+ B+|338|29|122|1
+Mattias Samuelsson|BUF|D|23|A A- A- A A-|305|22|71|1
+Conor Timmins|BUF|D|21|D- C+ B- B D+|198|6|48|1
+Olen Zellweger|BUF|D|8|A- B D D- B-|178|19|38|0
 Colten Ellis|BUF|G|92|B C+ B- C+ C|22|0.900|11|0
-Ukko-Pekka Luukkonen|BUF|G|1|C B C- B B|200|0.899|97|1
+Ukko-Pekka Luukkonen|BUF|G|1|C B C- B- B-|200|0.899|97|1
 Alex Lyon|BUF|G|34|C+ B B B+ B|149|0.903|71|0
-Mavrik Bourque|NSH|C|22|B- C+ C+ B C- D-|167|31|37|1
-Ross Colton|NSH|C|79|A C D+ B C- D+|419|92|90|0
-Jack Drury|NSH|C|18|D+ D- D B D+ D|283|32|54|1
-Adam Edstrom|NSH|C|84|B+ D D- D- F A|112|16|7|0
-Filip Forsberg|NSH|L|9|D A+ A+ A- A B-|877|363|412|1
-Nils Hoglander|NSH|L|21|D- D+ D- C+ D+ D-|346|63|62|0
-Alexander Kerfoot|NSH|C|14|C- C- C+ C+ C D|654|107|204|0
-Jonathan Marchessault|NSH|C|81|F B- B- C B+ D-|792|265|314|1
-Ryan O'Reilly|NSH|C|90|C- B+ A A- A C+|1248|335|578|1
-Vitali Pinchuk|NSH|C|51|D+ C- C- C- C B|6|0|1|0
-Reid Schaefer|NSH|L|49|C C- D+ F F A|55|7|2|0
-Steven Stamkos|NSH|C|91|B+ S A+ B B C+|1261|632|640|1
-Shane Wright|NSH|C|15|B D+ C+ C C C-|184|39|43|0
-Nicolas Hague|NSH|D|41|C+ C+ A+ S D|439|23|76|1
-Daemon Hunt|NSH|D|52|D+ F F D F|61|0|8|0
-Roman Josi|NSH|D|59|C A+ C D+ B-|1045|205|591|1
-Ilya Lyubushkin|NSH|D|46|F F C C D+|487|7|63|0
-Nick Perbix|NSH|D|48|D- D C- B C-|313|17|62|1
-Brady Skjei|NSH|D|76|A B- B- B- C|788|81|230|1
-Jayden Struble|NSH|D|3|C- D- C+ D+ D-|185|9|28|0
-William Trudeau|NSH|D|85|D+ C- D D C|3|0|0|0
-Adam Wilsby|NSH|D|2|B+ D D D B-|96|2|25|0
-Justus Annunen|NSH|G|29|C+ B- C- D+ C+|83|0.897|37|0
-Juuse Saros|NSH|G|74|C D+ B C- D+|478|0.912|234|1
-Oliver Bjorkstrand|NYR|R|28|D+ C C C- B- D-|720|190|234|0
-Jaroslav Chmelar|NYR|R|49|B- C- D+ D- D- A+|36|4|2|0
-Will Cuylle|NYR|L|50|B- B C+ B C A|265|57|56|1
-Pavel Dorofeyev|NYR|R|16|C A+ A- B+ C+ C|247|96|62|1
-Luke Glendening|NYR|C|43|A- F F F F D-|937|85|90|0
-Tye Kartye|NYR|L|24|D+ C- D+ C- D+ C|220|29|37|0
-Noah Laba|NYR|C|42|A- D- D+ C- C A-|90|9|19|0
-Alexis Lafrenière|NYR|L|13|C+ B B+ B+ B C|478|125|141|1
-J.T. Miller|NYR|C|10|B+ B+ A- B+ A+ B+|955|281|493|1
-Gabe Perreault|NYR|R|94|D C+ B C+ C+ F|70|16|18|1
-Matt Rempe|NYR|C|73|C- F F D+ F S|88|5|6|0
-Adam Sykora|NYR|L|38|D+ C+ C C D+ D+|11|3|1|0
-Eeli Tolvanen|NYR|R|17|D C+ D+ D C- D-|439|96|100|0
-Joseph Veleno|NYR|C|90|A- D- F D- F C+|371|40|46|0
-Mika Zibanejad|NYR|C|93|C+ A+ A B- A B-|1027|351|479|1
-Sean Durzi|NYR|D|5|B+ B+ C D C|316|32|117|0
-Adam Fox|NYR|D|23|D B- F F A|502|74|367|1
-Vladislav Gavrikov|NYR|D|44|A- B+ B+ B+ A|533|44|132|1
-Scott Morrow|NYR|D|60|D- D+ C- C+ C+|47|1|12|0
-Marcus Pettersson|NYR|D|26|F D- C- C- D+|620|21|161|1
-Matthew Robertson|NYR|D|29|B- B- A- A- C-|74|6|12|0
-Braden Schneider|NYR|D|4|B C C+ B C|384|20|69|1
-Alberts Smits|NYR|D|12|D C- B B- D|16|0|0|0
-Dylan Garand|NYR|G|33|A- B B+ B B|15|0.916|7|0
-Joonas Korpisalo|NYR|G|70|D+ C+ D D+ D+|334|0.900|140|0
-James Reimer|NYR|G|47|D- D+ D+ C- C-|540|0.909|232|0
-Igor Shesterkin|NYR|G|31|A+ S S A S|330|0.917|190|1
+Leo Carlsson|ANA|C|91|B B+ A- A A- B+|217|66|99|1
+Judd Caulfield|ANA|R|28|C C+ B- C+ B- B+|14|4|5|0
+Sam Colangelo|ANA|R|12|F C D+ D D- B|56|13|6|0
+Cutter Gauthier|ANA|L|61|A A B+ B+ B- B-|174|72|59|1
+Mikael Granlund|ANA|C|64|C B- A- A- A D|975|202|463|1
+A.J. Greer|ANA|L|18|C- C C- B- D- A+|339|40|47|0
+Alex Killorn|ANA|L|17|C C- C B C- C+|1048|252|325|1
+Jeff Malott|ANA|L|39|B- F F D- D A+|86|5|10|0
+Roger McQueen|ANA|C|95|C C C C- C- A-|11|2|0|0
+Nico Myatovic|ANA|L|48|C- C C C C B|2|0|0|0
+Nikita Nesterenko|ANA|C|13|C D- D- D C- B-|75|9|12|0
+Ryan Poehling|ANA|C|25|A D C- C+ C+ B-|363|55|78|0
+Beckett Sennecke|ANA|R|45|A- B+ B+ B B+ A-|98|33|46|1
+Troy Terry|ANA|R|19|C+ C+ B A A- D+|488|135|207|1
+Frank Vatrano|ANA|R|77|B- C+ D C- D+ C|703|188|140|0
+Tim Washe|ANA|C|42|C D- D- C D- A-|57|5|6|0
+Drew Helleson|ANA|D|14|D C- A B- D|128|7|23|1
+Tyson Hinds|ANA|D|55|D D C C+ D+|19|0|0|0
+Jackson LaCombe|ANA|D|2|A A- B+ C+ B+|246|27|109|1
+Tristan Luneau|ANA|D|67|F C- C- C B-|30|4|11|1
+Pavel Mintyukov|ANA|D|98|B- D+ D+ C+ C|216|19|56|1
+Travis Mitchell|ANA|D|34|F D C- C+ D-|20|1|1|0
+Ian Moore|ANA|D|3|A- C B B- F|70|4|9|0
+Noah Warren|ANA|D|47|C D- A- A+ C-|16|0|5|0
+Laurent Brossoit|ANA|G|31|C- C- C- C C|144|0.909|67|0
+Lukas Dostal|ANA|G|1|D+ D+ D D- D|186|0.897|76|1
+Ville Husso|ANA|G|33|D- D- D D D-|170|0.898|82|0
 Mason Appleton|DET|C|22|C- F D- D D- C+|467|63|89|0
-Viktor Arvidsson|DET|L|33|C+ A B+ C B- F|698|227|231|1
-Michael Brandsegg-Nygård|DET|R|28|D D+ D B- C+ B-|30|3|8|0
-J.T. Compher|DET|L|37|B- D+ C- D C+ D+|667|131|177|1
-Andrew Copp|DET|C|18|B- D- C C- B C|795|125|224|1
-Nate Danielson|DET|C|29|D+ D- D F C C|40|2|7|0
-Alex DeBrincat|DET|R|93|B A A B- B+ F|712|301|310|1
-Sheldon Dries|DET|C|15|D- D- D D D F|137|16|10|0
-Emmitt Finnie|DET|C|58|B C- C D+ C- C|98|20|21|1
+Viktor Arvidsson|DET|L|33|C+ A B+ C+ B- F|699|227|231|1
+Michael Brandsegg-Nygård|DET|R|28|D D+ D B- C+ B-|31|3|8|0
+J.T. Compher|DET|L|37|B- D+ C- D- C+ D+|668|131|177|1
+Andrew Copp|DET|C|18|B- D- C C- B C|796|125|224|1
+Nate Danielson|DET|C|29|D+ D- D F C C|41|2|7|0
+Alex DeBrincat|DET|R|93|B A A B- B+ F|713|301|310|1
+Sheldon Dries|DET|C|15|D- D- D D D F|138|16|11|0
+Emmitt Finnie|DET|C|58|B C- C D+ C- C|99|20|21|1
 Marco Kasper|DET|C|92|B+ D+ D+ D- D C+|160|28|28|0
-Keegan Kolesar|DET|R|55|B- F F D+ D A-|455|45|76|0
+Keegan Kolesar|DET|R|55|B- F F D+ D A-|456|45|76|0
 John Leonard|DET|L|43|D+ C- C D C- D|83|8|13|0
-Carter Mazur|DET|L|34|D+ D D D D+ C|19|1|2|0
-Michael Rasmussen|DET|C|27|C D- D F D- A-|470|67|91|0
-Lucas Raymond|DET|L|23|B A- A- B A+ D|416|129|217|1
+Carter Mazur|DET|L|34|D+ D- D D C- C|20|1|3|0
+Michael Rasmussen|DET|C|27|C D- D F D- A-|471|67|91|0
+Lucas Raymond|DET|L|23|B A- A- B A+ D|417|129|217|1
 Jacob Bernard-Docker|DET|D|25|F F D- D D|207|7|22|0
-Ben Chiarot|DET|D|8|C+ B- A+ B+ D|821|50|136|1
-Andreas Englund|DET|D|24|F F C+ B- D-|211|2|18|0
-Justin Faulk|DET|D|72|A A B- C- C+|1074|149|358|1
-Albert Johansson|DET|D|20|C+ D+ D D+ F|154|6|15|1
-Anton Johansson|DET|D|42|D+ C+ B- B- C-|16|1|3|0
-Moritz Seider|DET|D|53|C+ A A B+ B+|426|39|211|1
-William Wallinder|DET|D|54|D C C+ B+ C-|11|2|2|0
+Ben Chiarot|DET|D|8|C+ C+ A B+ D|822|50|136|1
+Andreas Englund|DET|D|24|F F B- B- D-|212|2|18|0
+Justin Faulk|DET|D|72|A A B- C- C+|1075|149|358|1
+Albert Johansson|DET|D|20|C+ D+ C- D+ F|154|6|15|0
+Anton Johansson|DET|D|42|D+ B- C+ B- C-|17|2|3|0
+Moritz Seider|DET|D|53|C+ A B+ B+ B+|427|39|211|1
+William Wallinder|DET|D|54|D C C+ B+ C-|12|2|2|1
 John Gibson|DET|G|36|C+ B B- C+ B|574|0.909|237|1
 Michal Postava|DET|G|35|B- C- C- C C-|2|0.886|1|0
-Daniil Tarasov|DET|G|80|C- C D D D+|104|0.898|34|0
-Anthony Beauvillier|WSH|R|72|A- D+ D+ D+ D- D-|727|147|156|0
+Daniil Tarasov|DET|G|80|C C+ D+ D D+|105|0.899|34|0
+Anthony Beauvillier|WSH|R|72|A- D+ C- D+ D- D-|727|147|156|0
 Pierre-Luc Dubois|WSH|C|80|D- C+ B- B A A+|636|171|263|1
 Ethen Frank|WSH|R|53|A C+ C C D D+|88|16|15|0
 Boone Jenner|WSH|C|22|C B- C B- B- B+|822|218|210|0
@@ -1066,102 +1105,75 @@ Ivan Miroshnichenko|WSH|L|63|C- C+ C- D+ D C+|55|6|8|0
 Alex Ovechkin|WSH|L|8|F S A- B+ B+ A-|1587|930|761|1
 Aliaksei Protas|WSH|L|21|A- B+ B A- B- A|335|69|107|1
 Ilya Protas|WSH|L|62|D- D+ C C+ B A|18|2|8|0
-Justin Sourdif|WSH|C|34|B- B- C+ C C- C|94|19|21|0
+Justin Sourdif|WSH|C|34|B- B- C C C- C|94|19|21|0
 Dylan Strome|WSH|C|17|D B- A- B- A+ B+|612|168|288|1
 Alex Tuch|WSH|R|89|B+ A+ A A- B- A+|629|210|250|1
 Tom Wilson|WSH|R|43|B+ A A- A B S|921|211|251|1
-Jakob Chychrun|WSH|D|6|A+ S A B A-|635|124|210|1
-Vincent Desharnais|WSH|D|73|C F A A+ D+|227|2|27|0
-Martin Fehérváry|WSH|D|42|B+ C+ B- B- B|394|27|79|1
-Cole Hutson|WSH|D|44|C+ B- D- D- C-|28|7|12|0
-Timothy Liljegren|WSH|D|27|B+ C+ C+ C- F|325|22|72|0
-Matt Roy|WSH|D|3|B- C+ B- B B+|525|29|121|1
-Rasmus Sandin|WSH|D|38|B- C F F B-|382|25|120|1
+Jakob Chychrun|WSH|D|6|A+ S A+ B A-|635|124|210|1
+Vincent Desharnais|WSH|D|73|C F A- A+ D+|227|2|27|0
+Martin Fehérváry|WSH|D|42|B+ C+ C+ B- B|394|27|79|1
+Cole Hutson|WSH|D|44|C+ B- D D- C-|28|7|12|0
+Timothy Liljegren|WSH|D|27|B+ C+ C- C- F|325|22|72|0
+Matt Roy|WSH|D|3|B- C+ C B B+|525|29|121|1
+Rasmus Sandin|WSH|D|38|B- C D- F B-|382|25|120|1
 Jack St. Ivany|WSH|D|29|F F C C+ C-|61|0|13|0
-Charlie Lindgren|WSH|G|79|F D- D- F F|175|0.902|85|0
+Charlie Lindgren|WSH|G|79|F D- D- D- D-|175|0.902|85|0
 Rémi Poirier|WSH|G|1|B- C C C C|0||0|0
 Logan Thompson|WSH|G|48|A+ A A+ B+ A+|214|0.911|123|1
-Mitchell Chaffee|NYI|R|26|F D- F D F C-|115|16|10|0
-Casey Cizikas|NYI|C|53|B D+ D D- F D|992|125|157|0
-Anthony Duclair|NYI|L|11|C+ B C+ F D+ D+|683|168|178|0
-Victor Eklund|NYI|R|38|D- D+ D+ B- C D-|15|3|3|0
-Emil Heineman|NYI|L|51|A+ B C- D- D- B-|162|34|21|1
-Simon Holmstrom|NYI|R|92|B+ A- B C+ C+ B|293|64|63|1
-Bo Horvat|NYI|C|14|A A B+ A- B B|895|307|325|1
+Mitchell Chaffee|NYI|R|26|F D F D F C-|116|17|10|0
+Casey Cizikas|NYI|C|53|B D+ D D- F D|993|125|158|0
+Anthony Duclair|NYI|L|11|C+ B C+ F D+ D+|684|168|178|0
+Victor Eklund|NYI|R|38|D- C- D+ B C D-|16|4|4|0
+Emil Heineman|NYI|L|51|A+ B C- D- D- B-|163|34|22|1
+Simon Holmstrom|NYI|R|92|B+ A- B C C+ B|294|64|63|1
+Bo Horvat|NYI|C|14|A A B+ A- B B|896|307|325|1
 Matias Maccelli|NYI|L|63|C+ B- B- D+ B D|303|53|122|0
-Kyle MacLean|NYI|C|32|B- F F F D- C+|177|10|17|0
-Jean-Gabriel Pageau|NYI|C|44|C C+ B C- B- F|885|177|231|1
-Ondrej Palat|NYI|L|81|C D+ D+ D- D+ D+|919|184|340|0
-Kyle Palmieri|NYI|C|21|D+ B- C D+ B- D+|939|279|270|1
+Kyle MacLean|NYI|C|32|B- F F F D- C+|178|10|17|0
+Jean-Gabriel Pageau|NYI|C|44|C C+ B C- B- F|886|177|231|1
+Ondrej Palat|NYI|L|81|C D+ D+ D- D+ D+|920|184|340|0
+Kyle Palmieri|NYI|C|21|D+ B- C D+ B- D+|940|279|270|1
 Calum Ritchie|NYI|C|64|B+ C B- D- C B-|80|15|18|0
-Brayden Schenn|NYI|C|10|C+ B B D+ B B-|1116|300|433|1
-Tony DeAngelo|NYI|D|77|B+ B- D- F C-|496|58|210|0
-Ben Hutton|NYI|D|71|D+ C+ C B- C|575|30|109|0
-Matthew Kessel|NYI|D|4|D+ D+ B B D-|107|3|11|0
-Scott Mayfield|NYI|D|24|B- D- A- A- D-|620|30|110|0
-Adam Pelech|NYI|D|3|B- B- A- B B-|656|31|149|1
-Ryan Pulock|NYI|D|6|B+ B+ B- B B|649|56|186|1
+Brayden Schenn|NYI|C|10|C+ B B+ D+ B B-|1117|301|434|1
+Tony DeAngelo|NYI|D|77|B+ B- F F C-|497|58|210|0
+Ben Hutton|NYI|D|71|D+ C+ B B- C|575|30|109|0
+Matthew Kessel|NYI|D|4|D+ D+ B- B D|108|3|12|0
+Scott Mayfield|NYI|D|24|B- D- A+ A- D-|621|30|110|0
+Adam Pelech|NYI|D|3|B- B- A+ B C+|657|31|149|1
+Ryan Pulock|NYI|D|6|B+ B+ B+ B B|649|56|186|1
 Alexander Romanov|NYI|D|28|D C+ C- C B-|372|17|67|1
-Matthew Schaefer|NYI|D|48|A A C C- A-|96|27|46|1
-Logan Stanley|NYI|D|8|D- B- S A+ C-|292|14|53|0
-Ilya Sorokin|NYI|G|30|A A+ B+ A B+|318|0.915|160|1
-Semyon Varlamov|NYI|G|40|C- B- B- B- C+|625|0.915|290|0
+Matthew Schaefer|NYI|D|48|A A C+ C- A-|97|27|47|1
+Logan Stanley|NYI|D|8|D- B- A+ A+ D+|293|14|53|0
+Ilya Sorokin|NYI|G|30|A A+ B+ A A-|318|0.915|160|1
+Semyon Varlamov|NYI|G|40|C- B- B- B- C+|626|0.915|290|0
 Jonatan Berggren|STL|R|29|B- D+ C- C- C- D|220|39|46|0
-Pavel Buchnevich|STL|L|89|D- B+ B+ A- A- B-|688|205|308|1
+Pavel Buchnevich|STL|L|89|D- B+ B+ A- A- B-|689|205|308|1
 Dillon Dube|STL|C|65|C- C C C C D|328|58|70|0
-Dalibor Dvorsky|STL|R|15|D- C+ D+ D D- B-|88|15|10|0
-Dylan Holloway|STL|L|81|C+ A- B A+ A- C+|240|60|84|1
-Ross Johnston|STL|L|49|D- F F C D S|314|14|33|0
-Aleksanteri Kaskimaki|STL|C|41|D+ D+ D D C- C|11|1|1|0
-Connor McMichael|STL|L|77|A- C+ C+ C B D|330|69|93|1
-Mason McTavish|STL|C|83|D- B- B- B B B|319|83|108|1
-Jake Neighbours|STL|L|63|D+ B B B+ C+ C+|295|75|65|0
-Jimmy Snuggerud|STL|R|21|D+ B+ B B+ B C|92|30|36|1
-Pius Suter|STL|C|22|F B- C+ C+ C- F|443|99|100|0
-Robert Thomas|STL|C|18|B+ B A+ S A+ C+|545|134|336|1
-Alexey Toropchenko|STL|R|13|A D- F F D A+|329|34|39|0
-Justin Barron|STL|D|72|C D+ D- C- D+|220|20|40|0
-Philip Broberg|STL|D|6|S B+ C B- A|245|19|67|1
+Dalibor Dvorsky|STL|R|15|D- C+ D+ D+ D- B-|89|16|10|0
+Dylan Holloway|STL|L|81|C+ A- B A+ A- C+|241|60|84|1
+Ross Johnston|STL|L|49|D- F F C D S|315|14|33|0
+Aleksanteri Kaskimaki|STL|C|41|D+ D+ D D C- C|12|1|1|0
+Connor McMichael|STL|L|77|A- C+ C+ C B+ D|331|69|94|1
+Mason McTavish|STL|C|83|D- B- B- B B B|320|84|109|1
+Jake Neighbours|STL|L|63|D+ B B B+ C+ C+|296|75|66|0
+Jimmy Snuggerud|STL|R|21|D+ B+ B B+ B C|93|30|36|1
+Pius Suter|STL|C|22|F B- C+ C+ C- F|444|99|100|0
+Robert Thomas|STL|C|18|B+ B A+ S A+ C+|546|135|336|1
+Alexey Toropchenko|STL|R|13|A D- F F D A+|330|34|39|0
+Justin Barron|STL|D|72|C D+ D- C- C-|221|20|41|0
+Philip Broberg|STL|D|6|S B+ C- B- A|246|20|68|1
 Quinton Burns|STL|D|42|C- C D+ D+ C+|0|0|0|0
-Brandon Carlo|STL|D|25|C- D+ A- A- C-|707|29|91|1
-Cam Fowler|STL|D|17|C+ C- D C B|1139|109|418|1
-Adam Jiricek|STL|D|36|D- C D+ C- C+|15|1|1|0
-Theo Lindstein|STL|D|4|C- C- D- D- B-|23|2|4|0
-Colton Parayko|STL|D|55|A- A- B A+ B+|813|81|236|1
-Tyler Tucker|STL|D|75|C C+ B+ C D-|159|8|22|0
-Jordan Binnington|STL|G|50|F F D- F F|381|0.903|187|0
+Brandon Carlo|STL|D|25|C- D+ B A- C-|708|29|91|1
+Cam Fowler|STL|D|17|C+ C- D C B|1140|109|418|1
+Adam Jiricek|STL|D|36|D C D- C- C+|16|1|2|0
+Theo Lindstein|STL|D|4|C- C- D D- B-|23|2|4|0
+Colton Parayko|STL|D|55|A- A- B+ A+ B+|814|81|237|1
+Tyler Tucker|STL|D|75|C C+ A C D-|159|8|22|0
+Jordan Binnington|STL|G|50|F F D- F F|382|0.903|187|0
 Joel Hofer|STL|G|30|B+ B A A+ A|126|0.909|65|1
-Leo Carlsson|ANA|C|91|B B+ A- A A- B+|216|66|97|1
-Judd Caulfield|ANA|R|28|C C+ B- C+ C+ B+|13|4|4|0
-Sam Colangelo|ANA|R|12|F C D+ D D- B|55|13|6|0
-Cutter Gauthier|ANA|L|61|A A B+ B+ B- B-|173|71|58|1
-Mikael Granlund|ANA|C|64|C B- A- A- A D|974|202|462|1
-A.J. Greer|ANA|L|18|C- C C- B- D- A+|339|40|47|0
-Alex Killorn|ANA|L|17|C+ C C B C- C+|1047|252|325|1
-Jeff Malott|ANA|L|39|B- F F D- D A+|85|5|10|0
-Roger McQueen|ANA|C|95|C C C C- C- A-|10|2|0|0
-Nico Myatovic|ANA|L|48|C- C C C C B|1|0|0|0
-Nikita Nesterenko|ANA|C|13|C D- D- D C- B-|74|9|12|0
-Ryan Poehling|ANA|C|25|A D C- C+ C+ B-|363|55|78|0
-Beckett Sennecke|ANA|R|45|A- B+ B+ B A- A-|97|31|45|1
-Troy Terry|ANA|R|19|C+ C+ B A A- D+|488|135|207|1
-Frank Vatrano|ANA|R|77|B- C+ D C- D+ C|703|188|140|0
-Tim Washe|ANA|C|42|C D- D- C D- B+|56|5|6|0
-Drew Helleson|ANA|D|14|D C- B B- D|127|7|22|1
-Tyson Hinds|ANA|D|55|D D C C+ D+|19|0|0|0
-Jackson LaCombe|ANA|D|2|A A- B- C+ B+|245|27|108|1
-Tristan Luneau|ANA|D|67|F C- D+ C B-|29|4|10|1
-Pavel Mintyukov|ANA|D|98|B- D+ D+ C+ C-|215|17|55|1
-Travis Mitchell|ANA|D|34|F D C+ C+ D-|19|1|1|0
-Ian Moore|ANA|D|3|A- C C+ B- F|70|4|9|0
-Noah Warren|ANA|D|47|C D- A- A+ C|15|0|5|0
-Laurent Brossoit|ANA|G|31|C- C C C C-|143|0.909|66|0
-Lukas Dostal|ANA|G|1|D+ D+ D D- D|186|0.897|76|1
-Ville Husso|ANA|G|33|D- D- D- D D-|170|0.898|82|0
-Mikael Backlund|CGY|C|11|C- C C C C+ C|1162|234|377|1
+Mikael Backlund|CGY|C|11|C- C+ C C C+ C|1162|234|377|1
 Jonathan Castagna|CGY|C|38|D+ C- C- C C C-|13|0|3|0
-Matt Coronato|CGY|R|27|B C+ B- D+ B D-|208|48|67|1
-Joel Farabee|CGY|L|86|C C+ B- D+ C D+|513|118|142|1
+Matt Coronato|CGY|R|27|B C+ B- C- B D-|208|48|67|1
+Joel Farabee|CGY|L|86|C C B- D+ C D+|513|118|142|1
 Morgan Frost|CGY|C|16|B+ C B+ C B- D+|408|79|121|1
 Matvei Gridin|CGY|R|92|D C C- D B D|53|11|19|0
 Samuel Honzek|CGY|L|29|D D+ D C- D C+|27|2|2|0
@@ -1174,90 +1186,90 @@ Ryan Strome|CGY|C|22|F D+ C+ B- B C+|932|177|330|0
 William Stromgren|CGY|L|65|D C- C- C+ C- C-|5|1|0|0
 Aydar Suniev|CGY|L|61|D+ C- D D D+ C+|20|4|2|0
 Maxim Tsyplakov|CGY|R|72|F F D- D C B|134|12|28|0
-Kevin Bahl|CGY|D|7|C C A+ A+ C|313|12|53|1
-Joel Hanley|CGY|D|44|D- D- D F C|315|5|40|0
-Yan Kuznetsov|CGY|D|37|C+ B B B D|73|4|10|1
-Jake Middleton|CGY|D|55|C+ D+ B+ B+ C-|397|25|71|0
+Kevin Bahl|CGY|D|7|C C S A+ C|313|12|53|1
+Joel Hanley|CGY|D|44|D- D- F F C|315|5|40|0
+Yan Kuznetsov|CGY|D|37|C+ B C+ B D|73|4|10|1
+Jake Middleton|CGY|D|55|C+ D+ A- B+ C-|397|25|71|0
 Simon Nemec|CGY|D|71|D+ B D D D+|171|16|38|1
 Zayne Parekh|CGY|D|19|C- C+ F F D|54|6|9|0
-Zach Whitecloud|CGY|D|28|C- C C+ C+ C-|415|23|67|1
+Zach Whitecloud|CGY|D|28|C- C C C+ C-|415|23|67|1
 Devin Cooley|CGY|G|1|B+ A B+ B+ A-|44|0.904|16|0
-Dustin Wolf|CGY|G|32|B C- B B C+|137|0.901|63|1
+Dustin Wolf|CGY|G|32|B C B B C+|137|0.901|63|1
+Morgan Barron|WPG|C|36|A+ C- D D D- A|338|43|46|0
+Viggo Björck|WPG|C|61|C+ C- D+ D+ D+ F|17|0|1|0
+Kyle Connor|WPG|L|81|C+ A+ A A+ A D|712|336|357|1
+Alex Iafallo|WPG|L|9|C C C B- C- C-|680|128|169|0
+Cole Koepke|WPG|L|45|A+ D+ F D- F C+|178|21|19|0
+Adam Lowry|WPG|C|17|C- D D B- C- A|862|128|172|1
+Dawson Mercer|WPG|C|19|D+ C+ B- B- C+ D|427|104|113|1
+Vladislav Namestnikov|WPG|C|7|C D- D+ B- C+ D|852|145|206|0
+Nino Niederreiter|WPG|R|62|D- C- C- C- C- B|1040|248|251|0
+Cole Perfetti|WPG|C|91|F C- C+ B+ B D-|307|65|104|1
+Isak Rosen|WPG|R|27|C+ C- C- F D- D|68|7|6|0
+Mark Scheifele|WPG|C|55|A- A+ S A+ A+ B+|978|375|548|1
+Gabriel Vilardi|WPG|C|13|D- B+ A+ A- A- B+|369|121|131|1
+Brayden Yager|WPG|C|29|D C- C- C- C- D-|5|0|0|0
+Tyrel Bauer|WPG|D|77|D+ C B- B- D+|11|1|1|0
+Dylan DeMelo|WPG|D|2|F F D D+ A-|735|24|166|1
+Mario Ferraro|WPG|D|38|C- B B- D D|507|26|90|0
+Haydn Fleury|WPG|D|24|A- C- C B F|357|12|38|0
+Josh Morrissey|WPG|D|44|B- A- D- D- A+|743|94|337|1
+Neal Pionk|WPG|D|4|D- B D+ D- A-|604|51|228|1
+Elias Salomonsson|WPG|D|57|C- D+ F F D+|38|1|4|0
+Dylan Samberg|WPG|D|54|C C- A- A- A|299|12|59|1
+Nico Daws|WPG|G|35|B C+ C+ C+ C+|61|0.897|26|0
+Stuart Skinner|WPG|G|74|D+ D D+ D- D|236|0.901|126|1
+Clay Stevenson|WPG|G|33|C+ C+ C+ C- C|10|0.889|4|0
 Filip Bystedt|SJS|C|18|D+ C- C- C- C B+|4|0|0|0
 Macklin Celebrini|SJS|C|71|B- A+ A+ B- A+ C-|167|76|119|1
 Igor Chernyshov|SJS|L|92|C- B- B B C+ C+|39|11|12|0
 Ty Dellandrea|SJS|C|10|C D- F F D C+|274|17|45|0
 Adam Gaudette|SJS|R|81|B B- C+ D+ F C-|371|63|58|0
-Barclay Goodrow|SJS|C|23|C F F F F B+|748|70|120|0
+Barclay Goodrow|SJS|C|23|C- F F F F B+|748|70|120|0
 Collin Graf|SJS|R|51|B+ C B D+ C C-|138|28|34|1
 Mason Marchment|SJS|L|27|F B+ B+ B+ B A+|387|99|141|1
 Michael Misa|SJS|C|77|B- C+ B- D- B- D+|62|12|19|0
 Zack Ostapchuk|SJS|C|63|A- F F F F A|138|6|6|0
 Kiefer Sherwood|SJS|L|44|B- B C+ C+ C- C|354|68|74|1
 Will Smith|SJS|C|2|C A- B+ C- B+ D-|160|48|66|1
-Ivar Stenberg|SJS|L|41|C- B- B- D+ B- D-|17|4|6|0
+Ivar Stenberg|SJS|L|41|C- B- B- C- B- D-|17|4|6|0
 Tyler Toffoli|SJS|C|73|D- B B C- B C-|986|313|320|0
-Alexander Wennberg|SJS|C|21|B+ B- B+ C+ B+ C|878|119|309|1
+Alexander Wennberg|SJS|C|21|B+ B- B+ C+ A- C|878|119|309|1
 Nolan Allan|SJS|D|5|D D D+ D+ D-|53|3|8|0
 Sam Dickinson|SJS|D|6|B D C- C D|87|2|15|1
-Michael Kesselring|SJS|D|7|C- B- A+ A- D-|207|12|46|0
-Darnell Nurse|SJS|D|25|A+ B+ A A- C-|814|89|237|1
-Dmitry Orlov|SJS|D|9|D B- C+ C- C-|966|81|291|1
-Eric Pohlkamp|SJS|D|48|D+ C D+ D C+|1|0|0|0
-Jacob Trouba|SJS|D|65|D+ B+ A B C+|923|86|282|1
-Yaroslav Askarov|SJS|G|30|D D- F F F|74|0.887|30|1
+Michael Kesselring|SJS|D|7|C- B- A A- D-|207|12|46|0
+Darnell Nurse|SJS|D|25|A+ B+ B+ A- C-|814|89|237|1
+Dmitry Orlov|SJS|D|9|D B- C C- C-|966|81|291|1
+Eric Pohlkamp|SJS|D|48|C- C D+ D C+|1|0|0|0
+Jacob Trouba|SJS|D|65|D+ B+ B+ B C+|923|86|282|1
+Yaroslav Askarov|SJS|G|30|D D F F F|74|0.887|30|1
 Alex Nedeljkovic|SJS|G|33|C- B- C- D C|225|0.902|95|0
-Morgan Barron|WPG|C|36|A+ C- D D+ D- A|337|43|45|0
-Viggo Björck|WPG|C|61|C- C- D+ D+ D+ F|16|0|0|0
-Kyle Connor|WPG|L|81|C+ A+ A A+ A D|711|336|355|1
-Alex Iafallo|WPG|L|9|C C C B- C- C-|679|127|169|0
-Cole Koepke|WPG|L|45|A+ D+ F D- F C+|177|20|19|0
-Adam Lowry|WPG|C|17|C- D D B- C- A|861|128|172|1
-Dawson Mercer|WPG|C|19|D+ C+ B- B- C D|426|103|112|1
-Vladislav Namestnikov|WPG|C|7|C D- D+ B- C+ D|852|145|206|0
-Nino Niederreiter|WPG|R|62|D- C- C- C- C- B|1040|248|251|0
-Cole Perfetti|WPG|C|91|F C- C+ B+ B+ D-|306|65|103|1
-Isak Rosen|WPG|R|27|C+ C- C- F D- D|67|7|6|0
-Mark Scheifele|WPG|C|55|A- A+ S A+ A+ B+|977|374|547|1
-Gabriel Vilardi|WPG|C|13|D- A- A+ A- A- B+|368|121|130|1
-Brayden Yager|WPG|C|29|D+ C- C- C- C D-|4|0|0|0
-Tyrel Bauer|WPG|D|77|C- C B- B- C-|10|1|1|0
-Dylan DeMelo|WPG|D|2|F F D D+ A-|734|24|164|1
-Mario Ferraro|WPG|D|38|C- B- C D D|506|25|90|0
-Haydn Fleury|WPG|D|24|B+ D+ C+ B F|356|12|37|0
-Josh Morrissey|WPG|D|44|B- A- D D- A+|743|94|337|1
-Neal Pionk|WPG|D|4|D- B D+ D- A-|603|50|228|1
-Elias Salomonsson|WPG|D|57|C- D+ F F D+|38|1|4|0
-Dylan Samberg|WPG|D|54|C C- B- A- A|298|12|59|1
-Nico Daws|WPG|G|35|B C+ C+ C+ C+|61|0.897|26|0
-Stuart Skinner|WPG|G|74|D+ D D+ D- D|235|0.901|125|1
-Clay Stevenson|WPG|G|33|C+ C+ C C- C|10|0.889|4|0
-Charlie Coyle|CBJ|C|3|B+ B B C+ B+ B+|1045|212|344|1
-Luca Del Bel Belluz|CBJ|C|93|F F D D- C D+|37|3|7|0
-Adam Fantilli|CBJ|C|19|A+ B B- B- B- B-|226|71|75|1
-Conor Garland|CBJ|R|83|B C- C+ D B F|569|134|191|1
-Kent Johnson|CBJ|C|91|C+ D+ C C- B D-|287|60|91|0
-Matthew Knies|CBJ|L|89|C+ A- A- D+ B+ A|253|69|96|1
-Ryan Lomberg|CBJ|L|94|B- F F D- D- D-|407|35|37|0
-Sean Monahan|CBJ|C|23|C- C B- B A- C+|909|277|359|1
-Valeri Nichushkin|CBJ|R|43|A B- B- A B A-|640|156|209|1
-Mathieu Olivier|CBJ|R|24|D B C B- D- A-|324|49|49|0
-Cole Sillinger|CBJ|C|4|B+ D D+ C- B- C+|380|55|93|0
-Dmitri Voronkov|CBJ|L|10|D B B+ B- C+ S|219|58|57|0
-Jake Christiansen|CBJ|D|2|F D- D- D D+|164|4|18|0
-Dante Fabbro|CBJ|D|15|D B- C D+ D+|455|30|79|0
-Erik Gudbranson|CBJ|D|44|C+ C- A A D-|854|35|106|0
-Denton Mateychuk|CBJ|D|5|B+ B F F B|133|21|29|1
-Ivan Provorov|CBJ|D|9|B A- B C+ A-|780|87|227|1
-Damon Severson|CBJ|D|78|C+ A- B C B+|866|83|271|1
-Zach Werenski|CBJ|D|8|A+ A+ B- B- A+|655|135|342|1
+Charlie Coyle|CBJ|C|3|B+ B B B- B+ B+|1046|212|344|1
+Luca Del Bel Belluz|CBJ|C|93|F F D D- C D+|38|3|7|0
+Adam Fantilli|CBJ|C|19|A+ B B- B- B- B-|227|71|75|1
+Conor Garland|CBJ|R|83|B C- C+ D B F|570|134|191|1
+Kent Johnson|CBJ|C|91|C+ D+ C C- B D-|288|60|92|0
+Matthew Knies|CBJ|L|89|C+ A- A D+ B+ A|254|69|97|1
+Ryan Lomberg|CBJ|L|94|B- F F D- D- D-|408|35|37|0
+Sean Monahan|CBJ|C|23|C- C B- B A- C+|910|277|359|1
+Valeri Nichushkin|CBJ|R|43|A B- B- A B A-|641|156|209|1
+Mathieu Olivier|CBJ|R|24|D B C B- D- A-|325|49|49|0
+Cole Sillinger|CBJ|C|4|B+ D D+ C- B- C+|381|55|93|0
+Dmitri Voronkov|CBJ|L|10|D B B+ B- C+ S|220|58|57|0
+Jake Christiansen|CBJ|D|2|F D- D- D D+|165|4|18|0
+Dante Fabbro|CBJ|D|15|D B- C+ D+ C-|456|30|79|0
+Erik Gudbranson|CBJ|D|44|C+ C- B+ A D-|854|35|106|0
+Denton Mateychuk|CBJ|D|5|B+ B F F B|134|21|29|1
+Ivan Provorov|CBJ|D|9|B A- B- C+ A-|781|87|227|1
+Damon Severson|CBJ|D|78|C+ A- B+ C B+|867|83|271|1
+Zach Werenski|CBJ|D|8|A+ A+ B- B- A+|656|136|342|1
 Jet Greaves|CBJ|G|73|A+ A+ A- B+ A|84|0.911|38|1
-Cam Talbot|CBJ|G|33|D D C C- D+|574|0.911|282|0
+Cam Talbot|CBJ|G|33|D D+ C C- D+|575|0.911|283|0
 Joel Armia|LAK|R|40|D- C+ C- D+ D+ B+|667|119|119|0
 Quinton Byfield|LAK|R|55|A+ B B B+ B- A+|351|79|118|1
 Martin Chromiak|LAK|R|42|C- C C C C D+|2|0|0|0
-Kenny Connors|LAK|C|34|D+ C- C- C+ C+ C|3|0|1|0
-Kevin Fiala|LAK|L|22|D- A- B+ B- B C+|707|229|299|1
+Kenny Connors|LAK|C|34|D+ C C- C+ C+ C|3|0|1|0
+Kevin Fiala|LAK|L|22|D- A- B B- B C+|707|229|299|1
 Erik Haula|LAK|L|56|B- C- C C C D+|854|170|212|0
 Samuel Helenius|LAK|C|79|D- D+ D- F F A+|114|10|7|0
 Adrian Kempe|LAK|R|9|A+ A+ A- B+ B+ B|724|236|250|1
@@ -1269,115 +1281,115 @@ Artemi Panarin|LAK|L|10|D A- B+ A A+ D-|844|338|633|1
 Corey Perry|LAK|R|90|F B+ B B- C- A-|1476|466|508|0
 Alex Turcotte|LAK|C|15|C+ F D- C- C D+|165|13|31|0
 Mats Zuccarello|LAK|R|36|F B- B A- A F|969|232|513|1
-Mikey Anderson|LAK|D|44|D- D- F D- B+|439|23|82|1
+Mikey Anderson|LAK|D|44|D- D- D- D- B+|439|23|82|1
 Cody Ceci|LAK|D|5|C+ C C B- C+|960|53|192|0
-Brandt Clarke|LAK|D|92|C C+ C C- B-|199|18|74|1
-Drew Doughty|LAK|D|8|C A- B C B+|1292|166|551|1
-Brian Dumoulin|LAK|D|2|C- F C A- C|802|31|166|0
-Joel Edmundson|LAK|D|6|C- B B+ A A-|699|38|117|0
+Brandt Clarke|LAK|D|92|C C+ C+ C- B-|199|18|74|1
+Drew Doughty|LAK|D|8|C A- C+ C B+|1292|166|551|1
+Brian Dumoulin|LAK|D|2|C- F B- A- C|802|31|166|0
+Joel Edmundson|LAK|D|6|C- B B A A-|699|38|117|0
 Erik Gustafsson|LAK|D|64|F D F D- F|529|48|197|1
 Anton Forsberg|LAK|G|31|B+ A B+ A- A-|232|0.905|90|0
 Darcy Kuemper|LAK|G|35|B- B B B- B|498|0.912|233|1
-Justin Brazeau|PIT|R|16|D- B- B- D D+ A|160|33|30|0
-Egor Chinakhov|PIT|R|59|A+ B+ B- D+ C C|258|57|60|0
-Sidney Crosby|PIT|C|87|B+ S S A- A+ C|1435|658|1113|1
-Connor Dewar|PIT|C|19|B+ D D C+ D- D-|331|39|49|0
-Ben Kindel|PIT|C|81|B- C+ C+ C- C F|89|20|21|1
-Ville Koivunen|PIT|R|41|D D- D C+ B- D+|60|4|15|0
+Justin Brazeau|PIT|R|16|D- B- B- D D+ A|161|34|30|0
+Egor Chinakhov|PIT|R|59|A+ B+ B- D+ C C|259|57|60|0
+Sidney Crosby|PIT|C|87|B+ S S A- A+ C|1436|658|1113|1
+Connor Dewar|PIT|C|19|B+ D D C+ D- D-|332|39|49|0
+Ben Kindel|PIT|C|81|B- C+ C+ D+ C F|90|20|21|1
+Ville Koivunen|PIT|R|41|D D- D C+ B- D+|61|4|15|0
 Andrei Kuzmenko|PIT|L|62|F A- B+ C+ B D|282|85|98|0
-Hendrix Lapierre|PIT|C|22|B F D- C C D+|169|15|38|0
-Blake Lizotte|PIT|C|46|C+ D+ D+ C D+ F|449|55|94|0
-Evgeni Malkin|PIT|C|71|D- A- A- B+ A+ A|1282|539|879|1
-Tommy Novak|PIT|C|18|D+ C B- B B- D+|300|70|101|1
-Rickard Rakell|PIT|R|67|B A- A- B B D+|877|265|311|1
-Nick Robertson|PIT|L|14|B B C- D- D- F|249|54|40|0
+Hendrix Lapierre|PIT|C|22|B F D- C- C D+|170|15|39|0
+Blake Lizotte|PIT|C|46|C+ D+ D+ C C- F|450|55|95|0
+Evgeni Malkin|PIT|C|71|D- A- A- B+ A+ A|1283|539|879|1
+Tommy Novak|PIT|C|18|D+ C B- B- B- D+|301|70|101|1
+Rickard Rakell|PIT|R|67|B A- A- B B D+|878|265|311|1
+Nick Robertson|PIT|L|14|B B C- D- D- F|250|55|40|0
 Bryan Rust|PIT|R|17|B+ A A B+ B+ C-|717|235|272|1
 Elmer Soderblom|PIT|L|25|C C- D C D- A+|112|16|17|0
-Declan Carlile|PIT|D|72|C- C- C- C- F|61|5|4|0
-Samuel Girard|PIT|D|49|C D F F B+|620|38|211|1
-Erik Karlsson|PIT|D|65|S A+ D- D- B+|1174|218|734|1
-Kaedan Korczak|PIT|D|6|C+ F C- C+ B-|170|4|41|1
-Kris Letang|PIT|D|58|B B+ C- D C+|1250|178|634|1
-Jake Livanavage|PIT|D|4|D+ C D- D- C+|1|0|0|0
-Ilya Solovyov|PIT|D|7|D- C A- A- D|48|1|11|0
-Spencer Stastney|PIT|D|24|A- F F D- D+|127|4|18|0
-Trevor van Riemsdyk|PIT|D|57|C+ F C- B- C+|756|28|133|0
-Sergei Murashov|PIT|G|1|B- C- D+ C- D+|10|0.882|1|0
-Arturs Silovs|PIT|G|37|D F D F D-|68|0.886|32|1
-Noel Acciari|PHI|C|52|F D- D D F C-|602|82|64|0
-Denver Barkey|PHI|C|86|C D- C- C B- F|57|6|17|0
+Declan Carlile|PIT|D|72|C- C- C- C- F|62|5|4|0
+Samuel Girard|PIT|D|49|C D+ F F B+|621|38|211|1
+Erik Karlsson|PIT|D|65|S A+ D- D- B+|1175|218|734|1
+Kaedan Korczak|PIT|D|6|C+ F D C+ B|171|4|43|1
+Kris Letang|PIT|D|58|B B+ C- D C+|1251|178|634|1
+Jake Livanavage|PIT|D|4|D+ C- D- D- C+|1|0|0|0
+Ilya Solovyov|PIT|D|7|D- C A A- D|48|1|11|0
+Spencer Stastney|PIT|D|24|A- F D- D- D+|128|4|18|0
+Trevor van Riemsdyk|PIT|D|57|C+ F B- B- C+|756|28|133|0
+Sergei Murashov|PIT|G|1|B- C- C- C- C-|10|0.882|1|0
+Arturs Silovs|PIT|G|37|D F D F D-|69|0.884|32|1
+Noel Acciari|PHI|C|52|F D- D D F C-|603|83|64|0
+Denver Barkey|PHI|C|86|C D- C- C B F|58|6|18|0
 Michael Bunting|PHI|L|58|C+ C+ C+ C+ C+ C-|426|109|144|0
-Noah Cates|PHI|L|27|C- C- B- B- B- C+|334|60|94|0
-Sean Couturier|PHI|C|14|D D+ C B- B A-|969|219|365|1
-Christian Dvorak|PHI|C|22|B D+ C+ C+ B- C-|631|126|181|1
-Tyson Foerster|PHI|R|71|F A B- C D A-|211|64|40|1
+Noah Cates|PHI|L|27|C- C- B- B- B- C+|335|60|94|0
+Sean Couturier|PHI|C|14|D D+ C B- B A-|970|219|365|1
+Christian Dvorak|PHI|C|22|B D+ C+ C+ B- C-|632|126|181|1
+Tyson Foerster|PHI|R|71|F A B- C D B+|212|64|41|1
 Nikita Grebenkin|PHI|R|17|D D D D D+ B+|62|4|10|0
-Cole Knuble|PHI|R|54|C C+ C C- C- F|7|3|0|0
-Travis Konecny|PHI|R|11|C+ A A- B+ A D+|730|226|323|1
-Porter Martone|PHI|R|94|D- C+ C+ B B A-|26|7|11|0
-Matvei Michkov|PHI|R|39|D C+ B B B+ D-|178|56|71|0
-Owen Tippett|PHI|R|74|S B+ B- C C B-|439|122|116|1
-Trevor Zegras|PHI|C|46|C- B- A- B A- C-|366|97|170|1
-Simon Benoit|PHI|D|44|A D- A- B+ F|364|6|30|0
-Oliver Bonk|PHI|D|59|D- C D- D C|12|2|6|0
-Jamie Drysdale|PHI|D|9|S B+ D F C-|312|26|83|1
+Cole Knuble|PHI|R|54|C C+ C D+ C- F|8|3|0|0
+Travis Konecny|PHI|R|11|C+ A- A- B+ A D+|731|226|323|1
+Porter Martone|PHI|R|94|D- C+ C+ B- B A-|27|7|11|0
+Matvei Michkov|PHI|R|39|D C+ B B B+ D-|179|56|71|0
+Owen Tippett|PHI|R|74|S B+ B- C C B-|440|122|116|1
+Trevor Zegras|PHI|C|46|C- B- A- B A- C-|367|97|170|1
+Simon Benoit|PHI|D|44|A D- B B+ F|365|7|30|0
+Oliver Bonk|PHI|D|59|D- C F D C|13|2|6|0
+Jamie Drysdale|PHI|D|9|S B+ D- F C-|313|26|84|1
 David Jiricek|PHI|D|5|F D+ B- B- F|94|2|12|0
-Rasmus Ristolainen|PHI|D|55|D+ B- C+ B B|824|58|261|1
-Travis Sanheim|PHI|D|6|A A- B+ A B+|677|66|191|1
-Nick Seeler|PHI|D|24|C+ D C- C C|470|15|61|0
-Cam York|PHI|D|8|C+ C+ D D- B-|318|23|81|1
+Rasmus Ristolainen|PHI|D|55|D+ B- B B B|824|58|261|1
+Travis Sanheim|PHI|D|6|A A- A- A B|678|66|191|1
+Nick Seeler|PHI|D|24|C+ D- C- C C|471|15|61|0
+Cam York|PHI|D|8|C+ C+ D- D- B-|319|23|81|1
 Dan Vladar|PHI|G|80|C- B- C B+ B+|166|0.897|81|1
-Joseph Woll|PHI|G|53|B B- B- B B-|125|0.906|64|0
-Connor Bedard|CHI|C|98|B S A- C- A D+|229|79|136|1
-Tyler Bertuzzi|CHI|L|59|F B+ A D+ B- B-|583|170|201|1
-Dillon Boucher|CHI|L|36|D+ C C C C B-|1|0|0|0
-Ryan Donato|CHI|C|8|C B C+ D+ C C-|581|125|137|0
-Anton Frondell|CHI|C|16|D- C+ C- D+ B C|28|6|11|1
-Ryan Greene|CHI|C|20|C D C- D- C- C-|99|14|19|0
+Joseph Woll|PHI|G|53|B B- B- B B-|126|0.906|64|0
+Connor Bedard|CHI|C|98|B S A- C- A D+|230|79|136|1
+Tyler Bertuzzi|CHI|L|59|F A- A D+ B- B-|584|170|201|1
+Dillon Boucher|CHI|L|36|D+ C C C C B-|2|0|0|0
+Ryan Donato|CHI|C|8|C B C+ D+ C C-|582|125|137|0
+Anton Frondell|CHI|C|16|D- C C- D+ B- C|29|6|11|1
+Ryan Greene|CHI|C|20|C D C- D- C- C-|100|14|19|0
 Jordan Greenway|CHI|L|12|D- F F F D S|490|57|109|0
 Patrick Kane|CHI|R|88|B- C B D+ A+ F|1384|509|900|1
-Roman Kantserov|CHI|R|80|B- B- B- D+ C- F|16|7|2|1
-Andrew Mangiapane|CHI|L|26|C C C- D D D-|564|131|130|0
-Oliver Moore|CHI|C|11|B+ D D D- B- D+|75|7|19|0
-Frank Nazar|CHI|C|91|A+ B- C+ D B- D|136|33|42|1
-Cole Smith|CHI|R|22|A- F D- C- F B|308|26|41|0
-Teuvo Teravainen|CHI|C|86|F B B D+ A- D-|840|186|372|0
+Roman Kantserov|CHI|R|80|B- B- B- D+ D+ F|17|8|2|1
+Andrew Mangiapane|CHI|L|26|C C C- D D D-|565|131|130|0
+Oliver Moore|CHI|C|11|B+ D D D- C+ D+|76|7|19|0
+Frank Nazar|CHI|C|91|A+ B- C+ D B- D|137|33|42|1
+Cole Smith|CHI|R|22|A- F D- C- F B|309|26|41|0
+Teuvo Teravainen|CHI|C|86|F B B D+ A- D-|841|186|372|0
 Dominic Toninato|CHI|C|25|D+ D- D- C- D B-|200|13|23|0
-Bowen Byram|CHI|D|24|A B C+ C- B|334|44|109|1
-Ian Cole|CHI|D|28|C- F A- B- C+|1006|38|195|0
-Ethan Del Mastro|CHI|D|38|D+ C- B B+ F|52|2|7|0
-Wyatt Kaiser|CHI|D|44|B+ C D- D- D|191|12|29|1
+Bowen Byram|CHI|D|24|A B+ C- C- B+|334|44|109|1
+Ian Cole|CHI|D|28|C- F B B- C+|1007|38|195|0
+Ethan Del Mastro|CHI|D|38|D+ C- B B+ F|53|2|8|0
+Wyatt Kaiser|CHI|D|44|B+ C D+ D- D|192|12|29|1
 Kevin Korchinski|CHI|D|14|D- D D+ C F|109|6|14|0
-Artyom Levshunov|CHI|D|55|B- C- B C D-|102|3|30|1
-Sam Rinzel|CHI|D|6|C+ C- C+ B- D-|78|5|18|0
-Alex Vlasic|CHI|D|72|A- C B A+ C|276|9|63|1
-Spencer Knight|CHI|G|30|B B+ C- B- C|163|0.902|72|1
-Arvid Soderblom|CHI|G|40|F F F D- F|115|0.886|25|0
+Artyom Levshunov|CHI|D|55|B- C- C C D-|103|3|30|1
+Sam Rinzel|CHI|D|6|C+ C- C B- D-|79|5|19|0
+Alex Vlasic|CHI|D|72|A- C A A+ C|277|9|63|1
+Spencer Knight|CHI|G|30|B B+ C- B C+|163|0.902|72|1
+Arvid Soderblom|CHI|G|40|D- F F D- F|116|0.886|25|0
 Arshdeep Bains|VAN|L|13|C- D- D- F D D|62|4|6|0
-Brock Boeser|VAN|R|6|D- A B+ D+ B+ C+|646|231|265|1
+Brock Boeser|VAN|R|6|D- A B+ D+ B+ C+|647|232|265|1
 Filip Chytil|VAN|C|77|D D+ C- C C- B|412|80|95|1
-Paul Cotter|VAN|L|47|A- C+ D+ F F B+|312|51|39|0
-Jake DeBrusk|VAN|L|74|A+ B- B D- C C|643|194|172|1
-Brendan Gallagher|VAN|R|7|B D+ C- C C- D-|925|246|243|0
-Linus Karlsson|VAN|C|94|C- C- C+ D+ C D+|123|22|29|0
-Jonathan Lekkerimäki|VAN|R|88|F B- C F C- F|54|11|11|0
-Drew O'Connor|VAN|L|18|B+ C- C- D- D- A-|340|53|56|1
-Liam Ohgren|VAN|L|92|B C- D F D- D|113|16|17|0
-Elias Pettersson|VAN|C|40|B B B D+ A D+|562|204|322|1
-Jacob Quillan|VAN|C|62|C- D D F D B-|26|1|2|0
-Marco Rossi|VAN|C|23|D- B B+ C B+ F|250|60|82|1
-Max Sasson|VAN|C|63|A+ C+ C D- F D+|112|20|12|0
-Guillaume Brisebois|VAN|D|55|C- D+ D- D C-|33|1|2|0
-Zeev Buium|VAN|D|8|B+ D D- D- D+|93|6|24|1
-Filip Hronek|VAN|D|17|B- B+ D+ D- C+|550|49|250|1
-Victor Mancini|VAN|D|90|D F B- A- F|62|2|9|0
-Jamie Oleksiak|VAN|D|4|C+ B- A+ S D+|773|47|120|1
-Elias Pettersson|VAN|D|25|B B- C- D+ F|115|7|10|0
+Paul Cotter|VAN|L|47|A- C+ D+ F F B+|313|51|39|0
+Jake DeBrusk|VAN|L|74|A+ B- B D- C C|644|194|172|1
+Brendan Gallagher|VAN|R|7|B D+ C- C C- D-|926|246|243|0
+Linus Karlsson|VAN|C|94|C- C- C+ D+ C D+|124|22|29|0
+Jonathan Lekkerimäki|VAN|R|88|F B- C D- C F|55|11|12|0
+Drew O'Connor|VAN|L|18|B+ C- C- D- D- A-|341|53|56|1
+Liam Ohgren|VAN|L|92|B C- D F D- D|114|17|17|0
+Elias Pettersson|VAN|C|40|B B B D+ A D+|563|204|322|1
+Jacob Quillan|VAN|C|62|C- D D- F D+ B-|27|1|3|0
+Marco Rossi|VAN|C|23|D- B B+ C B+ F|251|60|83|1
+Max Sasson|VAN|C|63|A+ C+ C- D- F D+|113|20|12|0
+Guillaume Brisebois|VAN|D|55|C- D+ D- D C-|34|1|2|0
+Zeev Buium|VAN|D|8|B+ D F D- D+|94|6|24|1
+Filip Hronek|VAN|D|17|B- B+ D- D- C|551|49|250|1
+Victor Mancini|VAN|D|90|D F C+ A- F|63|2|9|0
+Jamie Oleksiak|VAN|D|4|C+ B- A+ S D+|774|47|120|1
+Elias Pettersson|VAN|D|25|B B- D D+ F|116|7|10|0
 Luke Schenn|VAN|D|2|F F A- B F|1132|45|169|0
 Tom Willander|VAN|D|5|B+ D F D- F|86|5|19|1
 Thatcher Demko|VAN|G|35|C C C+ D+ C-|262|0.909|134|0
 Kevin Lankinen|VAN|G|32|F F F F F|219|0.895|82|1
-Leevi Meriläinen|VAN|G|31|D D F D- D-|45|0.889|18|0`;
+Leevi Meriläinen|VAN|G|31|D D- F F F|46|0.886|18|0`;
 const ALLTIME_RAW = `Wayne Gretzky|C|A- A+ S S S D+|EDM|1979–1999
 Mario Lemieux|C|A S S S S S|PIT|1984–2006
 Jaromír Jágr|RW|A- A+ S A+ S A+|PIT|1990–2018

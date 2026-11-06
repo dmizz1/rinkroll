@@ -82,6 +82,32 @@ def document(title_and_styles_and_body, description):
             + social('Rink Roll · Build your own NHL player', SHARE_DESC, SITE)
             + head_part + '\n' + BASE_RESET + '\n</head>\n<body>' + body_part + '\n</body>\n</html>\n')
 
+# ---------- updates notepad (front page) ----------
+import datetime, html as _h
+def _upd():
+    try: rows = [l.rstrip('\n').split('|', 1) for l in open(P('updates.txt'), encoding='utf-8') if '|' in l]
+    except FileNotFoundError: return ''
+    rows = sorted(rows, key=lambda r: r[0], reverse=True)[:4]
+    if not rows: return ''
+    fmt = lambda d: (lambda x: f"{x:%b} {x.day}, {x.year}")(datetime.date.fromisoformat(d.strip()))
+    li = ''.join(f'<li><time datetime="{d.strip()}">{fmt(d)}</time><span>{_h.escape(s.strip())}</span></li>' for d, s in rows)
+    return f'    <aside class="notepad" aria-label="Updates"><h2>Updates</h2><ul>{li}</ul></aside>\n'
+_np = _upd()
+if _np:
+    rep('  <section class="setup" id="setup">\n', '  <section class="setup" id="setup">\n' + _np)
+    rep('.lb-preview {', """.notepad { position: relative; max-width: 460px; margin: 4px 0 22px auto; padding: 14px 18px 12px 46px; color: #1d2433; transform: rotate(-.6deg);
+  background: repeating-linear-gradient(#fdf8e1 0 25px, #b9cbe4 25px 26px) 0 38px / 100% calc(100% - 38px) no-repeat, #fdf8e1;
+  border-radius: 3px 3px 6px 6px; box-shadow: 0 10px 22px rgba(0,0,0,.35), 0 1px 0 rgba(255,255,255,.4) inset; }
+.notepad::before { content: ""; position: absolute; top: 0; bottom: 0; left: 32px; width: 2px; background: rgba(230,57,70,.55); }
+.notepad::after { content: ""; position: absolute; top: -9px; left: 50%; width: 86px; height: 20px; transform: translateX(-50%) rotate(2deg); background: rgba(244,201,93,.75); box-shadow: 0 1px 3px rgba(0,0,0,.2); }
+.notepad h2 { margin: 0 0 6px; font: 800 22px/1 var(--display); text-transform: uppercase; letter-spacing: .05em; color: #121e33; }
+.notepad ul { list-style: none; margin: 0; padding: 0; }
+.notepad li { font: 500 15px/26px var(--body); }
+.notepad li + li { margin-top: 0; }
+.notepad time { display: block; font: 700 13px/26px var(--data); text-transform: uppercase; letter-spacing: .06em; color: var(--lamp); }
+@media (max-width: 600px) { .notepad { max-width: none; margin: 4px 0 18px; transform: none; } }
+.lb-preview {""")
+
 os.makedirs(P('netlify'), exist_ok=True)
 game = document(t, 'Spin real NHL players, take one graded skill from each, and build your own forward, defenseman or goalie. Play solo, the daily challenge, or head-to-head with a friend.')
 open(P('netlify', 'index.html'), 'w', encoding='utf-8').write(inject(game).replace('__LB__', 'true'))
