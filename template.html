@@ -614,7 +614,11 @@ function updateBug() {
   $('bug-rr').textContent = state.slots.length ? state.rerolls : 1;
 }
 
-function show(id) { ['setup', 'lobby', 'game', 'result', 'line'].forEach(s => $(s).hidden = s !== id); window.scrollTo({ top: 0, behavior: 'smooth' }); }
+function show(id) {
+  // leaving the build screen stops a spin mid-roll (no more ticks, horn or flash)
+  if (id !== 'game' && state.spinning) { cancelAnimationFrame(rafId); state.spinning = false; }
+  ['setup', 'lobby', 'game', 'result', 'line'].forEach(s => $(s).hidden = s !== id); window.scrollTo({ top: 0, behavior: 'smooth' });
+}
 
 function startGame() { state.online = false; state.daily = null; state.seq = null; initBuild(null); }
 
@@ -745,7 +749,7 @@ function setMute(m) {
 /* ---------- reel ---------- */
 let rafId = 0;
 function spin() {
-  if (state.spinning) return;
+  if (state.spinning || $('game').hidden) return; // a queued spin doesn't start after you've left the build
   state.spinning = true; state.current = null;
   const target = pickRandom();
   const pool = POOLS[state.mode][state.pos];
