@@ -9,13 +9,25 @@ jobs:
           UA="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0 Safari/537.36"
           curl -s -A "$UA" -L --max-time 30 https://capwages.com/teams/edmonton_oilers -o edm.html
           python3 - <<'PY'
-          import re
+          import re, json
           h=open('edm.html',encoding='utf-8',errors='ignore').read()
-          print('PROBE len',len(h))
-          print('PROBE has __NEXT_DATA__', '__NEXT_DATA__' in h, '| self.__next_f', 'self.__next_f' in h)
-          print('PROBE seasons', sorted(set(re.findall(r'20\d\d-\d\d', h)))[:20])
-          i=h.find('McDavid')
-          txt=re.sub(r'<[^>]+>',' | ',h[i-3000:i+3000]); txt=re.sub(r'(\s*\|\s*)+',' | ',txt)
-          print('PROBE around', txt[:4000].replace('\n',' '))
-          print('PROBE player links', re.findall(r'href="(/players/[^"]+)"', h)[:5])
+          m=re.search(r'<script id="__NEXT_DATA__"[^>]*>(.*?)</script>', h, re.S)
+          d=json.loads(m.group(1))
+          paths=[]
+          def walk(o,p):
+              if isinstance(o,dict):
+                  for k,v in o.items(): walk(v,p+[k])
+              elif isinstance(o,list):
+                  for i,v in enumerate(o[:400]): walk(v,p+[i])
+              elif isinstance(o,str) and 'McDavid' in o: paths.append(p)
+          walk(d,[])
+          print('PROBE paths', paths[:6])
+          p=paths[0]
+          node=d
+          for k in p[:-1]: node=node[k]
+          print('PROBE node', json.dumps(node)[:2500])
+          # parent list size
+          parent=d
+          for k in p[:-2]: parent=parent[k]
+          print('PROBE parent type', type(parent).__name__, len(parent) if hasattr(parent,'__len__') else '')
           PY
