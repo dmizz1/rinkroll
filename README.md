@@ -39,3 +39,7 @@ After editing anything, run `python3 build.py` and commit the `netlify/` folder 
 The arena visuals (ice, spotlights, crowd, jumbotron reel, team colors, confetti) live in `visuals.js` and the `body.fx` styles.
 Visitors can switch them off with the **Arena on/off** button in the header.
 The site as it was before the visual upgrade is saved on the `classic-look` branch.
+
+## Link previews
+`netlify/og.png` (1200x630) is the image shown when the link is shared, and `netlify/apple-touch-icon.png` is the home-screen icon.
+Regenerate both with `python3 tools/og/make_og.py`. The preview tags are written by `build.py` (`social()`).

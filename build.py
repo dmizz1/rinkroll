@@ -12,6 +12,7 @@ assert '`' not in cur + alt and '${' not in cur + alt
 import json
 DATA_DATE = json.load(open(P('data_meta.json'), encoding='utf-8'))['updated']
 
+SHARE_DESC = 'Spin real NHL players, steal one graded skill from each, and build a monster. Play solo, the Daily, the salary-cap Line Builder, or head-to-head with a friend.'
 NAV = '<nav class="site-nav" aria-label="Site"><a href="how-to-play.html">How to play</a><a href="privacy.html">Privacy</a></nav>'
 CONTACT = 'shlumpedd13@gmail.com'
 SITE = 'https://rinkroll.app/'
@@ -58,6 +59,18 @@ rep('<script>\nconst CURRENT_RAW', '<script src="https://unpkg.com/peerjs@1.5.4/
 rep('Data: NHL rosters, stats and EDGE tracking updated __DATA_DATE__.</div>',
     'Data: NHL rosters, stats and EDGE tracking updated __DATA_DATE__.</div>\n    <div>Head-to-head connects the two browsers directly through PeerJS. No accounts, and nothing is stored on a server. <a href="how-to-play.html">How to play</a> · <a href="privacy.html">Privacy policy</a></div>')
 
+def social(title, desc, url):
+    img = SITE + 'og.png'
+    return (f'<meta property="og:site_name" content="Rink Roll">\n'
+            f'<meta property="og:title" content="{title}">\n<meta property="og:description" content="{desc}">\n'
+            f'<meta property="og:url" content="{url}">\n<meta property="og:type" content="website">\n'
+            f'<meta property="og:image" content="{img}">\n<meta property="og:image:width" content="1200">\n<meta property="og:image:height" content="630">\n'
+            f'<meta property="og:image:alt" content="Rink Roll: spin real NHL players, steal one skill from each, build a monster.">\n'
+            f'<meta name="twitter:card" content="summary_large_image">\n<meta name="twitter:title" content="{title}">\n'
+            f'<meta name="twitter:description" content="{desc}">\n<meta name="twitter:image" content="{img}">\n'
+            '<meta name="theme-color" content="#0a1220">\n<link rel="apple-touch-icon" href="apple-touch-icon.png">\n'
+            '<meta name="apple-mobile-web-app-title" content="Rink Roll">\n')
+
 BASE_RESET = '<style>html{-webkit-text-size-adjust:100%}body{margin:0}img{max-width:100%}[hidden]{display:none!important}:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}.foot a{color:var(--frost)}</style>'
 
 def document(title_and_styles_and_body, description):
@@ -67,8 +80,7 @@ def document(title_and_styles_and_body, description):
             '<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">\n'
             f'<meta name="description" content="{description}">\n'
             f'<link rel="canonical" href="{SITE}">\n'
-            f'<meta property="og:title" content="Rink Roll">\n<meta property="og:description" content="{description}">\n'
-            f'<meta property="og:url" content="{SITE}">\n<meta property="og:type" content="website">\n<meta name="twitter:card" content="summary">\n'
+            + social('Rink Roll · Build your own NHL player', SHARE_DESC, SITE)
             + head_part + '\n' + BASE_RESET + '\n</head>\n<body>' + body_part + '\n</body>\n</html>\n')
 
 os.makedirs(P('netlify'), exist_ok=True)
@@ -115,7 +127,7 @@ def page(slug, title, desc, body_file):
     i = content.rindex('</style>') + len('</style>')
     doc = ('<!doctype html>\n<html lang="en">\n<head>\n<meta charset="utf-8">\n'
            '<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">\n'
-           f'<meta name="description" content="{desc}">\n<link rel="canonical" href="{SITE}{slug}">\n' + content[:i] + '\n' + BASE_RESET +
+           f'<meta name="description" content="{desc}">\n<link rel="canonical" href="{SITE}{slug}">\n' + social(title, desc, SITE + slug) + content[:i] + '\n' + BASE_RESET +
            '\n</head>\n<body>' + content[i:] + '\n</body>\n</html>\n')
     open(P('netlify', slug), 'w', encoding='utf-8').write(doc)
 
