@@ -50,7 +50,7 @@ jobs:
           git checkout -B main origin/main
           git merge --no-edit -X theirs "origin/$BRANCH" -m "Release: $BRANCH"
           python3 build.py
-          git add -A netlify rink-roll.html
+          git add -A netlify
           git diff --cached --quiet || git commit -m "Rebuild site for $BRANCH"
           git push origin main
           git push origin --delete "$BRANCH"
