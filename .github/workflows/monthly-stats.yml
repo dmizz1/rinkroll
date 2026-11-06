@@ -47,5 +47,5 @@ jobs:
             echo "No changes this month."
           else
             git commit -m "Monthly stats update: $(date -u +'%B %-d, %Y')"
-            git push
+            git pull --rebase origin main && git push
           fi

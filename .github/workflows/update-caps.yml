@@ -35,5 +35,5 @@ jobs:
             echo "No changes."
           else
             git commit -m "Update cap hits: $(date -u +'%B %-d, %Y')"
-            git push
+            git pull --rebase origin main && git push
           fi
