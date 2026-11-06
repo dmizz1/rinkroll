@@ -1,0 +1,29 @@
+name: Preview stats changes
+
+on:
+  workflow_dispatch: {}   # writes data_current.preview.txt only; the live game data is untouched
+
+permissions:
+  contents: write
+
+concurrency:
+  group: stats-update
+  cancel-in-progress: false
+
+jobs:
+  preview:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Grade players (preview)
+        run: PREVIEW=1 node tools/update-stats.mjs
+      - name: Commit the preview file
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data_current.preview.txt
+          if git diff --cached --quiet; then echo "No changes."; else git commit -m "Stats preview: $(date -u +'%B %-d, %Y')" && git push; fi

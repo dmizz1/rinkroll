@@ -22,9 +22,10 @@ const SEASONS = [sid(startYear - 2), LAST_FULL, CURRENT];
 
 // ---------- fetch helpers ----------
 async function getJSON(path, tries = 3) {
+  const url = path.startsWith('/__rest__/') ? (([, , rep, season]) => `https://api.nhle.com/stats/rest/en/skater/${rep}?limit=-1&cayenneExp=seasonId=${season}%20and%20gameTypeId=2`)(path.split('/')) : API + path;
   for (let i = 0; i < tries; i++) {
     try {
-      const r = await fetch(API + path, { headers: { 'user-agent': 'rinkroll-stats-updater' } });
+      const r = await fetch(url, { headers: { 'user-agent': 'rinkroll-stats-updater' } });
       if (r.status === 404) return null;
       if (r.ok) return await r.json();
     } catch (e) { /* retry */ }
@@ -93,6 +94,13 @@ await pool(players, CONCURRENCY, async p => {
   }
 });
 console.log(`Stats: ${players.length - missing} loaded, ${missing} missing`);
+
+// puck battles (proxy): takeaways and giveaways from the league's real-time report
+const byId = new Map(players.map(p => [p.id, p]));
+for (const season of SEASONS) {
+  const rt = await getJSON(`/__rest__/realtime/${season}`);
+  for (const r of (rt && rt.data) || []) { const p = byId.get(r.playerId); if (!p || p.pos === 'G') continue; p.take = (p.take || 0) + (r.takeaways || 0); p.give = (p.give || 0) + (r.giveaways || 0); }
+}
 if (missing > players.length * 0.05) throw new Error('Too many player pages failed; leaving data unchanged.');
 
 // ---------- 3. grading ----------
@@ -120,9 +128,10 @@ for (const G of ['F', 'D', 'G']) {
       p.gpg = r('g'); p.apg = r('a'); p.ppg = gp ? ((p.g || 0) + (p.a || 0)) / gp : null; p.spg = r('sh');
       p.pppg = r('ppp'); p.pimpg = r('pim'); p.pmpg = r('pm');
       p.aRatio = ((p.g || 0) + (p.a || 0)) > 3 ? p.a / (p.g + p.a) : null;
+      const mins = (p.toi || 0) * gp / 60; p.take60 = mins > 0 ? (p.take || 0) / mins * 60 : null; p.tgDiff = gp ? ((p.take || 0) - (p.give || 0)) / gp : null;
     });
     const Q = P.filter(p => p.gp >= 20);
-    const R = {}; ['gpg', 'apg', 'ppg', 'spg', 'pppg', 'pimpg', 'pmpg', 'aRatio', 'toi'].forEach(k => R[k] = pctRank(Q, k));
+    const R = {}; ['gpg', 'apg', 'ppg', 'spg', 'pppg', 'pimpg', 'pmpg', 'aRatio', 'toi', 'take60', 'tgDiff'].forEach(k => R[k] = pctRank(Q, k));
     const Rh = pctRank(P, 'h'), Rw = pctRank(P, 'wgt');
     P.forEach(p => {
       const n = p.gp || 0, s = k => shrink(R[k](p[k]), n, 25), e = k => shrink(p[k], n, 20);
@@ -136,7 +145,9 @@ for (const G of ['F', 'D', 'G']) {
         sc.Playmaking = 0.6 * s('apg') + 0.2 * s('pppg') + 0.2 * s('aRatio');
       } else {
         sc.Shot = 0.5 * e('shotSpd') + 0.3 * s('gpg') + 0.2 * s('spg');
-        sc.Physicality = 0.35 * Rw(p.wgt) + 0.15 * Rh(p.h) + 0.3 * s('pimpg') + 0.2 * e('shotSpd');
+        // Physicality includes puck battles (proxy: takeaways per 60, takeaways minus giveaways)
+        const battles = 0.6 * s('take60') + 0.4 * s('tgDiff');
+        sc.Physicality = 0.30 * Rw(p.wgt) + 0.10 * Rh(p.h) + 0.20 * s('pimpg') + 0.10 * e('shotSpd') + 0.30 * battles;
         sc['Stick-checking'] = 0.35 * s('pmpg') + 0.35 * s('toi') + 0.15 * (1 - s('pimpg')) + 0.15 * e('oz');
       }
       p.sc = sc;
@@ -203,6 +214,7 @@ const lines = players.filter(p => p.gr && !exclude.has(p.name)).map(p => {
   return [clean(p.name), p.team, p.pos, p.num, ORDER[g].map(c => p.gr[c]).join(' '), stats, p.top ? 1 : 0].join('|');
 });
 if (lines.length < MIN_PLAYERS) throw new Error(`Only ${lines.length} graded players; leaving data unchanged.`);
+if (process.env.PREVIEW) { writeFileSync(join(ROOT, 'data_current.preview.txt'), lines.join('\n') + '\n'); console.log(`Preview written: ${lines.length} players.`); process.exit(0); }
 writeFileSync(join(ROOT, 'data_current.txt'), lines.join('\n') + '\n');
 const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 writeFileSync(join(ROOT, 'data_meta.json'), JSON.stringify({ updated: `${months[now.getUTCMonth()]} ${now.getUTCDate()}, ${now.getUTCFullYear()}`, players: lines.length, seasons: SEASONS }, null, 2) + '\n');
