@@ -1,0 +1,4 @@
+rink-roll.html
+*.zip
+__pycache__/
+.DS_Store

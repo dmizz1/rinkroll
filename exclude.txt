@@ -1,0 +1,3 @@
+# One player name per line. These players are left out of the Current NHL pool,
+# including after monthly stats updates.
+Martin Pospisil

@@ -1,0 +1,1049 @@
+<title>Rink Roll</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Saira+Extra+Condensed:wght@600;800;900&family=Barlow:wght@400;500;600;700&family=Saira+Semi+Condensed:wght@500;700&display=swap">
+<style>
+/* Layout: an arena scoreboard over the ice. Setup → build board (spinner + slots) → final player card. Committed night-game look. */
+:root {
+  --night: #0a1220;
+  --boards: #121e33;
+  --boards-2: #1a2943;
+  --rule: #26385a;
+  --ice: #eaf2f7;
+  --frost: #9fb3c8;
+  --lamp: #e63946;
+  --lamp-glow: rgba(230, 57, 70, .35);
+  --blue-line: #3b7bea;
+  --gold: #f4c95d;
+  --g-s: #f4c95d; --g-a: #6fd3ff; --g-b: #5ee0a8; --g-c: #c9d4e0; --g-d: #ff9f5a; --g-f: #ff5d6c;
+  --display: "Saira Extra Condensed", "Arial Narrow", Impact, sans-serif;
+  --body: "Barlow", "Segoe UI", system-ui, sans-serif;
+  --data: "Saira Semi Condensed", "Arial Narrow", system-ui, sans-serif;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--night);
+  color: var(--ice);
+  font-family: var(--body);
+  font-size: 16px;
+  line-height: 1.45;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 0 48px;
+  min-height: 100%;
+  background-image:
+    linear-gradient(90deg, transparent calc(50% - 1px), rgba(230,57,70,.10) calc(50% - 1px), rgba(230,57,70,.10) calc(50% + 1px), transparent calc(50% + 1px)),
+    radial-gradient(1200px 500px at 50% -120px, #18294a 0%, transparent 70%);
+  background-attachment: fixed;
+}
+.wrap { max-width: 980px; margin: 0 auto; }
+button { font: inherit; color: inherit; cursor: pointer; }
+button:focus-visible, [tabindex]:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
+
+/* header */
+.masthead { display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; flex-wrap: wrap; padding-block: 28px 18px; border-bottom: 2px solid var(--rule); position: relative; }
+.masthead::after { content: ""; position: absolute; left: 0; right: 0; bottom: -2px; height: 2px; background: linear-gradient(90deg, var(--blue-line) 0 22%, transparent 22% 39%, var(--lamp) 39% 61%, transparent 61% 78%, var(--blue-line) 78%); }
+.brand { font-family: var(--display); font-weight: 900; font-size: clamp(44px, 9vw, 76px); line-height: .85; letter-spacing: .01em; text-transform: uppercase; margin: 0; }
+.brand span { color: var(--lamp); }
+.tag { font-family: var(--data); color: var(--frost); font-size: 14px; letter-spacing: .08em; text-transform: uppercase; margin: 6px 0 0; }
+.scorebug { font-family: var(--data); font-size: 13px; letter-spacing: .1em; text-transform: uppercase; color: var(--frost); display: flex; gap: 14px; flex-wrap: wrap; }
+.scorebug b { color: var(--ice); font-weight: 700; }
+
+/* setup */
+.setup { display: grid; gap: 28px; padding-block: 28px; }
+.step h2 { font-family: var(--display); font-weight: 800; font-size: 26px; letter-spacing: .04em; text-transform: uppercase; margin: 0 0 12px; display: flex; gap: 10px; align-items: baseline; }
+.step h2 small { font-family: var(--data); font-size: 13px; color: var(--frost); letter-spacing: .1em; }
+.choices { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; }
+.choice { text-align: left; background: var(--boards); border: 2px solid var(--rule); border-radius: 6px; padding: 16px; display: grid; gap: 4px; transition: border-color .15s, background .15s, transform .15s; }
+.choice:hover { border-color: var(--frost); }
+.choice[aria-pressed="true"] { border-color: var(--lamp); background: var(--boards-2); box-shadow: 0 0 0 4px var(--lamp-glow); }
+.choice .t { font-family: var(--display); font-size: 28px; font-weight: 800; text-transform: uppercase; line-height: 1; }
+.choice .d { color: var(--frost); font-size: 14px; }
+.choice .cats { font-family: var(--data); font-size: 12px; letter-spacing: .06em; text-transform: uppercase; color: var(--frost); margin-top: 6px; }
+.toggle { display: flex; align-items: center; gap: 12px; color: var(--frost); font-size: 15px; }
+.toggle input { width: 20px; height: 20px; accent-color: var(--lamp); }
+.go { justify-self: start; background: var(--lamp); border: 0; border-radius: 4px; padding: 14px 34px; font-family: var(--display); font-weight: 900; font-size: 30px; letter-spacing: .06em; text-transform: uppercase; color: #fff; box-shadow: 0 6px 0 #9d1f2a; transition: transform .1s, box-shadow .1s; }
+.go:active { transform: translateY(4px); box-shadow: 0 2px 0 #9d1f2a; }
+.go:disabled { opacity: .4; cursor: not-allowed; }
+.scale { display: flex; flex-wrap: wrap; gap: 4px; align-items: center; font-family: var(--data); font-size: 13px; color: var(--frost); }
+
+/* grade chips */
+.gr { font-family: var(--display); font-weight: 900; display: inline-grid; place-items: center; min-width: 2.1em; padding: 0 .3em; border-radius: 4px; line-height: 1.25; color: var(--night); font-size: 18px; }
+.gr[data-t="S"] { background: var(--g-s); box-shadow: 0 0 14px rgba(244,201,93,.55); }
+.gr[data-t="A"] { background: var(--g-a); }
+.gr[data-t="B"] { background: var(--g-b); }
+.gr[data-t="C"] { background: var(--g-c); }
+.gr[data-t="D"] { background: var(--g-d); }
+.gr[data-t="F"] { background: var(--g-f); }
+.gr.ghost { background: transparent !important; box-shadow: none !important; color: var(--frost); border: 1px dashed var(--rule); }
+
+/* game board */
+.board { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); gap: 24px; padding-block: 24px; align-items: start; }
+@media (max-width: 760px) { .board { grid-template-columns: 1fr; } }
+
+.reel { background: linear-gradient(180deg, var(--boards-2), var(--boards)); border: 2px solid var(--rule); border-radius: 8px; padding: 18px; position: sticky; top: calc(env(safe-area-inset-top, 0px) + 10px); }
+@media (max-width: 760px) { .reel { position: static; } }
+.reel-head { display: flex; justify-content: space-between; align-items: center; font-family: var(--data); font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--frost); }
+.lamp { width: 12px; height: 12px; border-radius: 50%; background: #3a1b22; box-shadow: inset 0 0 0 2px #5a2530; }
+.lamp.on { background: var(--lamp); box-shadow: 0 0 18px 6px var(--lamp-glow); }
+.window { --row: 56px; margin-block: 14px 10px; height: calc(var(--row) * 3); border-radius: 6px; background: #060c16; border: 1px solid var(--rule); position: relative; overflow: hidden; }
+.window::before, .window::after { content: ""; position: absolute; left: 0; right: 0; height: var(--row); pointer-events: none; z-index: 2; }
+.window::before { top: 0; background: linear-gradient(#060c16 10%, rgba(6,12,22,.55)); }
+.window::after { bottom: 0; background: linear-gradient(rgba(6,12,22,.55), #060c16 90%); }
+.band { position: absolute; left: 0; right: 0; top: var(--row); height: var(--row); border-block: 1px solid var(--rule); pointer-events: none; z-index: 1; }
+.landed .band { border-color: var(--lamp); box-shadow: inset 0 0 24px var(--lamp-glow); transition: box-shadow .3s, border-color .3s; }
+.strip { position: absolute; left: 0; right: 0; top: 0; will-change: transform; }
+.ri { height: var(--row); display: flex; align-items: center; justify-content: center; padding: 0 14px; font-family: var(--display); font-weight: 800; font-size: clamp(24px, 4.8vw, 36px); text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 1; color: var(--frost); }
+.ri.hit { color: var(--ice); }
+.landed .ri.hit { animation: land .4s ease-out; }
+.p-num { font-family: var(--display); font-weight: 900; font-size: 64px; line-height: .8; color: transparent; -webkit-text-stroke: 1.5px var(--rule); position: absolute; right: 12px; bottom: 6px; z-index: 0; }
+.p-meta { font-family: var(--data); font-size: 14px; letter-spacing: .08em; text-transform: uppercase; color: var(--frost); text-align: center; min-height: 1.45em; }
+.p-meta b { color: var(--ice); }
+@keyframes land { 0% { transform: scale(1.1); color: var(--gold); } 100% { transform: scale(1); } }
+.mute { background: none; border: 1px solid var(--rule); border-radius: 4px; padding: 2px 10px; font-family: var(--data); font-size: 13px; letter-spacing: .1em; text-transform: uppercase; color: var(--frost); }
+.mute[aria-pressed="true"] { color: var(--lamp); border-color: var(--lamp); }
+.reel-actions { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+.btn { background: var(--boards); border: 2px solid var(--rule); border-radius: 4px; padding: 9px 16px; font-family: var(--display); font-weight: 800; font-size: 19px; letter-spacing: .06em; text-transform: uppercase; }
+.btn:hover:not(:disabled) { border-color: var(--frost); }
+.btn:disabled { opacity: .4; cursor: not-allowed; }
+.btn.hot { background: var(--lamp); border-color: var(--lamp); color: #fff; }
+.prompt { font-size: 15px; color: var(--frost); margin: 12px 0 0; min-height: 1.45em; }
+.prompt b { color: var(--ice); }
+
+.slots h3, .result h3 { font-family: var(--display); font-weight: 800; font-size: 22px; letter-spacing: .06em; text-transform: uppercase; margin: 0 0 10px; display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+.slots h3 small { font-family: var(--data); font-size: 13px; color: var(--frost); letter-spacing: .08em; }
+.slot-list { display: grid; gap: 8px; }
+.slot { width: 100%; text-align: left; display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 12px; padding: 12px 14px; background: var(--boards); border: 2px solid var(--rule); border-radius: 6px; min-height: 66px; }
+.slot .k { font-family: var(--display); font-weight: 800; font-size: 22px; text-transform: uppercase; letter-spacing: .03em; line-height: 1; }
+.slot .h { font-size: 13px; color: var(--frost); margin-top: 3px; }
+.slot .who { font-family: var(--data); font-size: 14px; color: var(--ice); margin-top: 4px; }
+.slot.open.armed { border-style: dashed; border-color: var(--frost); }
+.slot.open.armed:hover { border-style: solid; border-color: var(--lamp); background: var(--boards-2); }
+.slot.filled { background: var(--boards-2); cursor: default; }
+.slot.filled .k { color: var(--frost); }
+.slot.pop .gr { animation: pop .45s cubic-bezier(.2,1.6,.4,1); }
+@keyframes pop { 0% { transform: scale(.2) rotate(-12deg); } 100% { transform: scale(1); } }
+.slot:disabled { cursor: default; }
+.slot.open:disabled { opacity: .7; }
+
+/* result */
+.result { padding-block: 24px; display: grid; gap: 24px; }
+.card { background: linear-gradient(160deg, var(--boards-2), var(--boards) 60%); border: 2px solid var(--rule); border-radius: 10px; padding: 22px; display: grid; grid-template-columns: auto minmax(0,1fr); gap: 22px; align-items: center; position: relative; overflow: hidden; }
+.card::before { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, transparent 0 70%, rgba(59,123,234,.12) 70% 73%, transparent 73%); pointer-events: none; }
+@media (max-width: 560px) { .card { grid-template-columns: 1fr; } }
+.ovr { display: grid; place-items: center; gap: 2px; text-align: center; }
+.ovr .gr { font-size: 84px; min-width: 1.6em; border-radius: 8px; line-height: 1.1; }
+.ovr .l { font-family: var(--data); font-size: 12px; letter-spacing: .16em; text-transform: uppercase; color: var(--frost); }
+.arch { font-family: var(--display); font-weight: 900; font-size: clamp(36px, 7vw, 58px); line-height: .9; text-transform: uppercase; margin: 0; text-wrap: balance; }
+.arch-sub { color: var(--frost); margin: 8px 0 0; max-width: 52ch; }
+.proj { display: flex; gap: 22px; flex-wrap: wrap; margin-top: 16px; }
+.proj div { display: grid; }
+.proj b { font-family: var(--display); font-weight: 900; font-size: 38px; line-height: 1; font-variant-numeric: tabular-nums; }
+.proj span { font-family: var(--data); font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: var(--frost); }
+.recap { display: grid; gap: 6px; }
+.recap-row { display: grid; grid-template-columns: 9.5em minmax(0, 1fr) auto; gap: 12px; align-items: center; padding: 10px 14px; background: var(--boards); border-radius: 6px; }
+.recap-row .k { font-family: var(--display); font-weight: 800; font-size: 19px; text-transform: uppercase; }
+.recap-row .who { font-family: var(--data); color: var(--frost); font-size: 14px; min-width: 0; }
+@media (max-width: 480px) { .recap-row { grid-template-columns: minmax(0,1fr) auto; } .recap-row .who { grid-column: 1; } .recap-row .gr { grid-row: 1 / span 2; grid-column: 2; } }
+.row-actions { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+.note { color: var(--frost); font-size: 13px; max-width: 70ch; }
+.toast { font-family: var(--data); font-size: 13px; color: var(--g-b); }
+.foot { margin-top: 36px; padding-top: 16px; border-top: 1px solid var(--rule); color: var(--frost); font-size: 13px; display: grid; gap: 6px; max-width: 80ch; }
+
+/* nav, daily */
+.site-nav { display: flex; gap: 18px; margin-top: 10px; font-family: var(--data); font-size: 14px; letter-spacing: .1em; text-transform: uppercase; }
+.site-nav a { color: var(--frost); text-decoration: none; border-bottom: 1px solid var(--rule); }
+.site-nav a:hover { color: var(--ice); border-color: var(--lamp); }
+.custom-steps { display: grid; gap: 28px; }
+.daily-panel { background: var(--boards); border: 2px solid var(--rule); border-left: 4px solid var(--gold); border-radius: 6px; padding: 18px 20px; display: grid; gap: 6px; }
+.daily-n { font-family: var(--display); font-weight: 900; font-size: 40px; line-height: 1; text-transform: uppercase; color: var(--gold); }
+.daily-panel .note { margin: 4px 0 0; font-size: 15px; }
+
+/* online */
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.online-panel { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; }
+.op-col { background: var(--boards); border: 2px solid var(--rule); border-radius: 6px; padding: 18px; display: grid; gap: 10px; align-content: start; }
+.op-col h3 { font-family: var(--display); font-weight: 800; font-size: 24px; text-transform: uppercase; letter-spacing: .04em; margin: 0; }
+.op-col .note { margin: 0; }
+.op-col .go { font-size: 24px; padding: 10px 24px; }
+.join-row { display: flex; gap: 10px; flex-wrap: wrap; }
+.code-input { flex: 1 1 140px; min-width: 0; background: #060c16; border: 2px solid var(--rule); border-radius: 4px; padding: 8px 12px; color: var(--ice); font-family: var(--display); font-weight: 800; font-size: 28px; letter-spacing: .3em; text-transform: uppercase; }
+.code-input:focus { outline: none; border-color: var(--gold); }
+.op-msg { grid-column: 1 / -1; margin: 0; color: var(--frost); font-size: 15px; min-height: 1.45em; }
+.op-msg.err { color: var(--g-f); }
+.lobby { padding-block: 32px; display: grid; gap: 16px; justify-items: start; }
+.code-big { font-family: var(--display); font-weight: 900; font-size: clamp(72px, 16vw, 132px); line-height: .9; letter-spacing: .12em; color: var(--ice); text-shadow: 0 0 30px var(--lamp-glow); user-select: all; }
+.lobby-info { font-family: var(--data); font-size: 14px; letter-spacing: .08em; text-transform: uppercase; color: var(--frost); }
+.seats { display: flex; gap: 12px; flex-wrap: wrap; }
+.seat { background: var(--boards); border: 2px solid var(--rule); border-radius: 6px; padding: 12px 16px; min-width: 180px; display: grid; gap: 2px; }
+.seat .r { font-family: var(--data); font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--frost); }
+.seat .n { font-family: var(--display); font-weight: 800; font-size: 24px; text-transform: uppercase; }
+.seat.empty { border-style: dashed; }
+.seat.empty .n { color: var(--frost); }
+.opp-bar { margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--rule); display: flex; align-items: center; gap: 10px; flex-wrap: wrap; font-family: var(--data); font-size: 14px; letter-spacing: .06em; text-transform: uppercase; color: var(--frost); }
+.opp-bar b { color: var(--ice); }
+.pips { display: flex; gap: 4px; }
+.pip { width: 14px; height: 14px; border-radius: 3px; border: 1px solid var(--rule); }
+.pip.on { background: var(--lamp); border-color: var(--lamp); }
+.h2h h3 small { font-family: var(--data); font-size: 13px; color: var(--frost); letter-spacing: .1em; }
+.verdict { font-family: var(--display); font-weight: 900; font-size: clamp(30px, 6vw, 46px); text-transform: uppercase; line-height: 1; margin: 0 0 14px; }
+.verdict.win { color: var(--g-s); }
+.verdict.loss { color: var(--g-f); }
+.verdict.wait { color: var(--frost); font-size: 24px; }
+.h2h-table { display: grid; gap: 6px; }
+.h2h-row { display: grid; grid-template-columns: minmax(0,1fr) auto 7.5em auto minmax(0,1fr); gap: 10px; align-items: center; padding: 10px 12px; background: var(--boards); border-radius: 6px; }
+.h2h-row .who { font-family: var(--data); font-size: 13px; color: var(--frost); min-width: 0; overflow-wrap: anywhere; }
+.h2h-row .who.r { text-align: right; }
+.h2h-row .k { font-family: var(--display); font-weight: 800; font-size: 17px; text-transform: uppercase; text-align: center; }
+.h2h-row .gr.lose { opacity: .45; box-shadow: none; }
+.h2h-row.head { background: none; padding-block: 0; }
+.h2h-row.head span { font-family: var(--display); font-weight: 800; font-size: 20px; text-transform: uppercase; }
+.h2h-row.total { background: var(--boards-2); border: 1px solid var(--rule); }
+@media (max-width: 560px) { .h2h-row { grid-template-columns: minmax(0,1fr) auto minmax(0,1fr); } .h2h-row .who { display: none; } .h2h-row.head span.hide-sm { display: none; } }
+
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
+</style>
+
+<div class="wrap">
+  <header class="masthead">
+    <div>
+      <h1 class="brand">Rink<span>·</span>Roll</h1>
+      <p class="tag">Spin real NHL players. Steal one skill from each. Build a monster.</p>
+      __NAV__
+    </div>
+    <div class="scorebug" id="bug"><span>Pool <b id="bug-pool">—</b></span><span>Pos <b id="bug-pos">—</b></span><span>Re-rolls <b id="bug-rr">—</b></span><button class="mute" id="mute" aria-pressed="false">Sound on</button></div>
+  </header>
+
+  <!-- SETUP -->
+  <section class="setup" id="setup">
+    <div class="step">
+      <h2>How to play <small>Step 1</small></h2>
+      <div class="choices" role="group" aria-label="How to play">
+        <button class="choice" data-play="solo" aria-pressed="true"><span class="t">Solo</span><span class="d">Spin and build at your own pace.</span></button>
+        <button class="choice" data-play="daily" aria-pressed="false"><span class="t">Daily</span><span class="d">Same spins for everyone, one try a day. Compare builds with friends.</span></button>
+        <button class="choice" data-play="online" aria-pressed="false"><span class="t">Head-to-head</span><span class="d">Make a lobby, send the code, and draft against a friend from the same spins.</span></button>
+      </div>
+    </div>
+    <div class="daily-panel" id="daily-panel" hidden></div>
+    <div class="custom-steps" id="custom-steps">
+    <div class="step">
+      <h2>Player pool <small>Step 2</small></h2>
+      <div class="choices" role="group" aria-label="Player pool">
+        <button class="choice" data-mode="current" aria-pressed="true"><span class="t">Current NHL</span><span class="d">Every rostered player with 82+ career NHL games, 2026–27. Graded from NHL EDGE tracking and the last three seasons of stats.</span></button>
+        <button class="choice" data-mode="alltime" aria-pressed="false"><span class="t">All-Time Greats</span><span class="d">The modern era, 1980 to today: top 100 forwards, top 100 defensemen and top 35 goalies, graded against each other.</span></button>
+      </div>
+    </div>
+    <div class="step">
+      <h2>Position <small>Step 3</small></h2>
+      <div class="choices" role="group" aria-label="Position" id="pos-choices">
+        <button class="choice" data-pos="F" aria-pressed="true"><span class="t">Forward</span><span class="d">Centers and wingers.</span><span class="cats">Speed · Shot · Hands · Sense · Playmaking · Build</span></button>
+        <button class="choice" data-pos="D" aria-pressed="false"><span class="t">Defenseman</span><span class="d">Blueliners only.</span><span class="cats">Speed · Shot · Physicality · Build · Stick-checking</span></button>
+        <button class="choice" data-pos="G" aria-pressed="false"><span class="t">Goaltender</span><span class="d">Netminders only.</span><span class="cats">Speed · Reflexes · Mid-range · Long-range · Rebounding</span></button>
+      </div>
+    </div>
+    <div class="step">
+      <h2>Rules <small>Step 4</small></h2>
+      <label class="toggle"><input type="checkbox" id="peek"> Show each player's grades before I pick a slot (easy mode)</label>
+      <div class="scale" style="margin-top:14px">Grade scale:
+        <span class="gr" data-t="F">F</span><span class="gr" data-t="D">D</span><span class="gr" data-t="C">C</span><span class="gr" data-t="B">B</span><span class="gr" data-t="A">A</span><span class="gr" data-t="S">S</span>
+        <span>· with + and − steps from D through A</span></div>
+    </div>
+    </div>
+    <button class="go" id="start">Drop the puck</button>
+    <div class="online-panel" id="online-panel" hidden>
+      <div class="op-col">
+        <h3>Host a lobby</h3>
+        <p class="note">Uses the pool, position and rules you picked above. You'll get a code to send.</p>
+        <button class="go" id="create">Create lobby</button>
+      </div>
+      <div class="op-col">
+        <h3>Join a lobby</h3>
+        <p class="note">Got a code from a friend? The host's settings apply.</p>
+        <div class="join-row">
+          <label class="sr" for="join-code">Lobby code</label>
+          <input id="join-code" class="code-input" maxlength="5" autocomplete="off" spellcheck="false" placeholder="ABCDE">
+          <button class="btn hot" id="join">Join</button>
+        </div>
+      </div>
+      <p class="op-msg" id="online-msg" aria-live="polite"></p>
+    </div>
+  </section>
+
+  <!-- LOBBY -->
+  <section class="lobby" id="lobby" hidden>
+    <p class="tag">Head-to-head lobby</p>
+    <div class="code-big" id="lobby-code">-----</div>
+    <div class="row-actions"><button class="btn" id="copy-code">Copy code</button><span class="toast" id="code-toast" aria-live="polite"></span></div>
+    <p class="note" id="lobby-howto">Send this code to a friend. They open Rink Roll, choose Head-to-head, and enter it under Join a lobby. The game starts as soon as they're in.</p>
+    <div class="lobby-info" id="lobby-info"></div>
+    <div class="seats" id="seats"></div>
+    <p class="op-msg" id="lobby-msg" aria-live="polite">Waiting for an opponent…</p>
+    <button class="btn" id="leave-lobby">Leave lobby</button>
+  </section>
+
+  <!-- GAME -->
+  <section class="board" id="game" hidden>
+    <div class="reel" id="reel">
+      <div class="reel-head"><span id="spin-count">Spin 1 of 6</span><span class="lamp" id="lamp"></span></div>
+      <div class="window" id="window">
+        <div class="p-num" id="p-num"></div>
+        <div class="strip" id="strip"><div class="ri">Ready</div></div>
+        <div class="band" aria-hidden="true"></div>
+      </div>
+      <div class="p-meta" id="p-meta" aria-live="polite">Hit spin to roll your first player</div>
+      <div class="reel-actions">
+        <button class="btn hot" id="spin">Spin</button>
+        <button class="btn" id="reroll" title="Skip this player and spin again">Re-roll <span id="rr-left"></span></button>
+        <button class="btn" id="quit">New build</button>
+      </div>
+      <p class="prompt" id="prompt"></p>
+      <div class="opp-bar" id="opp-bar" hidden></div>
+    </div>
+    <div class="slots">
+      <h3><span id="slots-title">Your forward</span><small id="slots-filled">0 / 6 filled</small></h3>
+      <div class="slot-list" id="slot-list"></div>
+    </div>
+  </section>
+
+  <!-- RESULT -->
+  <section class="result" id="result" hidden>
+    <div class="card">
+      <div class="ovr"><span class="gr" id="ovr-grade">B</span><span class="l">Overall</span></div>
+      <div>
+        <p class="tag" id="res-kicker">Your build</p>
+        <h2 class="arch" id="res-arch">Power Forward</h2>
+        <p class="arch-sub" id="res-sub"></p>
+        <div class="proj" id="res-proj"></div>
+      </div>
+    </div>
+    <div class="h2h" id="h2h" hidden>
+      <h3><span>Head to head</span><small id="h2h-code"></small></h3>
+      <p class="verdict" id="verdict">Waiting for your opponent to finish…</p>
+      <div class="h2h-table" id="h2h-table"></div>
+    </div>
+    <div id="parts">
+      <h3>The parts list</h3>
+      <div class="recap" id="recap"></div>
+    </div>
+    <p class="note" id="daily-note" hidden></p>
+    <div class="row-actions">
+      <button class="go" id="again">Build another</button>
+      <button class="go" id="rematch" hidden>Rematch</button>
+      <button class="btn" id="leave-result" hidden>Leave lobby</button>
+      <button class="btn hot" id="share">Share result</button>
+      <button class="btn" id="copy">Copy build</button>
+      <span class="toast" id="toast" aria-live="polite"></span>
+    </div>
+  </section>
+
+  <footer class="foot">
+    <div><b>Fan-made game.</b> Rink Roll is not affiliated with, endorsed by, or sponsored by the National Hockey League, the NHL Players' Association, or any team. Player names and statistics are used for reference only.</div>
+    <div><b>How the grades work.</b> Current players are ranked against everyone at their position, then curved: roughly the top 2% earn S and the bottom 8% get F. Speed blends max skating speed and 20+ mph bursts. Shot blends shot velocity, goal rate and shooting %. Hands, Sense and Playmaking use finishing from the slot, offensive-zone time, points, assists and power-play production. Build is height and weight. Defense adds Physicality (size, penalty minutes, shot power) and Stick-checking (ice time, plus/minus, clean play). Goalie grades come from save % by shot distance, three-season save %, and career save %. Small samples are pulled toward average.</div>
+    <div>Public NHL data doesn't split saves by glove or blocker side, so goalies are graded on save % by shot distance instead: Mid-range and Long-range. All-Time Greats covers players whose careers fall mostly between 1980 and 2026 (100 forwards, 100 defensemen, 35 goalies), graded by hand from each player's career and reputation.</div>
+    <div>Current mode only includes players with at least 82 career NHL regular-season games, and forwards need at least 0.30 career points per game. Data: NHL rosters, stats and EDGE tracking updated __DATA_DATE__.</div>
+  </footer>
+</div>
+
+<script>
+const CURRENT_RAW = `__CURRENT__`;
+const ALLTIME_RAW = `__ALLTIME__`;
+
+const MIN_GP = 82;
+const MIN_FWD_PPG = 0.30; // drop career fourth-liners
+const SCALE = ['F','D-','D','D+','C-','C','C+','B-','B','B+','A-','A','A+','S'];
+const gv = g => SCALE.indexOf(g);
+const tier = g => g[0];
+const CATS = {
+  F: [['Speed','Top speed and acceleration'],['Shot','Velocity, release and finishing'],['Hands','Puck skill in tight'],['Sense','Reads, positioning, hockey IQ'],['Playmaking','Vision and passing'],['Build','Size and strength']],
+  D: [['Speed','Skating and gap control'],['Shot','Point shot power and scoring'],['Physicality','Hits, net-front, punishment'],['Build','Size and reach'],['Stick-checking','Takeaways, lanes, defensive reads']],
+  G: [['Speed','Lateral push and recovery'],['Reflexes','Point-blank stops'],['Mid-range','Saves on shots from the circles and high slot'],['Long-range','Saves on point shots and long-range attempts'],['Rebounding','Rebound control and tracking']]
+};
+const POSNAME = { F: 'forward', D: 'defenseman', G: 'goaltender' };
+
+function grp(pos) { return pos === 'G' ? 'G' : pos === 'D' ? 'D' : 'F'; }
+const POOLS = { current: { F: [], D: [], G: [] }, alltime: { F: [], D: [], G: [] } };
+CURRENT_RAW.trim().split('\n').forEach(line => {
+  const [name, team, pos, num, grades, a, b, c] = line.split('|');
+  if (+a < MIN_GP) return;
+  const g = grp(pos);
+  if (g === 'F' && ((+b) + (+c)) / (+a) < MIN_FWD_PPG) return;
+  let stat;
+  if (+a === 0) stat = 'NHL debut pending';
+  else if (g === 'G') stat = `${a} GP · ${b ? b.replace(/^0/, '') : '—'} SV% · ${c} W`;
+  else stat = `${a} GP · ${b} G · ${c} A`;
+  POOLS.current[g].push({ name, team, pos: pos === 'L' ? 'LW' : pos === 'R' ? 'RW' : pos, num, grades: grades.split(' '), stat });
+});
+ALLTIME_RAW.trim().split('\n').forEach(line => {
+  const [name, pos, grades, team, years] = line.split('|');
+  POOLS.alltime[grp(pos)].push({ name, team, pos, num: '', grades: grades.split(' '), stat: years });
+});
+
+const $ = id => document.getElementById(id);
+const state = { daily: null, play: 'solo', mode: 'current', pos: 'F', peek: false, slots: [], used: new Set(), current: null, spinning: false, rerolls: 1, spins: 0, online: false, seq: null, seqIdx: 0 };
+
+// setup choices
+document.querySelectorAll('[data-mode]').forEach(b => b.addEventListener('click', () => {
+  state.mode = b.dataset.mode;
+  document.querySelectorAll('[data-mode]').forEach(x => x.setAttribute('aria-pressed', x === b));
+  updateBug();
+}));
+document.querySelectorAll('[data-pos]').forEach(b => b.addEventListener('click', () => {
+  state.pos = b.dataset.pos;
+  document.querySelectorAll('[data-pos]').forEach(x => x.setAttribute('aria-pressed', x === b));
+  updateBug();
+}));
+$('peek').addEventListener('change', e => { state.peek = e.target.checked; });
+
+function updateBug() {
+  $('bug-pool').textContent = `${POOLS[state.mode][state.pos].length} ${state.mode === 'current' ? 'current' : 'legends'}`;
+  $('bug-pos').textContent = POSNAME[state.pos];
+  $('bug-rr').textContent = state.slots.length ? state.rerolls : 1;
+}
+
+function show(id) { ['setup', 'lobby', 'game', 'result'].forEach(s => $(s).hidden = s !== id); window.scrollTo({ top: 0, behavior: 'smooth' }); }
+
+function startGame() { state.online = false; state.daily = null; state.seq = null; initBuild(null); }
+
+// resume: optional saved progress [{name, grade} | null per slot]
+function initBuild(resume) {
+  state.slots = CATS[state.pos].map(([k, h]) => ({ k, h, player: null, grade: null }));
+  state.used = new Set(); state.current = null; state.spins = 0; state.spinning = false;
+  if (!resume) state.rerolls = 1;
+  if (resume) {
+    const pool = POOLS[state.mode][state.pos];
+    resume.forEach((r, i) => {
+      if (!r || !state.slots[i]) return;
+      const p = pool.find(x => x.name === r.name);
+      if (p) { state.slots[i].player = p; state.slots[i].grade = r.grade; state.used.add(p.name); }
+    });
+  }
+  $('slots-title').textContent = `Your ${POSNAME[state.pos]}`;
+  cancelAnimationFrame(rafId);
+  $('strip').style.transform = 'translateY(0px)';
+  $('strip').innerHTML = '<div class="ri"></div><div class="ri hit">Ready</div>';
+  $('window').classList.remove('landed');
+  $('p-meta').textContent = 'Rolling your first player'; $('p-num').textContent = '';
+  audio();
+  $('prompt').textContent = '';
+  renderSlots(); updateControls(); updateBug();
+  $('quit').textContent = state.online ? 'Leave lobby' : 'New build';
+  $('opp-bar').hidden = !state.online;
+  if (state.online) renderOppBar();
+  show('game');
+  if (state.slots.every(s => s.player)) { finish(); return; }
+  setTimeout(spin, 350);
+}
+
+function renderSlots() {
+  const list = $('slot-list'); list.innerHTML = '';
+  const armed = !!state.current && !state.spinning;
+  state.slots.forEach((s, i) => {
+    const b = document.createElement('button');
+    b.className = 'slot ' + (s.player ? 'filled' : 'open') + (armed && !s.player ? ' armed' : '');
+    b.id = 'slot-' + i;
+    b.disabled = !!s.player || !armed;
+    let right = '';
+    if (s.player) right = chip(s.grade);
+    else if (armed && state.peek) right = chip(state.current.grades[i]);
+    else right = `<span class="gr ghost">?</span>`;
+    b.innerHTML = `<div style="min-width:0"><div class="k">${s.k}</div>${s.player ? `<div class="who">${esc(s.player.name)} · ${s.player.team}</div>` : `<div class="h">${s.h}</div>`}</div>${right}`;
+    b.addEventListener('click', () => assign(i));
+    list.appendChild(b);
+  });
+  const filled = state.slots.filter(s => s.player).length;
+  $('slots-filled').textContent = `${filled} / ${state.slots.length} filled`;
+}
+function chip(g) { return `<span class="gr" data-t="${tier(g)}">${g}</span>`; }
+function esc(s) { return s.replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c])); }
+
+function updateControls() {
+  const filled = state.slots.filter(s => s.player).length;
+  const done = filled === state.slots.length;
+  $('spin').disabled = state.spinning || !!state.current || done;
+  $('reroll').disabled = state.spinning || !state.current || state.rerolls < 1;
+  $('rr-left').textContent = `(${state.rerolls})`;
+  $('spin-count').textContent = `Pick ${Math.min(filled + 1, state.slots.length)} of ${state.slots.length}`;
+  $('bug-rr').textContent = state.rerolls;
+}
+
+function pickRandom() {
+  if (state.seq) {
+    while (state.seqIdx < state.seq.length) {
+      const p = state.seq[state.seqIdx++];
+      if (!state.used.has(p.name)) return p;
+    }
+  }
+  const pool = POOLS[state.mode][state.pos].filter(p => !state.used.has(p.name));
+  return pool[Math.floor(Math.random() * pool.length)];
+}
+
+/* ---------- sound (synthesized, no files) ---------- */
+let actx = null, master = null, muted = false;
+try { muted = localStorage.getItem('rinkroll-muted') === '1'; } catch (e) {}
+function audio() {
+  if (muted) return null;
+  try {
+    if (!actx) { const AC = window.AudioContext || window.webkitAudioContext; if (!AC) return null; actx = new AC(); master = actx.createGain(); master.gain.value = 0.55; master.connect(actx.destination); }
+    if (actx.state === 'suspended') actx.resume();
+    return actx;
+  } catch (e) { return null; }
+}
+function env(g, t, peak, a, d) { g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(peak, t + a); g.gain.exponentialRampToValueAtTime(0.0001, t + a + d); }
+function tick(speed) {
+  const c = audio(); if (!c) return;
+  const t = c.currentTime, o = c.createOscillator(), g = c.createGain(), f = c.createBiquadFilter();
+  o.type = 'square'; o.frequency.value = 1500 + speed * 900;
+  f.type = 'bandpass'; f.frequency.value = 2400; f.Q.value = 2;
+  env(g, t, 0.09, 0.002, 0.03);
+  o.connect(f).connect(g).connect(master); o.start(t); o.stop(t + 0.05);
+}
+function horn() {
+  const c = audio(); if (!c) return;
+  const t = c.currentTime, g = c.createGain(), lp = c.createBiquadFilter();
+  lp.type = 'lowpass'; lp.frequency.value = 1400;
+  g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(0.22, t + 0.04); g.gain.setValueAtTime(0.22, t + 0.55); g.gain.exponentialRampToValueAtTime(0.0001, t + 0.95);
+  [174.6, 220, 261.6].forEach((fr, i) => { const o = c.createOscillator(); o.type = 'sawtooth'; o.frequency.value = fr; o.detune.value = (i - 1) * 6; o.connect(lp); o.start(t); o.stop(t + 1); });
+  lp.connect(g).connect(master);
+}
+function pop() {
+  const c = audio(); if (!c) return;
+  const t = c.currentTime, o = c.createOscillator(), g = c.createGain();
+  o.type = 'triangle'; o.frequency.setValueAtTime(520, t); o.frequency.exponentialRampToValueAtTime(1250, t + 0.12);
+  env(g, t, 0.25, 0.005, 0.18);
+  o.connect(g).connect(master); o.start(t); o.stop(t + 0.22);
+}
+function fanfare(good) {
+  const c = audio(); if (!c) return;
+  const notes = good ? [523.3, 659.3, 784, 1046.5] : [392, 349.2, 311.1];
+  notes.forEach((fr, i) => {
+    const t = c.currentTime + i * 0.13, o = c.createOscillator(), g = c.createGain();
+    o.type = 'triangle'; o.frequency.value = fr;
+    env(g, t, 0.22, 0.01, i === notes.length - 1 ? 0.6 : 0.16);
+    o.connect(g).connect(master); o.start(t); o.stop(t + 0.8);
+  });
+}
+function setMute(m) {
+  muted = m;
+  $('mute').setAttribute('aria-pressed', m); $('mute').textContent = m ? 'Sound off' : 'Sound on';
+  try { localStorage.setItem('rinkroll-muted', m ? '1' : '0'); } catch (e) {}
+}
+
+/* ---------- reel ---------- */
+let rafId = 0;
+function spin() {
+  if (state.spinning) return;
+  state.spinning = true; state.current = null;
+  const target = pickRandom();
+  const pool = POOLS[state.mode][state.pos];
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const win = $('window'); win.classList.remove('landed');
+  $('lamp').classList.remove('on');
+  $('prompt').textContent = '';
+  $('p-meta').textContent = 'Rolling…'; $('p-num').textContent = '';
+  renderSlots(); updateControls();
+
+  // build a strip: blank, ~34 random names, the target, one trailing name
+  const n = reduce ? 0 : 34;
+  const names = [''];
+  for (let i = 0; i < n; i++) names.push(pool[Math.floor(Math.random() * pool.length)].name);
+  names.push(target.name);
+  names.push(pool[Math.floor(Math.random() * pool.length)].name);
+  const strip = $('strip');
+  strip.innerHTML = names.map((nm, i) => `<div class="ri${i === names.length - 2 ? ' hit' : ''}">${esc(nm)}</div>`).join('');
+  const row = strip.firstElementChild.getBoundingClientRect().height || 56;
+  const targetIdx = names.length - 2;
+  const endY = -(targetIdx - 1) * row; // target sits in the middle row
+  strip.style.transform = 'translateY(0px)';
+
+  if (reduce) { strip.style.transform = `translateY(${endY}px)`; return land(target); }
+
+  const dur = 2600, t0 = performance.now();
+  const ease = x => 1 - Math.pow(1 - x, 4); // ease-out quart: fast start, long smooth glide
+  let lastIdx = 0;
+  cancelAnimationFrame(rafId);
+  const frame = now => {
+    const x = Math.min(1, (now - t0) / dur);
+    const y = endY * ease(x);
+    strip.style.transform = `translateY(${y.toFixed(2)}px)`;
+    const idx = Math.floor(-y / row + 0.5);
+    if (idx !== lastIdx) { lastIdx = idx; tick(1 - x); }
+    if (x < 1) rafId = requestAnimationFrame(frame);
+    else land(target);
+  };
+  rafId = requestAnimationFrame(frame);
+}
+
+function land(p) {
+  $('p-meta').innerHTML = `<b>${p.team}</b> · ${p.pos} · ${esc(p.stat)}`;
+  $('p-num').textContent = p.num ? '#' + p.num : '';
+  state.current = p; state.spinning = false; state.used.add(p.name);
+  const win = $('window'); void win.offsetWidth; win.classList.add('landed');
+  $('lamp').classList.add('on');
+  horn();
+  $('prompt').innerHTML = `Take one skill from <b>${esc(p.name)}</b>. Tap an open slot.`;
+  renderSlots(); updateControls();
+}
+
+function assign(i) {
+  const s = state.slots[i];
+  if (!state.current || s.player || state.spinning) return;
+  s.player = state.current; s.grade = state.current.grades[i];
+  state.current = null; state.spins++;
+  renderSlots();
+  const el = $('slot-' + i); el.classList.add('pop'); pop();
+  $('lamp').classList.remove('on');
+  updateControls();
+  const filled = state.slots.filter(x => x.player).length;
+  if (state.online && filled < state.slots.length) saveProgress(false);
+  if (state.daily && filled < state.slots.length) dailySaveProgress(false);
+  if (filled === state.slots.length) { $('prompt').textContent = 'Build complete. Checking the tape…'; setTimeout(finish, 900); }
+  else { $('prompt').innerHTML = `${esc(s.player.name)}'s ${s.k.toLowerCase()}: ${chip(s.grade)}`; setTimeout(spin, 750); }
+}
+
+function reroll() {
+  if (state.rerolls < 1 || !state.current) return;
+  state.rerolls--; state.current = null; spin();
+  if (state.online) saveProgress(false);
+  if (state.daily) dailySaveProgress(false);
+}
+
+const ARCH = {
+  F: {
+    'Speed+Shot': ['Speed Sniper', 'Blows past defenders and buries it before the goalie sets.'],
+    'Shot+Hands': ['Pure Sniper', 'Everything around the net goes in. A 50-goal shooter.'],
+    'Hands+Playmaking': ['Dangler', 'Owns the puck on the half wall and makes everyone around him better.'],
+    'Sense+Playmaking': ['Playmaking Pivot', 'Sees plays two passes early. Runs the top power-play unit.'],
+    'Build+Shot': ['Power Forward', 'Wins the net front and hammers rebounds home.'],
+    'Build+Sense': ['Two-Way Workhorse', 'Matched against the other team\'s best line every night.'],
+    'Speed+Playmaking': ['Transition Engine', 'Gets the puck through the neutral zone at full speed.'],
+    'Speed+Hands': ['Highlight Reel', 'Every rush is a clip. Defensemen dread the one-on-one.'],
+    'Build+Hands': ['Net-Front Magician', 'Big body with soft mitts in the blue paint.'],
+    'Sense+Shot': ['Opportunist', 'Finds the soft ice and makes it count.'],
+    'Build+Speed': ['Freight Train', 'A big man who arrives at full speed. Forecheck nightmare.'],
+    _: ['Complete Forward', 'No obvious weakness to game-plan around.']
+  },
+  D: {
+    'Speed+Shot': ['Offensive Dynamo', 'Jumps every rush and quarterbacks the power play.'],
+    'Physicality+Build': ['Shutdown Wall', 'Nobody gets to the net easily. Ever.'],
+    'Speed+Stick-checking': ['Rover', 'Kills plays with his feet and his stick, then starts the breakout.'],
+    'Shot+Build': ['Cannon on the Point', 'One-timers that leave marks on the boards.'],
+    'Physicality+Stick-checking': ['Defensive Anchor', 'First pair, first penalty kill, last minute of every game.'],
+    'Physicality+Shot': ['Two-Way Hammer', 'Hits like a truck and scores from the point.'],
+    _: ['Two-Way Defenseman', 'Steady at both ends of the rink.']
+  },
+  G: {
+    'Speed+Reflexes': ['Acrobat', 'Never out of a play. Highlight saves every night.'],
+    'Reflexes+Mid-range': ['Robber', 'Steals goals from the slot that should have been in.'],
+    'Long-range+Rebounding': ['Technician', 'Square, calm, nothing left loose in the crease.'],
+    'Mid-range+Rebounding': ['Brick Wall', 'Nothing gets through from distance, and nothing comes back out.'],
+    _: ['Franchise Goalie', 'The reason the team is in every game.']
+  }
+};
+
+function finish() {
+  const vals = state.slots.map(s => gv(s.grade));
+  const avg = vals.reduce((a, b) => a + b, 0) / vals.length;
+  const ovr = SCALE[Math.round(avg)];
+  const top = state.slots.map((s, i) => ({ k: s.k, v: vals[i], i })).sort((a, b) => b.v - a.v || a.i - b.i).slice(0, 2).sort((a, b) => a.i - b.i);
+  const key = top.map(t => t.k).join('+');
+  const [arch, sub] = ARCH[state.pos][key] || ARCH[state.pos]._;
+  $('ovr-grade').textContent = ovr; $('ovr-grade').dataset.t = tier(ovr);
+  $('res-kicker').textContent = state.daily ? `Daily #${state.daily.n} · Your ${POSNAME[state.pos]}` : `Your ${POSNAME[state.pos]} · ${state.mode === 'current' ? 'Current NHL' : 'All-Time Greats'}`;
+  $('res-arch').textContent = arch;
+  $('res-sub').textContent = sub;
+  const v = Object.fromEntries(state.slots.map((s, i) => [s.k, vals[i]]));
+  let proj;
+  if (state.pos === 'F') {
+    const g = Math.round(4 + v.Shot * 2.6 + v.Hands * 1.0 + v.Speed * 0.4);
+    const a = Math.round(6 + v.Playmaking * 3.0 + v.Sense * 1.3 + v.Hands * 0.5);
+    proj = [[g, 'Goals'], [a, 'Assists'], [g + a, 'Points']];
+  } else if (state.pos === 'D') {
+    const g = Math.round(1 + v.Shot * 1.5 + v.Speed * 0.3);
+    const a = Math.round(6 + v.Speed * 1.6 + v.Shot * 1.2 + v['Stick-checking'] * 0.8);
+    const toi = (16.5 + avg * 0.65).toFixed(1);
+    proj = [[g, 'Goals'], [a, 'Assists'], [toi, 'TOI / game']];
+  } else {
+    const sv = (0.884 + avg * 0.0027).toFixed(3).replace(/^0/, '');
+    const gaa = Math.max(1.6, 3.55 - avg * 0.14).toFixed(2);
+    const w = Math.round(14 + avg * 2.4);
+    proj = [[sv, 'Save %'], [gaa, 'GAA'], [w, 'Wins']];
+  }
+  $('res-proj').innerHTML = proj.map(([n, l]) => `<div><b>${n}</b><span>${l}</span></div>`).join('') + `<div style="align-self:end"><span>Projected 82 games</span></div>`;
+  $('recap').innerHTML = state.slots.map(s => `<div class="recap-row"><span class="k">${s.k}</span><span class="who">${esc(s.player.name)} · ${s.player.team} · ${s.player.pos}</span>${chip(s.grade)}</div>`).join('');
+  $('toast').textContent = '';
+  ['again'].forEach(id => $(id).hidden = state.online);
+  ['rematch', 'leave-result'].forEach(id => $(id).hidden = !state.online);
+  $('h2h').hidden = !state.online;
+  $('again').textContent = state.daily ? 'Back to menu' : 'Build another';
+  $('daily-note').hidden = !state.daily;
+  if (state.daily) { dailySaveProgress(true); $('daily-note').textContent = `Next daily in ${untilMidnight()}. Share your grid and see who built better.`; }
+  show('result');
+  if (state.online) { saveProgress(true, avg); renderH2H(); }
+  else fanfare(avg >= 7);
+}
+
+function copyText() {
+  const lines = [`Rink Roll · ${POSNAME[state.pos]} (${state.mode === 'current' ? 'Current NHL' : 'All-Time Greats'})`, `Overall ${$('ovr-grade').textContent} · ${$('res-arch').textContent}`]
+    .concat(state.slots.map(s => `${s.k}: ${s.grade} (${s.player.name})`));
+  const text = lines.join('\n');
+  const done = () => { $('toast').textContent = 'Copied'; };
+  try {
+    navigator.clipboard.writeText(text).then(done, () => fallback(text));
+  } catch (e) { fallback(text); }
+}
+function fallback(text) {
+  const ta = document.createElement('textarea'); ta.value = text; ta.setAttribute('readonly', ''); ta.style.position = 'fixed'; ta.style.opacity = '0';
+  document.body.appendChild(ta); ta.select();
+  let ok = false; try { ok = document.execCommand('copy'); } catch (e) {}
+  ta.remove();
+  $('toast').textContent = ok ? 'Copied' : 'Copy is blocked here. Select the parts list to copy it.';
+}
+
+function mulberry32(a) { return () => { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+function seededSeq(pool, seed) {
+  const r = mulberry32(seed), a = pool.slice();
+  for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(r() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; }
+  return a;
+}
+
+/* ---------- play modes, daily, share ---------- */
+function setPlay(play) {
+  state.play = play;
+  document.querySelectorAll('[data-play]').forEach(x => x.setAttribute('aria-pressed', x.dataset.play === play));
+  $('online-panel').hidden = play !== 'online';
+  $('custom-steps').hidden = play === 'daily';
+  $('daily-panel').hidden = play !== 'daily';
+  $('start').hidden = play === 'online';
+  if (play === 'daily') renderDailyPanel();
+  $('start').textContent = play === 'daily' ? (dailyDone() ? 'See today\'s result' : dailyStarted() ? 'Resume today\'s daily' : 'Play today\'s daily') : 'Drop the puck';
+  if (play !== 'online') updateBug();
+}
+document.querySelectorAll('[data-play]').forEach(b => b.addEventListener('click', () => setPlay(b.dataset.play)));
+
+const DAILY_EPOCH = Date.UTC(2026, 10, 5); // Daily #1 = Nov 5, 2026
+function todayKey() { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; }
+function dailyInfo() {
+  const key = todayKey(); const [y, m, d] = key.split('-').map(Number);
+  const n = Math.round((Date.UTC(y, m - 1, d) - DAILY_EPOCH) / 864e5) + 1;
+  const pos = ['F', 'D', 'G'][((n - 1) % 3 + 3) % 3];
+  let h = 2166136261; for (const ch of 'rinkroll-daily-' + key) { h ^= ch.charCodeAt(0); h = Math.imul(h, 16777619); }
+  return { key, n, pos, mode: 'current', seed: h >>> 0 };
+}
+function dailyLoad() { try { return JSON.parse(localStorage.getItem('rinkroll-daily-' + dailyInfo().key) || 'null'); } catch (e) { return null; } }
+function dailySaveProgress(done) {
+  if (!state.daily) return;
+  const body = { slots: state.slots.map(s => s.player ? { name: s.player.name, grade: s.grade } : null), seqIdx: state.seqIdx, rerolls: state.rerolls, done: !!done };
+  try { localStorage.setItem('rinkroll-daily-' + state.daily.key, JSON.stringify(body)); } catch (e) {}
+}
+function dailyDone() { const s = dailyLoad(); return !!(s && s.done); }
+function dailyStarted() { const s = dailyLoad(); return !!(s && s.slots && s.slots.some(Boolean)); }
+function renderDailyPanel() {
+  const D = dailyInfo();
+  const when = new Date().toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' });
+  const note = dailyDone() ? 'You\'ve played today\'s daily. See your result, or come back tomorrow for a new one.'
+    : dailyStarted() ? 'You have today\'s daily in progress. Pick up where you left off.'
+    : 'Everyone gets the same spins today, in the same order. One try, grades hidden, one re-roll.';
+  $('daily-panel').innerHTML = `<div class="daily-n">Daily #${D.n}</div><div class="lobby-info">${esc(when)} · Current NHL · ${POSNAME[D.pos]}</div><p class="note">${note}</p>`;
+}
+function startDaily() {
+  const D = dailyInfo();
+  state.online = false; state.daily = D;
+  state.mode = D.mode; state.pos = D.pos; state.peek = false;
+  state.seq = seededSeq(POOLS[D.mode][D.pos], D.seed);
+  const s = dailyLoad();
+  state.seqIdx = s && s.seqIdx ? s.seqIdx : 0;
+  state.rerolls = s && typeof s.rerolls === 'number' ? s.rerolls : 1;
+  initBuild(s && s.slots && s.slots.some(Boolean) ? s.slots : null);
+}
+function untilMidnight() {
+  const now = new Date(), next = new Date(now); next.setHours(24, 0, 0, 0);
+  const mins = Math.max(1, Math.round((next - now) / 60000));
+  return `${Math.floor(mins / 60)}h ${mins % 60}m`;
+}
+
+const EMO = { S: '🟨', A: '🟦', B: '🟩', C: '⬜', D: '🟧', F: '🟥' };
+function cap(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
+function siteUrl() {
+  try { if (window.top === window && /^https?:$/.test(location.protocol)) return location.origin + location.pathname.replace(/[^/]*$/, ''); } catch (e) {}
+  return '';
+}
+function shareText() {
+  const pool = state.mode === 'current' ? 'Current NHL' : 'All-Time';
+  const head = state.daily ? `Rink Roll Daily #${state.daily.n} · ${cap(POSNAME[state.pos])}` : `Rink Roll · ${cap(POSNAME[state.pos])} · ${pool}`;
+  const grid = state.slots.map(s => EMO[tier(s.grade)]).join('');
+  const lines = [head, `${grid} ${$('ovr-grade').textContent} overall`, $('res-arch').textContent];
+  if (state.online) { const v = $('verdict').textContent; if (v && !/^Waiting|disconnected/.test(v)) lines.push('Head-to-head: ' + v); }
+  const url = siteUrl(); if (url) lines.push(url);
+  return lines.join('\n');
+}
+function copyToClipboard(text, done, failText) {
+  const fb = () => {
+    const ta = document.createElement('textarea'); ta.value = text; ta.setAttribute('readonly', ''); ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select(); let ok = false; try { ok = document.execCommand('copy'); } catch (e) {} ta.remove();
+    ok ? done() : ($('toast').textContent = failText);
+  };
+  try { navigator.clipboard.writeText(text).then(done, fb); } catch (e) { fb(); }
+}
+function shareResult() {
+  const text = shareText();
+  const done = () => { $('toast').textContent = 'Result copied. Paste it anywhere.'; };
+  if (siteUrl() && navigator.share && matchMedia('(pointer: coarse)').matches) {
+    navigator.share({ text }).catch(() => copyToClipboard(text, done, 'Copy is blocked here.'));
+  } else copyToClipboard(text, done, 'Copy is blocked here.');
+}
+$('share').addEventListener('click', shareResult);
+
+/* ---------- head-to-head ---------- */
+const CODE_CHARS = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+const CODE_RE = /^[A-HJ-NP-Z2-9]{5}$/;
+const net = { db: null, user: null, me: null, ready: false, code: null, lobby: null, players: {}, unsubs: [], started: false, resetFor: 0, verdictRound: 0, names: {}, writeQ: Promise.resolve(), timer: 0 };
+
+function newCode() { let s = ''; for (let i = 0; i < 5; i++) s += CODE_CHARS[Math.floor(Math.random() * CODE_CHARS.length)]; return s; }
+function newSeed() { return Math.floor(Math.random() * 2 ** 31); }
+function msg(id, text, err) { const el = $(id); el.textContent = text; el.classList.toggle('err', !!err); }
+function lobbyRef(code) { return net.db.doc('lobbies/' + code); }
+function playerRef(code, id) { return net.db.doc(`lobbies/${code}/players/${id}`); }
+function queueWrite(fn) { net.writeQ = net.writeQ.then(fn).catch(e => { msg('lobby-msg', writeError(e), true); }); return net.writeQ; }
+function writeError(e) {
+  if (e && e.code === 'invalid_argument') return 'Your access to this page is view-only, so you can\'t save to a lobby. Ask the owner to share it with you at a higher level.';
+  if (e && e.code === 'quota_exceeded') return 'The lobby storage is full. Ask the page owner to clear old lobbies.';
+  return 'Couldn\'t reach the lobby. Check your connection and try again.';
+}
+
+async function initNet() {
+  try {
+    if (!window.claude || !window.claude.use) throw 0;
+    const [db, user] = await Promise.all([window.claude.use('db'), window.claude.use('user')]);
+    net.db = db; net.user = user;
+    net.me = user ? await user.id() : null;
+  } catch (e) {}
+  net.ready = !!(net.db && net.me);
+  if (!net.ready) {
+    msg('online-msg', 'Head-to-head needs you signed in to Claude with access to this page.', true);
+    $('create').disabled = true; $('join').disabled = true;
+    return;
+  }
+  msg('online-msg', '');
+  const h = (location.hash || '').slice(1).toUpperCase();
+  if (CODE_RE.test(h)) { setPlay('online'); $('join-code').value = h; joinLobby(h); }
+}
+
+async function nameOf(id) {
+  if (id === net.me) return 'You';
+  if (net.names[id]) return net.names[id];
+  try { const ps = await net.user.profiles([id]); const n = ps && ps[id] && ps[id].name; if (n) { net.names[id] = n.split(' ')[0]; return net.names[id]; } } catch (e) {}
+  return 'Opponent';
+}
+
+$('join-code').addEventListener('input', e => { e.target.value = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, ''); });
+$('join-code').addEventListener('keydown', e => { if (e.key === 'Enter') $('join').click(); });
+
+async function createLobby() {
+  if (!net.ready) return;
+  audio();
+  $('create').disabled = true; msg('online-msg', 'Creating lobby…');
+  try {
+    let code = newCode();
+    for (let i = 0; i < 4; i++) { const s = await lobbyRef(code).get(); if (!s.exists) break; code = newCode(); }
+    const round = 1;
+    await lobbyRef(code).set({ code, mode: state.mode, pos: state.pos, peek: state.peek, seed: newSeed(), round, host: net.me, createdAt: Date.now() });
+    await playerRef(code, net.me).set(freshPlayer('host', round));
+    enterLobby(code);
+  } catch (e) { msg('online-msg', writeError(e), true); }
+  $('create').disabled = false;
+}
+function freshPlayer(role, round) { return { id: net.me, role, round, slots: [], seqIdx: 0, rerolls: 1, done: false, avg: null, joinedAt: Date.now() }; }
+
+async function joinLobby(codeIn) {
+  if (!net.ready) return;
+  audio();
+  const code = (codeIn || $('join-code').value).toUpperCase().trim();
+  if (!CODE_RE.test(code)) { msg('online-msg', 'Lobby codes are 5 letters and numbers, like K7QMX.', true); return; }
+  $('join').disabled = true; msg('online-msg', 'Looking for lobby ' + code + '…');
+  try {
+    const ls = await lobbyRef(code).get();
+    if (!ls.exists) { msg('online-msg', `No lobby found with code ${code}. Check the code with your friend.`, true); $('join').disabled = false; return; }
+    const L = ls.data();
+    const ps = await net.db.collection(`lobbies/${code}/players`).get();
+    const ids = ps.docs.map(d => d.id);
+    if (!ids.includes(net.me)) {
+      if (ids.length >= 2) { msg('online-msg', `Lobby ${code} already has two players.`, true); $('join').disabled = false; return; }
+      await playerRef(code, net.me).set(freshPlayer('guest', L.round));
+    }
+    enterLobby(code);
+  } catch (e) { msg('online-msg', writeError(e), true); }
+  $('join').disabled = false;
+}
+
+function enterLobby(code) {
+  stopListening();
+  net.code = code; net.lobby = null; net.players = {}; net.started = false; net.resetFor = 0; net.verdictRound = 0;
+  state.online = true;
+  try { history.replaceState(null, '', '#' + code); } catch (e) { try { location.hash = code; } catch (e2) {} }
+  $('lobby-code').textContent = code;
+  $('h2h-code').textContent = 'Lobby ' + code;
+  $('seats').innerHTML = ''; $('lobby-info').textContent = '';
+  msg('lobby-msg', 'Connecting…');
+  show('lobby');
+  clearTimeout(net.timer);
+  net.timer = setTimeout(() => { if (!net.lobby) msg('lobby-msg', 'Still trying to reach the lobby…', true); }, 10000);
+  net.unsubs.push(lobbyRef(code).onSnapshot(s => {
+    if (!s.exists) { if (!s.metadata.fromCache) msg('lobby-msg', 'This lobby no longer exists.', true); return; }
+    net.lobby = s.data(); if (!s.metadata.fromCache) clearTimeout(net.timer);
+    evaluate();
+  }, e => msg('lobby-msg', writeError(e), true)));
+  net.unsubs.push(net.db.collection(`lobbies/${code}/players`).onSnapshot(s => {
+    const m = {}; s.docs.forEach(d => { m[d.id] = d.data(); }); net.players = m;
+    evaluate();
+  }, e => msg('lobby-msg', writeError(e), true)));
+}
+function stopListening() { net.unsubs.forEach(u => { try { u(); } catch (e) {} }); net.unsubs = []; clearTimeout(net.timer); }
+
+function leaveLobby() {
+  stopListening();
+  state.online = false; net.code = null; net.lobby = null; net.players = {}; net.started = false;
+  cancelAnimationFrame(rafId); state.spinning = false;
+  try { history.replaceState(null, '', location.pathname + location.search); } catch (e) {}
+  ['again'].forEach(id => $(id).hidden = false);
+  ['rematch', 'leave-result'].forEach(id => $(id).hidden = true);
+  $('h2h').hidden = true;
+  setPlay('online');
+  show('setup');
+}
+
+function opponentId() { return Object.keys(net.players).find(id => id !== net.me) || null; }
+
+async function evaluate() {
+  const L = net.lobby; if (!L || !net.code) return;
+  const me = net.players[net.me];
+  // new round started (rematch): reset my seat once
+  if (me && me.round !== L.round && net.resetFor !== L.round) {
+    net.resetFor = L.round; net.started = false;
+    queueWrite(() => playerRef(net.code, net.me).set(freshPlayer(me.role, L.round)));
+    return;
+  }
+  const oid = opponentId();
+  const opp = oid ? net.players[oid] : null;
+  const ready = me && opp && me.round === L.round && opp.round === L.round;
+  renderLobby(L, me, oid, opp);
+  if (!net.started && ready) { net.started = true; startOnline(L, me); return; }
+  if (net.started) { renderOppBar(); if (!$('result').hidden) renderH2H(); }
+}
+
+async function renderLobby(L, me, oid, opp) {
+  $('lobby-info').textContent = `${L.mode === 'current' ? 'Current NHL' : 'All-Time Greats'} · ${POSNAME[L.pos]} · ${L.peek ? 'easy mode' : 'grades hidden'}`;
+  const seat = (role, name, filled) => `<div class="seat${filled ? '' : ' empty'}"><span class="r">${role}</span><span class="n">${esc(name)}</span></div>`;
+  const hostId = L.host;
+  const hostName = await nameOf(hostId);
+  const otherId = Object.keys(net.players).find(id => id !== hostId);
+  const otherName = otherId ? await nameOf(otherId) : 'Waiting…';
+  $('seats').innerHTML = seat('Host', hostName, true) + seat('Challenger', otherName, !!otherId);
+  $('lobby-howto').hidden = !!otherId;
+  msg('lobby-msg', otherId ? 'Both players in. Starting…' : 'Waiting for an opponent…');
+}
+
+function startOnline(L, me) {
+  state.daily = null;
+  state.mode = L.mode; state.pos = L.pos; state.peek = !!L.peek;
+  document.querySelectorAll('[data-mode]').forEach(x => x.setAttribute('aria-pressed', x.dataset.mode === state.mode));
+  document.querySelectorAll('[data-pos]').forEach(x => x.setAttribute('aria-pressed', x.dataset.pos === state.pos));
+  $('peek').checked = state.peek;
+  state.online = true;
+  state.seq = seededSeq(POOLS[state.mode][state.pos], (L.seed + L.round * 7919) >>> 0);
+  state.seqIdx = me.seqIdx || 0;
+  state.rerolls = typeof me.rerolls === 'number' ? me.rerolls : 1;
+  const resume = (me.slots && me.slots.length) ? me.slots : null;
+  if (resume) state.rerolls = typeof me.rerolls === 'number' ? me.rerolls : 1;
+  initBuild(resume);
+}
+
+function saveProgress(done, avg) {
+  if (!state.online || !net.code || !net.lobby) return;
+  const body = {
+    id: net.me, round: net.lobby.round,
+    slots: state.slots.map(s => s.player ? { name: s.player.name, team: s.player.team, pos: s.player.pos, grade: s.grade } : null),
+    seqIdx: state.seqIdx, rerolls: state.rerolls, done: !!done, avg: done ? avg : null,
+    role: (net.players[net.me] && net.players[net.me].role) || 'guest'
+  };
+  const code = net.code;
+  queueWrite(() => playerRef(code, net.me).set(body));
+}
+
+async function renderOppBar() {
+  if (!state.online) return;
+  const oid = opponentId(); const opp = oid ? net.players[oid] : null;
+  const n = state.slots.length;
+  const f = opp && net.lobby && opp.round === net.lobby.round ? (opp.slots || []).filter(Boolean).length : 0;
+  const nm = oid ? await nameOf(oid) : 'Opponent';
+  const pips = Array.from({ length: n }, (_, i) => `<span class="pip${i < f ? ' on' : ''}"></span>`).join('');
+  $('opp-bar').innerHTML = `<span><b>${esc(nm)}</b> ${f === n ? 'is done' : `${f} / ${n}`}</span><span class="pips">${pips}</span>`;
+}
+
+async function renderH2H() {
+  const L = net.lobby; if (!L) return;
+  const me = net.players[net.me]; const oid = opponentId(); const opp = oid ? net.players[oid] : null;
+  const v = $('verdict');
+  const oname = oid ? await nameOf(oid) : 'Opponent';
+  if (!opp || opp.round !== L.round || !opp.done) {
+    const f = opp && opp.round === L.round ? (opp.slots || []).filter(Boolean).length : 0;
+    v.className = 'verdict wait'; v.textContent = `Waiting for ${oname} to finish (${f} / ${state.slots.length})…`;
+    $('h2h-table').innerHTML = ''; $('rematch').disabled = true;
+    return;
+  }
+  $('rematch').disabled = false;
+  const mine = state.slots.map(s => ({ name: s.player.name, team: s.player.team, grade: s.grade }));
+  const theirs = opp.slots || [];
+  let myWins = 0, oppWins = 0;
+  const rows = state.slots.map((s, i) => {
+    const a = mine[i], b = theirs[i] || { name: '—', team: '', grade: 'F' };
+    const da = gv(a.grade), db = gv(b.grade);
+    if (da > db) myWins++; else if (db > da) oppWins++;
+    return `<div class="h2h-row"><span class="who">${esc(a.name)}</span><span class="gr${da < db ? ' lose' : ''}" data-t="${tier(a.grade)}">${a.grade}</span><span class="k">${s.k}</span><span class="gr${db < da ? ' lose' : ''}" data-t="${tier(b.grade)}">${esc(b.grade)}</span><span class="who r">${esc(b.name)}</span></div>`;
+  });
+  const myAvg = mine.reduce((s, x) => s + gv(x.grade), 0) / mine.length;
+  const oppAvg = theirs.reduce((s, x) => s + (x ? gv(x.grade) : 0), 0) / Math.max(1, theirs.length);
+  const myO = SCALE[Math.round(myAvg)], oppO = SCALE[Math.max(0, Math.round(oppAvg))];
+  const head = `<div class="h2h-row head"><span class="hide-sm">You</span><span></span><span></span><span></span><span class="hide-sm" style="text-align:right">${esc(oname)}</span></div>`;
+  const total = `<div class="h2h-row total"><span class="who">${myWins} categories won</span><span class="gr${myAvg < oppAvg ? ' lose' : ''}" data-t="${tier(myO)}">${myO}</span><span class="k">Overall</span><span class="gr${oppAvg < myAvg ? ' lose' : ''}" data-t="${tier(oppO)}">${oppO}</span><span class="who r">${oppWins} categories won</span></div>`;
+  $('h2h-table').innerHTML = head + rows.join('') + total;
+  let res;
+  if (Math.abs(myAvg - oppAvg) > 1e-9) res = myAvg > oppAvg ? 'win' : 'loss';
+  else res = myWins > oppWins ? 'win' : oppWins > myWins ? 'loss' : 'tie';
+  v.className = 'verdict ' + (res === 'tie' ? '' : res);
+  v.textContent = res === 'win' ? `You win · ${myWins}–${oppWins} in categories` : res === 'loss' ? `${oname} wins · ${oppWins}–${myWins} in categories` : 'Dead even';
+  if (net.verdictRound !== L.round) { net.verdictRound = L.round; fanfare(res !== 'loss'); }
+}
+
+async function rematch() {
+  const L = net.lobby; if (!L || !net.code) return;
+  $('rematch').disabled = true;
+  queueWrite(() => lobbyRef(net.code).update({ round: L.round + 1, seed: newSeed() }));
+  msg('lobby-msg', 'Rematch requested. Waiting for both players…');
+  show('lobby');
+}
+
+$('create').addEventListener('click', createLobby);
+$('join').addEventListener('click', () => joinLobby());
+$('leave-lobby').addEventListener('click', leaveLobby);
+$('leave-result').addEventListener('click', leaveLobby);
+$('rematch').addEventListener('click', rematch);
+$('copy-code').addEventListener('click', () => {
+  const code = net.code || '';
+  const ok = () => { $('code-toast').textContent = 'Copied'; };
+  try { navigator.clipboard.writeText(code).then(ok, () => { $('code-toast').textContent = 'Select the code above to copy it.'; }); }
+  catch (e) { $('code-toast').textContent = 'Select the code above to copy it.'; }
+});
+initNet();
+
+$('start').addEventListener('click', () => state.play === 'daily' ? startDaily() : startGame());
+$('spin').addEventListener('click', spin);
+$('reroll').addEventListener('click', reroll);
+$('quit').addEventListener('click', () => { if (state.online) leaveLobby(); else show('setup'); });
+$('again').addEventListener('click', () => { show('setup'); setPlay(state.play); });
+$('copy').addEventListener('click', copyText);
+$('mute').addEventListener('click', () => setMute(!muted));
+setMute(muted);
+updateBug();
+</script>

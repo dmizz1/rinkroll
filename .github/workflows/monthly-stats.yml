@@ -1,0 +1,46 @@
+name: Monthly stats update
+
+on:
+  schedule:
+    - cron: "17 10 1 * *"   # 10:17 UTC on the 1st of every month
+  workflow_dispatch: {}      # lets you run it by hand from the Actions tab
+
+permissions:
+  contents: write
+
+concurrency:
+  group: stats-update
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Pull NHL stats and regrade players
+        run: node tools/update-stats.mjs
+
+      - name: Rebuild the site
+        run: python3 build.py
+
+      - name: Commit and push if anything changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data_current.txt data_meta.json netlify
+          if git diff --cached --quiet; then
+            echo "No changes this month."
+          else
+            git commit -m "Monthly stats update: $(date -u +'%B %-d, %Y')"
+            git push
+          fi

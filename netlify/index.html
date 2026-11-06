@@ -1,0 +1,2156 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Spin real NHL players, take one graded skill from each, and build your own forward, defenseman or goalie. Play solo, the daily challenge, or head-to-head with a friend.">
+<link rel="canonical" href="https://rinkroll.app/">
+<meta property="og:title" content="Rink Roll">
+<meta property="og:description" content="Spin real NHL players, take one graded skill from each, and build your own forward, defenseman or goalie. Play solo, the daily challenge, or head-to-head with a friend.">
+<meta property="og:url" content="https://rinkroll.app/">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary">
+<title>Rink Roll</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Saira+Extra+Condensed:wght@600;800;900&family=Barlow:wght@400;500;600;700&family=Saira+Semi+Condensed:wght@500;700&display=swap">
+<style>
+/* Layout: an arena scoreboard over the ice. Setup → build board (spinner + slots) → final player card. Committed night-game look. */
+:root {
+  --night: #0a1220;
+  --boards: #121e33;
+  --boards-2: #1a2943;
+  --rule: #26385a;
+  --ice: #eaf2f7;
+  --frost: #9fb3c8;
+  --lamp: #e63946;
+  --lamp-glow: rgba(230, 57, 70, .35);
+  --blue-line: #3b7bea;
+  --gold: #f4c95d;
+  --g-s: #f4c95d; --g-a: #6fd3ff; --g-b: #5ee0a8; --g-c: #c9d4e0; --g-d: #ff9f5a; --g-f: #ff5d6c;
+  --display: "Saira Extra Condensed", "Arial Narrow", Impact, sans-serif;
+  --body: "Barlow", "Segoe UI", system-ui, sans-serif;
+  --data: "Saira Semi Condensed", "Arial Narrow", system-ui, sans-serif;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--night);
+  color: var(--ice);
+  font-family: var(--body);
+  font-size: 16px;
+  line-height: 1.45;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 0 48px;
+  min-height: 100%;
+  background-image:
+    linear-gradient(90deg, transparent calc(50% - 1px), rgba(230,57,70,.10) calc(50% - 1px), rgba(230,57,70,.10) calc(50% + 1px), transparent calc(50% + 1px)),
+    radial-gradient(1200px 500px at 50% -120px, #18294a 0%, transparent 70%);
+  background-attachment: fixed;
+}
+.wrap { max-width: 980px; margin: 0 auto; }
+button { font: inherit; color: inherit; cursor: pointer; }
+button:focus-visible, [tabindex]:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
+
+/* header */
+.masthead { display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; flex-wrap: wrap; padding-block: 28px 18px; border-bottom: 2px solid var(--rule); position: relative; }
+.masthead::after { content: ""; position: absolute; left: 0; right: 0; bottom: -2px; height: 2px; background: linear-gradient(90deg, var(--blue-line) 0 22%, transparent 22% 39%, var(--lamp) 39% 61%, transparent 61% 78%, var(--blue-line) 78%); }
+.brand { font-family: var(--display); font-weight: 900; font-size: clamp(44px, 9vw, 76px); line-height: .85; letter-spacing: .01em; text-transform: uppercase; margin: 0; }
+.brand span { color: var(--lamp); }
+.tag { font-family: var(--data); color: var(--frost); font-size: 14px; letter-spacing: .08em; text-transform: uppercase; margin: 6px 0 0; }
+.scorebug { font-family: var(--data); font-size: 13px; letter-spacing: .1em; text-transform: uppercase; color: var(--frost); display: flex; gap: 14px; flex-wrap: wrap; }
+.scorebug b { color: var(--ice); font-weight: 700; }
+
+/* setup */
+.setup { display: grid; gap: 28px; padding-block: 28px; }
+.step h2 { font-family: var(--display); font-weight: 800; font-size: 26px; letter-spacing: .04em; text-transform: uppercase; margin: 0 0 12px; display: flex; gap: 10px; align-items: baseline; }
+.step h2 small { font-family: var(--data); font-size: 13px; color: var(--frost); letter-spacing: .1em; }
+.choices { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; }
+.choice { text-align: left; background: var(--boards); border: 2px solid var(--rule); border-radius: 6px; padding: 16px; display: grid; gap: 4px; transition: border-color .15s, background .15s, transform .15s; }
+.choice:hover { border-color: var(--frost); }
+.choice[aria-pressed="true"] { border-color: var(--lamp); background: var(--boards-2); box-shadow: 0 0 0 4px var(--lamp-glow); }
+.choice .t { font-family: var(--display); font-size: 28px; font-weight: 800; text-transform: uppercase; line-height: 1; }
+.choice .d { color: var(--frost); font-size: 14px; }
+.choice .cats { font-family: var(--data); font-size: 12px; letter-spacing: .06em; text-transform: uppercase; color: var(--frost); margin-top: 6px; }
+.toggle { display: flex; align-items: center; gap: 12px; color: var(--frost); font-size: 15px; }
+.toggle input { width: 20px; height: 20px; accent-color: var(--lamp); }
+.go { justify-self: start; background: var(--lamp); border: 0; border-radius: 4px; padding: 14px 34px; font-family: var(--display); font-weight: 900; font-size: 30px; letter-spacing: .06em; text-transform: uppercase; color: #fff; box-shadow: 0 6px 0 #9d1f2a; transition: transform .1s, box-shadow .1s; }
+.go:active { transform: translateY(4px); box-shadow: 0 2px 0 #9d1f2a; }
+.go:disabled { opacity: .4; cursor: not-allowed; }
+.scale { display: flex; flex-wrap: wrap; gap: 4px; align-items: center; font-family: var(--data); font-size: 13px; color: var(--frost); }
+
+/* grade chips */
+.gr { font-family: var(--display); font-weight: 900; display: inline-grid; place-items: center; min-width: 2.1em; padding: 0 .3em; border-radius: 4px; line-height: 1.25; color: var(--night); font-size: 18px; }
+.gr[data-t="S"] { background: var(--g-s); box-shadow: 0 0 14px rgba(244,201,93,.55); }
+.gr[data-t="A"] { background: var(--g-a); }
+.gr[data-t="B"] { background: var(--g-b); }
+.gr[data-t="C"] { background: var(--g-c); }
+.gr[data-t="D"] { background: var(--g-d); }
+.gr[data-t="F"] { background: var(--g-f); }
+.gr.ghost { background: transparent !important; box-shadow: none !important; color: var(--frost); border: 1px dashed var(--rule); }
+
+/* game board */
+.board { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); gap: 24px; padding-block: 24px; align-items: start; }
+@media (max-width: 760px) { .board { grid-template-columns: 1fr; } }
+
+.reel { background: linear-gradient(180deg, var(--boards-2), var(--boards)); border: 2px solid var(--rule); border-radius: 8px; padding: 18px; position: sticky; top: calc(env(safe-area-inset-top, 0px) + 10px); }
+@media (max-width: 760px) { .reel { position: static; } }
+.reel-head { display: flex; justify-content: space-between; align-items: center; font-family: var(--data); font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--frost); }
+.lamp { width: 12px; height: 12px; border-radius: 50%; background: #3a1b22; box-shadow: inset 0 0 0 2px #5a2530; }
+.lamp.on { background: var(--lamp); box-shadow: 0 0 18px 6px var(--lamp-glow); }
+.window { --row: 56px; margin-block: 14px 10px; height: calc(var(--row) * 3); border-radius: 6px; background: #060c16; border: 1px solid var(--rule); position: relative; overflow: hidden; }
+.window::before, .window::after { content: ""; position: absolute; left: 0; right: 0; height: var(--row); pointer-events: none; z-index: 2; }
+.window::before { top: 0; background: linear-gradient(#060c16 10%, rgba(6,12,22,.55)); }
+.window::after { bottom: 0; background: linear-gradient(rgba(6,12,22,.55), #060c16 90%); }
+.band { position: absolute; left: 0; right: 0; top: var(--row); height: var(--row); border-block: 1px solid var(--rule); pointer-events: none; z-index: 1; }
+.landed .band { border-color: var(--lamp); box-shadow: inset 0 0 24px var(--lamp-glow); transition: box-shadow .3s, border-color .3s; }
+.strip { position: absolute; left: 0; right: 0; top: 0; will-change: transform; }
+.ri { height: var(--row); display: flex; align-items: center; justify-content: center; padding: 0 14px; font-family: var(--display); font-weight: 800; font-size: clamp(24px, 4.8vw, 36px); text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 1; color: var(--frost); }
+.ri.hit { color: var(--ice); }
+.landed .ri.hit { animation: land .4s ease-out; }
+.p-num { font-family: var(--display); font-weight: 900; font-size: 64px; line-height: .8; color: transparent; -webkit-text-stroke: 1.5px var(--rule); position: absolute; right: 12px; bottom: 6px; z-index: 0; }
+.p-meta { font-family: var(--data); font-size: 14px; letter-spacing: .08em; text-transform: uppercase; color: var(--frost); text-align: center; min-height: 1.45em; }
+.p-meta b { color: var(--ice); }
+@keyframes land { 0% { transform: scale(1.1); color: var(--gold); } 100% { transform: scale(1); } }
+.mute { background: none; border: 1px solid var(--rule); border-radius: 4px; padding: 2px 10px; font-family: var(--data); font-size: 13px; letter-spacing: .1em; text-transform: uppercase; color: var(--frost); }
+.mute[aria-pressed="true"] { color: var(--lamp); border-color: var(--lamp); }
+.reel-actions { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+.btn { background: var(--boards); border: 2px solid var(--rule); border-radius: 4px; padding: 9px 16px; font-family: var(--display); font-weight: 800; font-size: 19px; letter-spacing: .06em; text-transform: uppercase; }
+.btn:hover:not(:disabled) { border-color: var(--frost); }
+.btn:disabled { opacity: .4; cursor: not-allowed; }
+.btn.hot { background: var(--lamp); border-color: var(--lamp); color: #fff; }
+.prompt { font-size: 15px; color: var(--frost); margin: 12px 0 0; min-height: 1.45em; }
+.prompt b { color: var(--ice); }
+
+.slots h3, .result h3 { font-family: var(--display); font-weight: 800; font-size: 22px; letter-spacing: .06em; text-transform: uppercase; margin: 0 0 10px; display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+.slots h3 small { font-family: var(--data); font-size: 13px; color: var(--frost); letter-spacing: .08em; }
+.slot-list { display: grid; gap: 8px; }
+.slot { width: 100%; text-align: left; display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 12px; padding: 12px 14px; background: var(--boards); border: 2px solid var(--rule); border-radius: 6px; min-height: 66px; }
+.slot .k { font-family: var(--display); font-weight: 800; font-size: 22px; text-transform: uppercase; letter-spacing: .03em; line-height: 1; }
+.slot .h { font-size: 13px; color: var(--frost); margin-top: 3px; }
+.slot .who { font-family: var(--data); font-size: 14px; color: var(--ice); margin-top: 4px; }
+.slot.open.armed { border-style: dashed; border-color: var(--frost); }
+.slot.open.armed:hover { border-style: solid; border-color: var(--lamp); background: var(--boards-2); }
+.slot.filled { background: var(--boards-2); cursor: default; }
+.slot.filled .k { color: var(--frost); }
+.slot.pop .gr { animation: pop .45s cubic-bezier(.2,1.6,.4,1); }
+@keyframes pop { 0% { transform: scale(.2) rotate(-12deg); } 100% { transform: scale(1); } }
+.slot:disabled { cursor: default; }
+.slot.open:disabled { opacity: .7; }
+
+/* result */
+.result { padding-block: 24px; display: grid; gap: 24px; }
+.card { background: linear-gradient(160deg, var(--boards-2), var(--boards) 60%); border: 2px solid var(--rule); border-radius: 10px; padding: 22px; display: grid; grid-template-columns: auto minmax(0,1fr); gap: 22px; align-items: center; position: relative; overflow: hidden; }
+.card::before { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, transparent 0 70%, rgba(59,123,234,.12) 70% 73%, transparent 73%); pointer-events: none; }
+@media (max-width: 560px) { .card { grid-template-columns: 1fr; } }
+.ovr { display: grid; place-items: center; gap: 2px; text-align: center; }
+.ovr .gr { font-size: 84px; min-width: 1.6em; border-radius: 8px; line-height: 1.1; }
+.ovr .l { font-family: var(--data); font-size: 12px; letter-spacing: .16em; text-transform: uppercase; color: var(--frost); }
+.arch { font-family: var(--display); font-weight: 900; font-size: clamp(36px, 7vw, 58px); line-height: .9; text-transform: uppercase; margin: 0; text-wrap: balance; }
+.arch-sub { color: var(--frost); margin: 8px 0 0; max-width: 52ch; }
+.proj { display: flex; gap: 22px; flex-wrap: wrap; margin-top: 16px; }
+.proj div { display: grid; }
+.proj b { font-family: var(--display); font-weight: 900; font-size: 38px; line-height: 1; font-variant-numeric: tabular-nums; }
+.proj span { font-family: var(--data); font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: var(--frost); }
+.recap { display: grid; gap: 6px; }
+.recap-row { display: grid; grid-template-columns: 9.5em minmax(0, 1fr) auto; gap: 12px; align-items: center; padding: 10px 14px; background: var(--boards); border-radius: 6px; }
+.recap-row .k { font-family: var(--display); font-weight: 800; font-size: 19px; text-transform: uppercase; }
+.recap-row .who { font-family: var(--data); color: var(--frost); font-size: 14px; min-width: 0; }
+@media (max-width: 480px) { .recap-row { grid-template-columns: minmax(0,1fr) auto; } .recap-row .who { grid-column: 1; } .recap-row .gr { grid-row: 1 / span 2; grid-column: 2; } }
+.row-actions { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+.note { color: var(--frost); font-size: 13px; max-width: 70ch; }
+.toast { font-family: var(--data); font-size: 13px; color: var(--g-b); }
+.foot { margin-top: 36px; padding-top: 16px; border-top: 1px solid var(--rule); color: var(--frost); font-size: 13px; display: grid; gap: 6px; max-width: 80ch; }
+
+/* nav, daily */
+.site-nav { display: flex; gap: 18px; margin-top: 10px; font-family: var(--data); font-size: 14px; letter-spacing: .1em; text-transform: uppercase; }
+.site-nav a { color: var(--frost); text-decoration: none; border-bottom: 1px solid var(--rule); }
+.site-nav a:hover { color: var(--ice); border-color: var(--lamp); }
+.custom-steps { display: grid; gap: 28px; }
+.daily-panel { background: var(--boards); border: 2px solid var(--rule); border-left: 4px solid var(--gold); border-radius: 6px; padding: 18px 20px; display: grid; gap: 6px; }
+.daily-n { font-family: var(--display); font-weight: 900; font-size: 40px; line-height: 1; text-transform: uppercase; color: var(--gold); }
+.daily-panel .note { margin: 4px 0 0; font-size: 15px; }
+
+/* online */
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.online-panel { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; }
+.op-col { background: var(--boards); border: 2px solid var(--rule); border-radius: 6px; padding: 18px; display: grid; gap: 10px; align-content: start; }
+.op-col h3 { font-family: var(--display); font-weight: 800; font-size: 24px; text-transform: uppercase; letter-spacing: .04em; margin: 0; }
+.op-col .note { margin: 0; }
+.op-col .go { font-size: 24px; padding: 10px 24px; }
+.join-row { display: flex; gap: 10px; flex-wrap: wrap; }
+.code-input { flex: 1 1 140px; min-width: 0; background: #060c16; border: 2px solid var(--rule); border-radius: 4px; padding: 8px 12px; color: var(--ice); font-family: var(--display); font-weight: 800; font-size: 28px; letter-spacing: .3em; text-transform: uppercase; }
+.code-input:focus { outline: none; border-color: var(--gold); }
+.name-row { grid-column: 1 / -1; display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+.name-row label { font-family: var(--display); font-weight: 800; font-size: 20px; text-transform: uppercase; letter-spacing: .04em; }
+.name-input { flex: 0 1 260px; min-width: 0; background: #060c16; border: 2px solid var(--rule); border-radius: 4px; padding: 8px 12px; color: var(--ice); font: 600 18px var(--body); }
+.name-input:focus { outline: none; border-color: var(--gold); }
+.op-msg { grid-column: 1 / -1; margin: 0; color: var(--frost); font-size: 15px; min-height: 1.45em; }
+.op-msg.err { color: var(--g-f); }
+.lobby { padding-block: 32px; display: grid; gap: 16px; justify-items: start; }
+.code-big { font-family: var(--display); font-weight: 900; font-size: clamp(72px, 16vw, 132px); line-height: .9; letter-spacing: .12em; color: var(--ice); text-shadow: 0 0 30px var(--lamp-glow); user-select: all; }
+.lobby-info { font-family: var(--data); font-size: 14px; letter-spacing: .08em; text-transform: uppercase; color: var(--frost); }
+.seats { display: flex; gap: 12px; flex-wrap: wrap; }
+.seat { background: var(--boards); border: 2px solid var(--rule); border-radius: 6px; padding: 12px 16px; min-width: 180px; display: grid; gap: 2px; }
+.seat .r { font-family: var(--data); font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--frost); }
+.seat .n { font-family: var(--display); font-weight: 800; font-size: 24px; text-transform: uppercase; }
+.seat.empty { border-style: dashed; }
+.seat.empty .n { color: var(--frost); }
+.opp-bar { margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--rule); display: flex; align-items: center; gap: 10px; flex-wrap: wrap; font-family: var(--data); font-size: 14px; letter-spacing: .06em; text-transform: uppercase; color: var(--frost); }
+.opp-bar b { color: var(--ice); }
+.pips { display: flex; gap: 4px; }
+.pip { width: 14px; height: 14px; border-radius: 3px; border: 1px solid var(--rule); }
+.pip.on { background: var(--lamp); border-color: var(--lamp); }
+.h2h h3 small { font-family: var(--data); font-size: 13px; color: var(--frost); letter-spacing: .1em; }
+.verdict { font-family: var(--display); font-weight: 900; font-size: clamp(30px, 6vw, 46px); text-transform: uppercase; line-height: 1; margin: 0 0 14px; }
+.verdict.win { color: var(--g-s); }
+.verdict.loss { color: var(--g-f); }
+.verdict.wait { color: var(--frost); font-size: 24px; }
+.h2h-table { display: grid; gap: 6px; }
+.h2h-row { display: grid; grid-template-columns: minmax(0,1fr) auto 7.5em auto minmax(0,1fr); gap: 10px; align-items: center; padding: 10px 12px; background: var(--boards); border-radius: 6px; }
+.h2h-row .who { font-family: var(--data); font-size: 13px; color: var(--frost); min-width: 0; overflow-wrap: anywhere; }
+.h2h-row .who.r { text-align: right; }
+.h2h-row .k { font-family: var(--display); font-weight: 800; font-size: 17px; text-transform: uppercase; text-align: center; }
+.h2h-row .gr.lose { opacity: .45; box-shadow: none; }
+.h2h-row.head { background: none; padding-block: 0; }
+.h2h-row.head span { font-family: var(--display); font-weight: 800; font-size: 20px; text-transform: uppercase; }
+.h2h-row.total { background: var(--boards-2); border: 1px solid var(--rule); }
+@media (max-width: 560px) { .h2h-row { grid-template-columns: minmax(0,1fr) auto minmax(0,1fr); } .h2h-row .who { display: none; } .h2h-row.head span.hide-sm { display: none; } }
+
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
+</style>
+<style>html{-webkit-text-size-adjust:100%}body{margin:0}img{max-width:100%}[hidden]{display:none!important}:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}.foot a{color:var(--frost)}</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header class="masthead">
+    <div>
+      <h1 class="brand">Rink<span>·</span>Roll</h1>
+      <p class="tag">Spin real NHL players. Steal one skill from each. Build a monster.</p>
+      <nav class="site-nav" aria-label="Site"><a href="how-to-play.html">How to play</a><a href="privacy.html">Privacy</a></nav>
+    </div>
+    <div class="scorebug" id="bug"><span>Pool <b id="bug-pool">—</b></span><span>Pos <b id="bug-pos">—</b></span><span>Re-rolls <b id="bug-rr">—</b></span><button class="mute" id="mute" aria-pressed="false">Sound on</button></div>
+  </header>
+
+  <!-- SETUP -->
+  <section class="setup" id="setup">
+    <div class="step">
+      <h2>How to play <small>Step 1</small></h2>
+      <div class="choices" role="group" aria-label="How to play">
+        <button class="choice" data-play="solo" aria-pressed="true"><span class="t">Solo</span><span class="d">Spin and build at your own pace.</span></button>
+        <button class="choice" data-play="daily" aria-pressed="false"><span class="t">Daily</span><span class="d">Same spins for everyone, one try a day. Compare builds with friends.</span></button>
+        <button class="choice" data-play="online" aria-pressed="false"><span class="t">Head-to-head</span><span class="d">Make a lobby, send the code, and draft against a friend from the same spins.</span></button>
+      </div>
+    </div>
+    <div class="daily-panel" id="daily-panel" hidden></div>
+    <div class="custom-steps" id="custom-steps">
+    <div class="step">
+      <h2>Player pool <small>Step 2</small></h2>
+      <div class="choices" role="group" aria-label="Player pool">
+        <button class="choice" data-mode="current" aria-pressed="true"><span class="t">Current NHL</span><span class="d">Every rostered player with 82+ career NHL games, 2026–27. Graded from NHL EDGE tracking and the last three seasons of stats.</span></button>
+        <button class="choice" data-mode="alltime" aria-pressed="false"><span class="t">All-Time Greats</span><span class="d">The modern era, 1980 to today: top 100 forwards, top 100 defensemen and top 35 goalies, graded against each other.</span></button>
+      </div>
+    </div>
+    <div class="step">
+      <h2>Position <small>Step 3</small></h2>
+      <div class="choices" role="group" aria-label="Position" id="pos-choices">
+        <button class="choice" data-pos="F" aria-pressed="true"><span class="t">Forward</span><span class="d">Centers and wingers.</span><span class="cats">Speed · Shot · Hands · Sense · Playmaking · Build</span></button>
+        <button class="choice" data-pos="D" aria-pressed="false"><span class="t">Defenseman</span><span class="d">Blueliners only.</span><span class="cats">Speed · Shot · Physicality · Build · Stick-checking</span></button>
+        <button class="choice" data-pos="G" aria-pressed="false"><span class="t">Goaltender</span><span class="d">Netminders only.</span><span class="cats">Speed · Reflexes · Mid-range · Long-range · Rebounding</span></button>
+      </div>
+    </div>
+    <div class="step">
+      <h2>Rules <small>Step 4</small></h2>
+      <label class="toggle"><input type="checkbox" id="peek"> Show each player's grades before I pick a slot (easy mode)</label>
+      <div class="scale" style="margin-top:14px">Grade scale:
+        <span class="gr" data-t="F">F</span><span class="gr" data-t="D">D</span><span class="gr" data-t="C">C</span><span class="gr" data-t="B">B</span><span class="gr" data-t="A">A</span><span class="gr" data-t="S">S</span>
+        <span>· with + and − steps from D through A</span></div>
+    </div>
+    </div>
+    <button class="go" id="start">Drop the puck</button>
+    <div class="online-panel" id="online-panel" hidden>
+      <div class="name-row"><label for="my-name">Your name</label><input id="my-name" class="name-input" maxlength="16" autocomplete="nickname" placeholder="Player"></div>
+      <div class="op-col">
+        <h3>Host a lobby</h3>
+        <p class="note">Uses the pool, position and rules you picked above. You'll get a code to send.</p>
+        <button class="go" id="create">Create lobby</button>
+      </div>
+      <div class="op-col">
+        <h3>Join a lobby</h3>
+        <p class="note">Got a code from a friend? The host's settings apply.</p>
+        <div class="join-row">
+          <label class="sr" for="join-code">Lobby code</label>
+          <input id="join-code" class="code-input" maxlength="5" autocomplete="off" spellcheck="false" placeholder="ABCDE">
+          <button class="btn hot" id="join">Join</button>
+        </div>
+      </div>
+      <p class="op-msg" id="online-msg" aria-live="polite"></p>
+    </div>
+  </section>
+
+  <!-- LOBBY -->
+  <section class="lobby" id="lobby" hidden>
+    <p class="tag">Head-to-head lobby</p>
+    <div class="code-big" id="lobby-code">-----</div>
+    <div class="row-actions"><button class="btn" id="copy-code">Copy code</button><button class="btn" id="copy-link">Copy invite link</button><span class="toast" id="code-toast" aria-live="polite"></span></div>
+    <p class="note" id="lobby-howto">Send the invite link (or just the code) to a friend. Keep this page open: the lobby lives in your browser. The game starts as soon as they join.</p>
+    <div class="lobby-info" id="lobby-info"></div>
+    <div class="seats" id="seats"></div>
+    <p class="op-msg" id="lobby-msg" aria-live="polite">Waiting for an opponent…</p>
+    <button class="btn" id="leave-lobby">Leave lobby</button>
+  </section>
+
+  <!-- GAME -->
+  <section class="board" id="game" hidden>
+    <div class="reel" id="reel">
+      <div class="reel-head"><span id="spin-count">Spin 1 of 6</span><span class="lamp" id="lamp"></span></div>
+      <div class="window" id="window">
+        <div class="p-num" id="p-num"></div>
+        <div class="strip" id="strip"><div class="ri">Ready</div></div>
+        <div class="band" aria-hidden="true"></div>
+      </div>
+      <div class="p-meta" id="p-meta" aria-live="polite">Hit spin to roll your first player</div>
+      <div class="reel-actions">
+        <button class="btn hot" id="spin">Spin</button>
+        <button class="btn" id="reroll" title="Skip this player and spin again">Re-roll <span id="rr-left"></span></button>
+        <button class="btn" id="quit">New build</button>
+      </div>
+      <p class="prompt" id="prompt"></p>
+      <div class="opp-bar" id="opp-bar" hidden></div>
+    </div>
+    <div class="slots">
+      <h3><span id="slots-title">Your forward</span><small id="slots-filled">0 / 6 filled</small></h3>
+      <div class="slot-list" id="slot-list"></div>
+    </div>
+  </section>
+
+  <!-- RESULT -->
+  <section class="result" id="result" hidden>
+    <div class="card">
+      <div class="ovr"><span class="gr" id="ovr-grade">B</span><span class="l">Overall</span></div>
+      <div>
+        <p class="tag" id="res-kicker">Your build</p>
+        <h2 class="arch" id="res-arch">Power Forward</h2>
+        <p class="arch-sub" id="res-sub"></p>
+        <div class="proj" id="res-proj"></div>
+      </div>
+    </div>
+    <div class="h2h" id="h2h" hidden>
+      <h3><span>Head to head</span><small id="h2h-code"></small></h3>
+      <p class="verdict" id="verdict">Waiting for your opponent to finish…</p>
+      <div class="h2h-table" id="h2h-table"></div>
+    </div>
+    <div id="parts">
+      <h3>The parts list</h3>
+      <div class="recap" id="recap"></div>
+    </div>
+    <p class="note" id="daily-note" hidden></p>
+    <div class="row-actions">
+      <button class="go" id="again">Build another</button>
+      <button class="go" id="rematch" hidden>Rematch</button>
+      <button class="btn" id="leave-result" hidden>Leave lobby</button>
+      <button class="btn hot" id="share">Share result</button>
+      <button class="btn" id="copy">Copy build</button>
+      <span class="toast" id="toast" aria-live="polite"></span>
+    </div>
+  </section>
+
+  <footer class="foot">
+    <div><b>Fan-made game.</b> Rink Roll is not affiliated with, endorsed by, or sponsored by the National Hockey League, the NHL Players' Association, or any team. Player names and statistics are used for reference only.</div>
+    <div><b>How the grades work.</b> Current players are ranked against everyone at their position, then curved: roughly the top 2% earn S and the bottom 8% get F. Speed blends max skating speed and 20+ mph bursts. Shot blends shot velocity, goal rate and shooting %. Hands, Sense and Playmaking use finishing from the slot, offensive-zone time, points, assists and power-play production. Build is height and weight. Defense adds Physicality (size, penalty minutes, shot power) and Stick-checking (ice time, plus/minus, clean play). Goalie grades come from save % by shot distance, three-season save %, and career save %. Small samples are pulled toward average.</div>
+    <div>Public NHL data doesn't split saves by glove or blocker side, so goalies are graded on save % by shot distance instead: Mid-range and Long-range. All-Time Greats covers players whose careers fall mostly between 1980 and 2026 (100 forwards, 100 defensemen, 35 goalies), graded by hand from each player's career and reputation.</div>
+    <div>Current mode only includes players with at least 82 career NHL regular-season games, and forwards need at least 0.30 career points per game. Data: NHL rosters, stats and EDGE tracking updated November 5, 2026.</div>
+    <div>Head-to-head connects the two browsers directly through PeerJS. No accounts, and nothing is stored on a server. <a href="how-to-play.html">How to play</a> · <a href="privacy.html">Privacy policy</a></div>
+  </footer>
+</div>
+
+<script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
+<script>
+const CURRENT_RAW = `James Hagens|BOS|C|44|F C- C- C+ C+ D|18|6|7
+Morgan Geekie|BOS|C|39|C- S A C+ B- B+|430|114|124
+Mark Kastelic|BOS|C|47|B+ C- D D- D- S|303|33|34
+Casey Mittelstadt|BOS|C|11|C C B C- B C|525|101|186
+JJ Peterka|BOS|R|10|B+ B+ B+ A- B D|336|96|112
+David Pastrnak|BOS|R|88|D- A A- A- S C|849|428|525
+Pavel Zacha|BOS|C|18|C A- A C+ A- A-|721|158|259
+Marat Khusnutdinov|BOS|C|92|B+ C- C D D F|184|24|31
+Fraser Minten|BOS|C|93|B C+ C+ B- D+ B|123|25|25
+Tanner Jeannot|BOS|L|84|C+ D D- D D A|387|56|63
+Elias Lindholm|BOS|C|28|F B B+ C+ A- C+|985|257|408
+Sean Kuraly|BOS|C|52|C+ D- F D- D B+|649|70|105
+Matthew Poitras|BOS|C|51|F D D+ B- C+ D+|81|11|23
+Jackson Blake|CAR|R|53|D C+ B A B D|179|43|61
+William Carrier|CAR|L|28|B F D- B D+ B|543|69|75
+Nicolas Deslauriers|CAR|L|44|F D- F D F B+|720|55|54
+Nikolaj Ehlers|CAR|L|27|A A- B+ A+ A F|773|255|350
+Sebastian Aho|CAR|C|20|C+ A A S A+ C-|773|319|413
+Taylor Hall|CAR|L|71|A- B B B+ B+ B|997|305|487
+Eric Robinson|CAR|L|50|A C- D+ B+ D- B|472|68|80
+Jesperi Kotkaniemi|CAR|C|82|D- D- D B+ C A-|533|82|128
+Jordan Martinook|CAR|L|48|B- D D A- C- B-|814|109|160
+Seth Jarvis|CAR|R|24|A A- A A+ A- F|381|129|157
+Jordan Staal|CAR|C|11|B B+ B A C A-|1409|318|429
+Logan Stankoven|CAR|C|22|C- B- B- A B- F|200|51|61
+Andrei Svechnikov|CAR|R|37|A- A A A A- B+|574|188|260
+Mark Jankowski|CAR|L|77|D+ C C B F B|495|87|67
+Filip Hallander|EDM|C|19|C D D C- C B-|26|2|5
+Colton Dach|EDM|C|34|C D- D- D- D A|98|10|14
+Jason Dickinson|EDM|C|16|C+ D D- D- D B-|573|76|99
+Kasperi Kapanen|EDM|R|42|A- C D+ D- D+ C|584|102|146
+Leon Draisaitl|EDM|C|29|A A+ S S A+ A-|871|447|635
+Connor McDavid|EDM|C|97|S A- S S S C+|810|418|842
+Mattias Janmark|EDM|C|13|C+ F F F C- C+|680|83|138
+Trent Frederic|EDM|C|10|B- D- D- F F A|426|60|57
+Max Jones|EDM|L|46|C- D+ D D- F A|312|35|34
+Isaac Howard|EDM|L|53|C+ D- D- F D+ D-|42|3|5
+Mathieu Joseph|EDM|R|21|B- F F D C- C-|487|64|103
+Zach Hyman|EDM|L|18|A- B+ A A+ C+ B-|717|262|234
+Alex Formenton|EDM|L|26|C+ C- C- C- C- C+|125|25|19
+Vasily Podkolzin|EDM|R|92|A C+ C B+ D+ B|317|54|56
+Owen Michaels|EDM|R|43|D+ C C- D D+ D+|16|2|2
+Ryan Nugent-Hopkins|EDM|C|93|C+ B+ A- A- A D+|1038|295|518
+Matt Savoie|EDM|C|22|B C- C+ B- C F|87|18|20
+Cole Caufield|MTL|R|13|B- S A+ A+ B F|383|179|142
+Josh Anderson|MTL|R|17|A+ B C D F A+|703|167|116
+Owen Beck|MTL|C|62|C D- D- C+ D C-|33|2|3
+Zachary Bolduc|MTL|R|76|C C+ C B C- D+|190|41|41
+Kirby Dach|MTL|C|77|B C C+ D C A+|319|51|88
+Phillip Danault|MTL|C|24|D- D D+ B B- C|801|132|285
+Alexandre Texier|MTL|L|85|D C- D+ C+ C- C|298|50|66
+Ivan Demidov|MTL|R|93|B- B B B+ A- C|86|21|45
+Oliver Kapanen|MTL|C|91|B- B C+ C- D- C+|108|23|17
+Jake Evans|MTL|C|71|C D+ C- D+ C- D|433|54|103
+Juraj Slafkovský|MTL|L|20|A- B+ A A- A- A|297|74|121
+Alex Newhook|MTL|C|15|B B- C+ C- D+ C-|353|73|84
+Chris Kreider|MTL|L|22|B A- A- B C+ A|973|350|290
+Florian Xhekaj|MTL|L|63|D D+ D+ D+ C+ B|12|1|3
+Nick Suzuki|MTL|C|14|A+ A- A+ A+ S C-|546|172|316
+Nic Dowd|VGK|C|26|D+ F D- C D+ B-|674|89|111
+Ivan Barbashev|VGK|L|49|C+ B+ B+ A B+ D+|684|151|211
+Braeden Bowman|VGK|R|42|D- D C C- B- C+|71|11|21
+Mitch Marner|VGK|R|93|D B+ A A+ S D-|753|247|592
+Trevor Connelly|VGK|L|24|B B- B- B C+ D|17|6|5
+Raphael Lavoie|VGK|C|36|D- D- D- D- D+ A|28|1|2
+Jack Eichel|VGK|C|9|A A- B+ S S C+|707|273|447
+Mark Stone|VGK|R|61|C- S S S A+ B|783|269|457
+Victor Olofsson|VGK|L|95|B B- C A- C F|452|122|125
+Tomas Hertl|VGK|C|48|D+ B+ B+ A- B+ A-|890|283|335
+William Karlsson|VGK|C|71|C- C+ C+ B B D|769|186|273
+Marc Gatcomb|VGK|C|17|B- D F F F C+|105|12|6
+Brett Howden|VGK|C|21|A B- C+ C+ D B|506|79|92
+Jesper Boqvist|NJD|C|70|A- D- F D D- C-|400|54|57
+Jesper Bratt|NJD|L|63|B+ C+ A- A S F|649|174|357
+Connor Brown|NJD|R|16|A- C- B- C+ C+ D|683|128|178
+Nico Hischier|NJD|C|13|B A- A- A- A- C|624|206|292
+Luke Evangelista|NJD|R|77|C D- C+ A- A- D|265|48|102
+Arseny Gritsyuk|NJD|R|81|B- C+ C- A- C+ C-|81|21|22
+Jack Hughes|NJD|C|86|B- B A- A+ A+ F|444|176|271
+Cody Glass|NJD|C|12|D+ C C+ D+ D- B|337|55|66
+Anthony Mantha|NJD|R|39|B A+ A- B- B- A+|603|182|191
+Timo Meier|NJD|R|28|B- B+ B- B- B- B|713|242|242
+Stefan Noesen|NJD|R|11|F D D+ D C- B-|487|84|94
+Evan Rodrigues|NJD|C|17|D+ C- D+ B- C+ D|631|109|166
+Amadeus Lombardi|NJD|C|93|C+ D C- C C+ D|13|0|4
+Ryan Hartman|MIN|R|38|C- B- B- C+ C C|742|163|188
+Joel Eriksson Ek|MIN|C|14|C+ B B A B+ B+|631|161|204
+Nico Sturm|MIN|C|78|C- D D F D- B+|391|51|54
+Matt Boldy|MIN|L|12|C S A+ A+ A B|378|151|194
+Kirill Kaprizov|MIN|L|97|C+ A+ S A+ A D+|414|245|256
+Bobby Brink|MIN|R|10|A- C- B- C B F|231|39|68
+Michael McCarron|MIN|C|47|C D D- C- D- S|398|39|48
+Nick Foligno|MIN|L|71|F D D C+ C+ B-|1290|252|361
+Blake Coleman|MIN|L|20|C+ B- C+ B C- C-|710|174|158
+Maxim Shabanov|MIN|R|49|D D+ C- D- B- F|60|10|18
+Marcus Foligno|MIN|L|17|D- C- D+ C D- A+|935|148|188
+Tyler Pitlick|MIN|C|19|C- F F F D- B-|463|58|53
+Danila Yurov|MIN|R|22|B+ B- C+ D D+ D+|90|18|16
+Yakov Trenin|MIN|C|13|A- D- D- D- D B|474|61|61
+Oskar Bäck|DAL|C|10|D F D- C D B|152|9|20
+Colin Blackwell|DAL|C|15|B F F D D+ F|380|45|62
+Jamie Benn|DAL|L|14|F A B+ C B+ A-|1267|416|582
+Roope Hintz|DAL|C|24|A+ A- A- A- A A-|536|196|238
+Matt Duchene|DAL|C|95|D- A- A B+ A C-|1195|387|549
+Radek Faksa|DAL|C|12|D D- F D+ C- A-|777|96|138
+Justin Hryckowian|DAL|C|49|C- C C+ C D C-|101|16|17
+Wyatt Johnston|DAL|C|53|C- A S B+ A- D+|341|137|139
+Arttu Hyry|DAL|R|25|D C D C- D- B|40|7|5
+David Perron|DAL|L|16|D+ B- B- B- C C|1241|332|480
+Joel Kiviranta|DAL|L|22|B D- F B F F|360|40|32
+Jason Robertson|DAL|L|21|C+ A+ A+ A+ A B|471|221|287
+Tyler Seguin|DAL|C|91|D- B+ B+ C+ B+ B-|1031|370|462
+Mikko Rantanen|DAL|R|96|B- A A+ A- A+ A+|731|324|476
+Sam Steel|DAL|C|18|C- D+ C- C C+ D+|504|62|116
+Conor Geekie|TBL|C|94|C- C- D- D+ F A|80|13|8
+Anthony Cirelli|TBL|C|71|C+ A- A- A B C|596|152|201
+Pontus Holmberg|TBL|R|29|B D+ D+ C+ D+ C|243|34|47
+Nikita Kucherov|TBL|R|86|B- S A+ S S D-|893|405|739
+Zemgus Girgensons|TBL|C|28|B- D D- D- F B|855|101|115
+Gage Goncalves|TBL|C|93|B- D+ C B- C+ C+|149|19|37
+Ilya Mikheyev|TBL|R|95|A+ B C D+ D C+|441|100|105
+Yanni Gourde|TBL|C|37|D+ D+ D+ B- B- D-|684|142|233
+Brandon Hagel|TBL|L|38|A A A+ S A- C+|460|169|218
+Jake Guentzel|TBL|C|59|C+ A S A+ A- D-|695|314|359
+Dominic James|TBL|C|17|B+ C- D+ C- C- D+|49|7|10
+Jeffrey Viel|TBL|L|25|C+ F D- C- D+ B|110|6|11
+Brayden Point|TBL|C|21|A+ B A A A- F|734|329|369
+Scott Sabourin|TBL|R|49|D D- D- D C- A-|76|3|11
+Parker Kelly|COL|C|17|C+ B- C B F C-|355|48|47
+Gabriel Landeskog|COL|L|92|C- B B- A- B B|814|267|349
+Zachary L'Heureux|COL|L|68|D- D D D+ D C|90|9|12
+Nazem Kadri|COL|C|91|D+ C+ B B- A- D+|1078|328|446
+Logan O'Connor|COL|R|25|C D F C- D- D|361|45|60
+Artturi Lehkonen|COL|L|62|D B+ B A C+ D-|676|177|176
+T.J. Hughes|COL|R|13|C- D+ C C+ C+ D|16|2|4
+Nathan MacKinnon|COL|C|29|S A+ A+ S S C|966|429|740
+Brock Nelson|COL|C|11|B A A A+ B B+|1017|338|323
+Martin Necas|COL|C|88|S A+ A+ A+ A+ B-|535|169|275
+Jaden Schwartz|COL|L|71|D- B+ B- C- C+ F|877|239|325
+Nicolas Roy|COL|C|10|F D C- C C B|453|78|118
+Fedor Svechkov|COL|C|9|B+ F D- C- C- D+|138|14|27
+Michael Carcone|UTA|L|53|A+ C C- C+ D+ F|243|51|39
+Logan Cooley|UTA|C|92|S A A B B+ C-|227|77|92
+Barrett Hayton|UTA|C|27|B+ D C B B- B-|374|66|98
+Lawson Crouse|UTA|L|67|A- B+ C+ B- D- A|682|140|124
+Dylan Guenther|UTA|R|11|A A+ A B+ B+ C|243|97|97
+Jack McBain|UTA|C|22|D D- D+ C D+ A+|332|45|65
+Clayton Keller|UTA|R|9|B+ B+ A- A+ S F|699|226|391
+Nick Schmaltz|UTA|C|8|A+ A- A+ A A D|686|183|331
+Anders Lee|UTA|L|72|C- B- B- B+ C+ A|939|311|245
+Kevin Stenlund|UTA|C|82|D- D F D- D A-|384|47|48
+Vincent Trocheck|UTA|C|16|A- B+ B+ A- A- D+|884|242|398
+Liam O'Brien|UTA|C|38|D F F D- F B+|268|14|25
+Kailer Yamamoto|UTA|R|56|C- B B- C+ D+ F|383|76|91
+Mason Appleton|DET|C|22|C- F D- D D- C+|467|63|89
+Viktor Arvidsson|DET|L|33|C+ A B+ C B- F|698|227|231
+Michael Brandsegg-Nygård|DET|R|28|D D+ D B- C+ B-|30|3|8
+Sheldon Dries|DET|C|15|D- D- D D D F|137|16|10
+John Leonard|DET|L|43|D+ C- C D C- D|83|8|13
+J.T. Compher|DET|L|37|B- D+ C- D C+ D+|667|131|177
+Andrew Copp|DET|C|18|B- D- C C- B C|795|125|224
+Nate Danielson|DET|C|29|D+ D- D F C C|40|2|7
+Alex DeBrincat|DET|R|93|B A A B- B+ F|712|301|310
+Emmitt Finnie|DET|C|58|B C- C D+ C- C|98|20|21
+Keegan Kolesar|DET|R|55|B- F F D+ D A-|455|45|76
+Marco Kasper|DET|C|92|B+ D+ D+ D- D C+|160|28|28
+Carter Mazur|DET|L|34|D+ D D D D+ C|19|1|2
+Michael Rasmussen|DET|C|27|C D- D F D- A-|470|67|91
+Lucas Raymond|DET|L|23|B A- A- B A+ D|416|129|217
+Mavrik Bourque|NSH|C|22|B- C+ C+ B C- D-|167|31|37
+Jack Drury|NSH|C|18|D+ D- D B D+ D|283|32|54
+Nils Hoglander|NSH|L|21|D- D+ D- C+ D+ D-|346|63|62
+Adam Edstrom|NSH|C|84|B+ D D- D- F A|112|16|7
+Ross Colton|NSH|C|79|A C D+ B C- D+|419|92|90
+Filip Forsberg|NSH|L|9|D A+ A+ A- A B-|877|363|412
+Jonathan Marchessault|NSH|C|81|F B- B- C B+ D-|792|265|314
+Alexander Kerfoot|NSH|C|14|C- C- C+ C+ C D|654|107|204
+Ryan O'Reilly|NSH|C|90|C- B+ A A- A C+|1248|335|578
+Reid Schaefer|NSH|L|49|C C- D+ F F A|55|7|2
+Steven Stamkos|NSH|C|91|B+ S A+ B B C+|1261|632|640
+Shane Wright|NSH|C|15|B D+ C+ C C C-|184|39|43
+Vitali Pinchuk|NSH|C|51|D+ C- C- C- C B|6|0|1
+Casey Cizikas|NYI|C|53|B D+ D D- F D|992|125|157
+Mitchell Chaffee|NYI|R|26|F D- F D F C-|115|16|10
+Anthony Duclair|NYI|L|11|C+ B C+ F D+ D+|683|168|178
+Emil Heineman|NYI|L|51|A+ B C- D- D- B-|162|34|21
+Victor Eklund|NYI|R|38|D- D+ D+ B- C D-|15|3|3
+Bo Horvat|NYI|C|14|A A B+ A- B B|895|307|325
+Simon Holmstrom|NYI|R|92|B+ A- B C+ C+ B|293|64|63
+Matias Maccelli|NYI|L|63|C+ B- B- D+ B D|303|53|122
+Kyle MacLean|NYI|C|32|B- F F F D- C+|177|10|17
+Jean-Gabriel Pageau|NYI|C|44|C C+ B C- B- F|885|177|231
+Ondrej Palat|NYI|L|81|C D+ D+ D- D+ D+|919|184|340
+Kyle Palmieri|NYI|C|21|D+ B- C D+ B- D+|939|279|270
+Calum Ritchie|NYI|C|64|B+ C B- D- C B-|80|15|18
+Brayden Schenn|NYI|C|10|C+ B B D+ B B-|1116|300|433
+A.J. Greer|ANA|L|18|C- C C- B- D- A+|339|40|47
+Leo Carlsson|ANA|C|91|B B+ A- A A- B+|216|66|97
+Mikael Granlund|ANA|C|64|C B- A- A- A D|974|202|462
+Cutter Gauthier|ANA|L|61|A A B+ B+ B- B-|173|71|58
+Judd Caulfield|ANA|R|28|C C+ B- C+ C+ B+|13|4|4
+Alex Killorn|ANA|L|17|C+ C C B C- C+|1047|252|325
+Jeff Malott|ANA|L|39|B- F F D- D A+|85|5|10
+Beckett Sennecke|ANA|R|45|A- B+ B+ B A- A-|97|31|45
+Sam Colangelo|ANA|R|12|F C D+ D D- B|55|13|6
+Nikita Nesterenko|ANA|C|13|C D- D- D C- B-|74|9|12
+Troy Terry|ANA|R|19|C+ C+ B A A- D+|488|135|207
+Roger McQueen|ANA|C|95|C C C C- C- A-|10|2|0
+Tim Washe|ANA|C|42|C D- D- C D- B+|56|5|6
+Ryan Poehling|ANA|C|25|A D C- C+ C+ B-|363|55|78
+Nico Myatovic|ANA|L|48|C- C C C C B|1|0|0
+Frank Vatrano|ANA|R|77|B- C+ D C- D+ C|703|188|140
+Oliver Bjorkstrand|NYR|R|28|D+ C C C- B- D-|720|190|234
+Will Cuylle|NYR|L|50|B- B C+ B C A|265|57|56
+Pavel Dorofeyev|NYR|R|16|C A+ A- B+ C+ C|247|96|62
+Luke Glendening|NYR|C|43|A- F F F F D-|937|85|90
+Tye Kartye|NYR|L|24|D+ C- D+ C- D+ C|220|29|37
+Jaroslav Chmelar|NYR|R|49|B- C- D+ D- D- A+|36|4|2
+J.T. Miller|NYR|C|10|B+ B+ A- B+ A+ B+|955|281|493
+Alexis Lafrenière|NYR|L|13|C+ B B+ B+ B C|478|125|141
+Gabe Perreault|NYR|R|94|D C+ B C+ C+ F|70|16|18
+Noah Laba|NYR|C|42|A- D- D+ C- C A-|90|9|19
+Mika Zibanejad|NYR|C|93|C+ A+ A B- A B-|1027|351|479
+Joseph Veleno|NYR|C|90|A- D- F D- F C+|371|40|46
+Matt Rempe|NYR|C|73|C- F F D+ F S|88|5|6
+Adam Sykora|NYR|L|38|D+ C+ C C D+ D+|11|3|1
+Eeli Tolvanen|NYR|R|17|D C+ D+ D C- D-|439|96|100
+Ty Dellandrea|SJS|C|10|C D- F F D C+|274|17|45
+Kiefer Sherwood|SJS|L|44|B- B C+ C+ C- C|354|68|74
+Macklin Celebrini|SJS|C|71|B- A+ A+ B- A+ C-|167|76|119
+Michael Misa|SJS|C|77|B- C+ B- D- B- D+|62|12|19
+Filip Bystedt|SJS|C|18|D+ C- C- C- C B+|4|0|0
+Adam Gaudette|SJS|R|81|B B- C+ D+ F C-|371|63|58
+Barclay Goodrow|SJS|C|23|C F F F F B+|748|70|120
+Igor Chernyshov|SJS|L|92|C- B- B B C+ C+|39|11|12
+Mason Marchment|SJS|L|27|F B+ B+ B+ B A+|387|99|141
+Zack Ostapchuk|SJS|C|63|A- F F F F A|138|6|6
+Collin Graf|SJS|R|51|B+ C B D+ C C-|138|28|34
+Ivar Stenberg|SJS|L|41|C- B- B- D+ B- D-|17|4|6
+Alexander Wennberg|SJS|C|21|B+ B- B+ C+ B+ C|878|119|309
+Tyler Toffoli|SJS|C|73|D- B B C- B C-|986|313|320
+Will Smith|SJS|C|2|C A- B+ C- B+ D-|160|48|66
+Jonatan Berggren|STL|R|29|B- D+ C- C- C- D|220|39|46
+Dalibor Dvorsky|STL|R|15|D- C+ D+ D D- B-|88|15|10
+Ross Johnston|STL|L|49|D- F F C D S|314|14|33
+Pavel Buchnevich|STL|L|89|D- B+ B+ A- A- B-|688|205|308
+Dylan Holloway|STL|L|81|C+ A- B A+ A- C+|240|60|84
+Mason McTavish|STL|C|83|D- B- B- B B B|319|83|108
+Connor McMichael|STL|L|77|A- C+ C+ C B D|330|69|93
+Aleksanteri Kaskimaki|STL|C|41|D+ D+ D D C- C|11|1|1
+Dillon Dube|STL|C|65|C- C C C C D|328|58|70
+Pius Suter|STL|C|22|F B- C+ C+ C- F|443|99|100
+Jake Neighbours|STL|L|63|D+ B B B+ C+ C+|295|75|65
+Robert Thomas|STL|C|18|B+ B A+ S A+ C+|545|134|336
+Alexey Toropchenko|STL|R|13|A D- F F D A+|329|34|39
+Jimmy Snuggerud|STL|R|21|D+ B+ B B+ B C|92|30|36
+Luca Del Bel Belluz|CBJ|C|93|F F D D- C D+|37|3|7
+Charlie Coyle|CBJ|C|3|B+ B B C+ B+ B+|1045|212|344
+Conor Garland|CBJ|R|83|B C- C+ D B F|569|134|191
+Kent Johnson|CBJ|C|91|C+ D+ C C- B D-|287|60|91
+Dmitri Voronkov|CBJ|L|10|D B B+ B- C+ S|219|58|57
+Matthew Knies|CBJ|L|89|C+ A- A- D+ B+ A|253|69|96
+Adam Fantilli|CBJ|C|19|A+ B B- B- B- B-|226|71|75
+Ryan Lomberg|CBJ|L|94|B- F F D- D- D-|407|35|37
+Sean Monahan|CBJ|C|23|C- C B- B A- C+|909|277|359
+Valeri Nichushkin|CBJ|R|43|A B- B- A B A-|640|156|209
+Mathieu Olivier|CBJ|R|24|D B C B- D- A-|324|49|49
+Cole Sillinger|CBJ|C|4|B+ D D+ C- B- C+|380|55|93
+Morgan Barron|WPG|C|36|A+ C- D D+ D- A|337|43|45
+Kyle Connor|WPG|L|81|C+ A+ A A+ A D|711|336|355
+Alex Iafallo|WPG|L|9|C C C B- C- C-|679|127|169
+Cole Koepke|WPG|L|45|A+ D+ F D- F C+|177|20|19
+Adam Lowry|WPG|C|17|C- D D B- C- A|861|128|172
+Viggo Björck|WPG|C|61|C- C- D+ D+ D+ F|16|0|0
+Nino Niederreiter|WPG|R|62|D- C- C- C- C- B|1040|248|251
+Cole Perfetti|WPG|C|91|F C- C+ B+ B+ D-|306|65|103
+Isak Rosen|WPG|R|27|C+ C- C- F D- D|67|7|6
+Mark Scheifele|WPG|C|55|A- A+ S A+ A+ B+|977|374|547
+Dawson Mercer|WPG|C|19|D+ C+ B- B- C D|426|103|112
+Vladislav Namestnikov|WPG|C|7|C D- D+ B- C+ D|852|145|206
+Gabriel Vilardi|WPG|C|13|D- A- A+ A- A- B+|368|121|130
+Brayden Yager|WPG|C|29|D+ C- C- C- C D-|4|0|0
+Filip Chytil|VAN|C|77|D D+ C- C C- B|412|80|95
+Paul Cotter|VAN|L|47|A- C+ D+ F F B+|312|51|39
+Brock Boeser|VAN|R|6|D- A B+ D+ B+ C+|646|231|265
+Jake DeBrusk|VAN|L|74|A+ B- B D- C C|643|194|172
+Linus Karlsson|VAN|C|94|C- C- C+ D+ C D+|123|22|29
+Brendan Gallagher|VAN|R|7|B D+ C- C C- D-|925|246|243
+Liam Ohgren|VAN|L|92|B C- D F D- D|113|16|17
+Arshdeep Bains|VAN|L|13|C- D- D- F D D|62|4|6
+Elias Pettersson|VAN|C|40|B B B D+ A D+|562|204|322
+Jonathan Lekkerimäki|VAN|R|88|F B- C F C- F|54|11|11
+Drew O'Connor|VAN|L|18|B+ C- C- D- D- A-|340|53|56
+Marco Rossi|VAN|C|23|D- B B+ C B+ F|250|60|82
+Max Sasson|VAN|C|63|A+ C+ C D- F D+|112|20|12
+Jacob Quillan|VAN|C|62|C- D D F D B-|26|1|2
+Noel Acciari|PHI|C|52|F D- D D F C-|602|82|64
+Denver Barkey|PHI|C|86|C D- C- C B- F|57|6|17
+Sean Couturier|PHI|C|14|D D+ C B- B A-|969|219|365
+Christian Dvorak|PHI|C|22|B D+ C+ C+ B- C-|631|126|181
+Nikita Grebenkin|PHI|R|17|D D D D D+ B+|62|4|10
+Noah Cates|PHI|L|27|C- C- B- B- B- C+|334|60|94
+Tyson Foerster|PHI|R|71|F A B- C D A-|211|64|40
+Travis Konecny|PHI|R|11|C+ A A- B+ A D+|730|226|323
+Porter Martone|PHI|R|94|D- C+ C+ B B A-|26|7|11
+Matvei Michkov|PHI|R|39|D C+ B B B+ D-|178|56|71
+Owen Tippett|PHI|R|74|S B+ B- C C B-|439|122|116
+Trevor Zegras|PHI|C|46|C- B- A- B A- C-|366|97|170
+Michael Bunting|PHI|L|58|C+ C+ C+ C+ C+ C-|426|109|144
+Cole Knuble|PHI|R|54|C C+ C C- C- F|7|3|0
+Connor Bedard|CHI|C|98|B A- A- C- A D+|229|79|136
+Ryan Donato|CHI|C|8|C B C+ D+ C C-|581|125|137
+Tyler Bertuzzi|CHI|L|59|F B+ A D+ B- B-|583|170|201
+Jordan Greenway|CHI|L|12|D- F F F D S|490|57|109
+Anton Frondell|CHI|C|16|D- C+ C- D+ B C|28|6|11
+Ryan Greene|CHI|C|20|C D C- D- C- C-|99|14|19
+Patrick Kane|CHI|R|88|B- C B D+ A+ F|1384|509|900
+Frank Nazar|CHI|C|91|A+ B- C+ D B- D|136|33|42
+Oliver Moore|CHI|C|11|B+ D D D- B- D+|75|7|19
+Andrew Mangiapane|CHI|L|26|C C C- D D D-|564|131|130
+Dillon Boucher|CHI|L|36|D+ C C C C B-|1|0|0
+Teuvo Teravainen|CHI|C|86|F B B D+ A- D-|840|186|372
+Cole Smith|CHI|R|22|A- F D- C- F B|308|26|41
+Dominic Toninato|CHI|C|25|D+ D- D- C- D B-|200|13|23
+Roman Kantserov|CHI|R|80|B- B- B- D+ C- F|16|7|2
+Egor Chinakhov|PIT|R|59|A+ B+ B- D+ C C|258|57|60
+Sidney Crosby|PIT|C|87|B+ S S A- A+ C|1435|658|1113
+Justin Brazeau|PIT|R|16|D- B- B- D D+ A|160|33|30
+Connor Dewar|PIT|C|19|B+ D D C+ D- D-|331|39|49
+Ville Koivunen|PIT|R|41|D D- D C+ B- D+|60|4|15
+Andrei Kuzmenko|PIT|L|62|F A- B+ C+ B D|282|85|98
+Ben Kindel|PIT|C|81|B- C+ C+ C- C F|89|20|21
+Blake Lizotte|PIT|C|46|C+ D+ D+ C D+ F|449|55|94
+Evgeni Malkin|PIT|C|71|D- A- A- B+ A+ A|1282|539|879
+Nick Robertson|PIT|L|14|B B C- D- D- F|249|54|40
+Rickard Rakell|PIT|R|67|B A- A- B B D+|877|265|311
+Tommy Novak|PIT|C|18|D+ C B- B B- D+|300|70|101
+Hendrix Lapierre|PIT|C|22|B F D- C C D+|169|15|38
+Elmer Soderblom|PIT|L|25|C C- D C D- A+|112|16|17
+Bryan Rust|PIT|R|17|B+ A A B+ B+ C-|717|235|272
+Bo Groulx|TOR|C|29|D+ C- D+ D+ D C+|85|4|6
+Kirill Marchenko|TOR|R|86|A+ B+ B+ A- A- B|306|108|114
+Teddy Blueger|TOR|C|73|D+ D+ C- F C- D+|470|60|113
+Brandon Duhaime|TOR|L|24|A- F F D- F A-|392|34|40
+Dakota Joshua|TOR|C|81|F C- C F F A|298|50|46
+Easton Cowan|TOR|R|53|D+ C C D+ B- C-|83|17|26
+Zack MacEwen|TOR|R|19|F D+ F C+ F A+|251|19|19
+Auston Matthews|TOR|C|34|D+ A- A- B+ A B+|706|439|367
+William Nylander|TOR|R|88|A- S A+ B A C-|767|302|410
+John Tavares|TOR|C|91|B- A+ A+ C+ A- B|1273|527|665
+Nick Paul|TOR|L|20|C+ D+ D+ C+ D+ A|554|106|114
+Gavin McKenna|TOR|L|92|B C+ B- C- B- F|17|5|6
+Vinni Lettieri|TOR|C|71|C D D F F D|163|16|17
+Miles Wood|TOR|L|18|A D+ D F F B+|567|99|97
+Jack Roslovic|TOR|C|96|A- B B- B- C C-|612|131|183
+Colton Sissons|TOR|C|15|B D- D- D D B-|773|103|134
+Michael Amadio|OTT|R|22|C+ C+ C B+ D+ C+|539|88|94
+Drake Batherson|OTT|R|19|C+ A+ A+ A A- B+|487|158|224
+Dylan Cozens|OTT|C|24|S B+ B+ B+ B+ B+|461|114|168
+Andre Burakovsky|OTT|L|95|C C- C+ D+ B B-|779|164|256
+Nick Cousins|OTT|C|21|D+ D D B- D C-|740|87|133
+William Eklund|OTT|L|27|C+ C B B+ A D-|256|51|114
+Claude Giroux|OTT|R|28|D+ C+ B- A A D-|1362|382|793
+Ridly Greig|OTT|C|71|B+ D+ C- B+ C+ C-|261|43|65
+Fabian Zetterlund|OTT|L|20|B- B- C+ B+ C C-|346|70|86
+Stephen Halliday|OTT|C|34|C- D+ C- C C- B+|47|7|9
+Hayden Hodgson|OTT|R|42|D+ D D C- D+ A-|25|1|2
+Warren Foegele|OTT|L|37|B B- C- C D- B-|594|118|112
+Shane Pinto|OTT|C|12|C+ A- B A- C B+|299|80|85
+Tim Stützle|OTT|C|18|S A+ S A+ A+ C-|464|158|273
+Lars Eller|FLA|C|20|C D- D- C- D+ B-|1200|194|253
+Cole Reinhardt|FLA|L|29|B+ C D+ F F B-|78|10|7
+Eetu Luostarinen|FLA|C|27|C- D- D+ B+ C B-|463|63|103
+Sam Bennett|FLA|C|9|C B+ B B+ B- C+|783|192|209
+Garnet Hathaway|FLA|R|21|C F F D- F A-|688|76|88
+Aleksander Barkov|FLA|C|16|F C C+ A+ A+ B+|806|286|496
+Brad Marchand|FLA|L|63|C+ A A B B+ D-|1154|452|583
+Sam Reinhart|FLA|C|13|C A A+ A A- C|855|332|364
+Brady Tkachuk|FLA|L|8|D+ A- B+ A A- A+|588|221|259
+Bokondji Imama|FLA|L|14|F F F C D- B+|49|2|0
+Carter Verhaeghe|FLA|C|23|B B+ B+ B+ B+ C|504|181|191
+Jonah Gadjovich|FLA|L|12|F F F F F A-|170|10|11
+Cole Schwindt|FLA|R|79|F D+ D+ D+ D- B|85|6|9
+Matthew Tkachuk|FLA|L|19|F B A A A+ B|689|257|435
+Anton Lundell|FLA|C|15|D C B- A B C+|375|82|125
+Sandis Vilmanis|FLA|L|95|D C C- C+ D+ C-|34|6|6
+Sam Carrick|BUF|C|10|D D D- C- D- B-|400|43|47
+Zach Benson|BUF|L|6|C- D C+ B+ B+ D-|226|36|79
+Peyton Krebs|BUF|C|19|A D D+ C+ C+ C|393|43|98
+Jiri Kulich|BUF|C|20|D B- D+ D+ D- C|83|19|13
+Ryan McLeod|BUF|C|71|A+ C+ C+ A- B+ C+|394|67|118
+Noah Ostlund|BUF|C|86|D B- C+ B- C+ D-|83|15|21
+Josh Doan|BUF|R|91|C+ B B+ C+ C+ C+|159|39|44
+Tyson Kozak|BUF|C|48|B+ F F F F D-|74|6|6
+Beck Malenstyn|BUF|L|29|S D- F D- F B+|277|19|31
+Josh Norris|BUF|C|9|B+ A B+ B B- B-|298|106|89
+Konsta Helenius|BUF|C|94|D- D+ D C C+ D|20|2|5
+Justin Danforth|BUF|R|15|F F F D+ D+ D|193|31|33
+Tage Thompson|BUF|C|72|A- S A B B+ A+|544|226|198
+Jack Quinn|BUF|R|22|A C+ C+ C- B+ C-|275|67|95
+Jason Zucker|BUF|L|17|D B+ A- B- B C-|838|242|227
+Joel Farabee|CGY|L|86|C C+ B- D+ C D+|513|118|142
+Mikael Backlund|CGY|C|11|C- C C C C+ C|1162|234|377
+Ben Jones|CGY|C|18|D- F F F D- D|58|1|2
+Morgan Frost|CGY|C|16|B+ C B+ C B- D+|408|79|121
+Matt Coronato|CGY|R|27|B C+ B- D+ B D-|208|48|67
+Yegor Sharangovich|CGY|C|17|D+ B C- D D+ C|454|119|112
+Matvei Gridin|CGY|R|92|D C C- D B D|53|11|19
+Samuel Honzek|CGY|L|29|D D+ D C- D C+|27|2|2
+Jonathan Castagna|CGY|C|38|D+ C- C- C C C-|13|0|3
+Jonathan Huberdeau|CGY|L|10|F C+ B B- B+ C+|962|263|544
+Adam Klapka|CGY|R|43|B- D+ D- D- D S|132|16|19
+William Stromgren|CGY|L|65|D C- C- C+ C- C-|5|1|0
+Ryan Strome|CGY|C|22|F D+ C+ B- B C+|932|177|330
+Brennan Othmann|CGY|L|78|D+ D D F D C-|50|2|3
+Maxim Tsyplakov|CGY|R|72|F F D- D C B|134|12|28
+Aydar Suniev|CGY|L|61|D+ C- D D D+ C+|20|4|2
+Curtis Douglas|SEA|C|42|F F D- D- D S|47|1|3
+Jagger Firkus|SEA|R|57|C- C C C+ C+ D-|0|0|0
+Kaapo Kakko|SEA|R|84|F B- B C+ B+ B|459|86|127
+Jared McCann|SEA|L|19|D- A B+ A- B+ C-|731|207|239
+Berkly Catton|SEA|C|27|B+ D D+ D C- D-|81|12|17
+Matty Beniers|SEA|C|10|C B B B- B- D+|346|86|118
+Frederick Gaudreau|SEA|C|89|D+ D D+ D C- D-|493|75|111
+Bobby McMann|SEA|C|74|S A- B C- D B+|233|67|43
+Jordan Eberle|SEA|R|7|D B A- B B+ D-|1155|338|455
+Jake O'Brien|SEA|C|44|C- C C C+ C+ C|0|0|0
+Jani Nyman|SEA|R|38|D C+ D+ D D+ B+|42|7|6
+Ben Meyers|SEA|C|59|B- D+ D F D+ C-|140|14|15
+Jacob Melanson|SEA|R|63|C- F D- F D C+|38|2|3
+Matthew Wood|SEA|R|71|D C C+ C D+ B|92|18|16
+Mackie Samoskevich|SEA|R|11|A C C B C+ D|170|33|41
+Chandler Stephenson|SEA|C|9|A C+ B+ D A C-|668|120|262
+Ryan Winterton|SEA|C|26|B F D- F C- C|104|6|19
+Anthony Beauvillier|WSH|R|72|A- D+ D+ D+ D- D-|727|147|156
+Boone Jenner|WSH|C|22|C B- C B- B- B+|822|218|210
+Jordan Kyrou|WSH|R|25|A- B B A B+ D+|502|173|219
+Pierre-Luc Dubois|WSH|C|80|D- C+ B- B A A+|636|171|263
+Ryan Leonard|WSH|R|9|A- B+ B- D+ B- B-|98|26|30
+Ethen Frank|WSH|R|53|A C+ C C D D+|88|16|15
+Alex Ovechkin|WSH|L|8|F A+ A- B+ B+ A-|1587|930|761
+Ilya Protas|WSH|L|62|D- D+ C C+ B A|18|2|8
+Aliaksei Protas|WSH|L|21|A- B+ B A- B- A|335|69|107
+Tom Wilson|WSH|R|43|B+ A A- A B S|921|211|251
+Dylan Strome|WSH|C|17|D B- A- B- A+ B+|612|168|288
+Alex Tuch|WSH|R|89|B+ A+ A A- B- A+|629|210|250
+Justin Sourdif|WSH|C|34|B- B- C+ C C- C|94|19|21
+Ivan Miroshnichenko|WSH|L|63|C- C+ C- D+ D C+|55|6|8
+Quinton Byfield|LAK|R|55|A+ B B B+ B- A+|351|79|118
+Kevin Fiala|LAK|L|22|D- A- B+ B- B C+|707|229|299
+Kenny Connors|LAK|C|34|D+ C- C- C+ C+ C|3|0|1
+Joel Armia|LAK|R|40|D- C+ C- D+ D+ B+|667|119|119
+Adrian Kempe|LAK|R|9|A+ A+ A- B+ B+ B|724|236|250
+Martin Chromiak|LAK|R|42|C- C C C C D+|2|0|0
+Erik Haula|LAK|L|56|B- C- C C C D+|854|170|212
+Alex Turcotte|LAK|C|15|C+ F D- C- C D+|165|13|31
+Andre Lee|LAK|L|47|D C- D+ D- D+ A-|38|3|5
+Samuel Helenius|LAK|C|79|D- D+ D- F F A+|114|10|7
+Scott Laughton|LAK|C|21|C C C- F D C|759|123|171
+Mats Zuccarello|LAK|R|36|F B- B A- A F|969|232|513
+Alex Laferriere|LAK|R|14|A C C+ B C+ C+|254|54|65
+Artemi Panarin|LAK|L|10|D A- B+ A A+ D-|844|338|633
+Trevor Moore|LAK|L|12|A C C- B C+ D|499|109|143
+Corey Perry|LAK|R|90|F B+ B B- C- A-|1476|466|508
+Jonathan Aspirot|BOS|D|45|B- C+ B+ C C|67|3|10
+Frederic Brunet|BOS|D|42|C C- C- C+ C+|11|1|3
+Will Borgen|BOS|D|17|B D C C C|389|20|67
+Charlie McAvoy|BOS|D|73|B+ A- B+ C+ B|583|72|297
+Mason Lohrei|BOS|D|6|C+ C C+ A C-|207|19|59
+Connor Clifton|BOS|D|75|B F C D+ F|441|17|67
+Shayne Gostisbehere|CAR|D|4|D+ A D F B+|761|119|355
+Alexander Nikishin|CAR|D|21|B A B+ B+ B+|81|11|22
+Hampus Lindholm|BOS|D|27|B+ B A- A- B|845|79|264
+Jalen Chatfield|CAR|D|5|B B B- C A-|352|24|55
+K'Andre Miller|CAR|D|19|A+ B+ B+ B+ A-|457|45|128
+Nikita Zadorov|BOS|D|91|A B S S B|819|53|142
+Jaccob Slavin|CAR|D|74|C- B+ C B- S|801|56|255
+Sean Walker|CAR|D|26|B A- C- D- B-|493|43|109
+Juuso Välimäki|CAR|D|8|F D D C B-|278|13|62
+Mike Reilly|CAR|D|6|D C- D+ D+ B-|468|19|116
+Evan Bouchard|EDM|D|2|B S C- C- S|445|85|276
+Ty Emberson|EDM|D|49|A- D- D+ C- D-|191|5|31
+Mattias Ekholm|EDM|D|14|B- A B+ B+ A+|980|94|313
+Alec Regula|EDM|D|75|D+ F B+ A- F|51|1|3
+Shakir Mukhamadullin|EDM|D|85|C C+ C B D-|94|8|15
+Connor Murphy|EDM|D|5|F C A- B+ D-|841|48|130
+Ryan Shea|EDM|D|6|C- D+ D- D+ B|166|10|36
+Jake Walman|EDM|D|96|B+ A B C D+|330|40|72
+Noah Dobson|MTL|D|53|A- A- C+ B- B-|483|62|221
+Alexandre Carrier|MTL|D|45|C D F F C|384|21|94
+Kaiden Guhle|MTL|D|21|B- C+ B- C+ B-|219|20|54
+Lane Hutson|MTL|D|48|A+ B F F S|181|21|139
+Adam Engstrom|MTL|D|42|D D- D D+ B-|24|0|2
+Mike Matheson|MTL|D|8|A A C+ C- B|713|82|224
+Arber Xhekaj|MTL|D|72|C- C- S A F|244|10|25
+Rasmus Andersson|VGK|D|4|B- A+ B C- C|634|66|217
+Dylan Coghlan|VGK|D|52|F C- B- C+ B-|124|6|17
+Shea Theodore|VGK|D|27|B A- D+ C- A+|651|90|317
+Jeremy Lauzon|VGK|D|5|B+ D A A- D|401|15|44
+Noah Hanifin|VGK|D|15|A+ B D+ C+ A|846|77|282
+Brayden McNabb|VGK|D|3|F C+ B A- A|902|38|161
+Parker Wotherspoon|VGK|D|29|C- D- D+ D+ B-|194|4|42
+Declan Chisholm|NJD|D|47|D D+ D C- D+|138|7|23
+Dougie Hamilton|NJD|D|7|D- A+ A+ A+ B|927|164|383
+Johnathan Kovacevic|NJD|D|8|F F A A C-|267|10|44
+Luke Hughes|NJD|D|43|A+ A C- C- B|238|28|108
+Brett Pesce|NJD|D|22|D- D C- C+ C+|751|44|183
+Jonas Siegenthaler|NJD|D|71|D+ F B+ B- D+|464|10|75
+Brenden Dillon|NJD|D|5|B D- A+ A D-|1064|42|185
+Cameron Crotty|MIN|D|34|D- D C+ B C-|11|0|1
+Quinn Hughes|MIN|D|43|A A D- F A|524|71|436
+Jonas Brodin|MIN|D|25|D+ C D C- A|932|62|222
+Brock Faber|MIN|D|7|A+ A- D+ D+ A|242|33|94
+Zach Bogosian|MIN|D|24|C C A A- D|986|66|183
+Olli Maatta|MIN|D|3|C D+ D+ C B|817|45|169
+David Spacek|MIN|D|82|D- D+ F F D+|11|0|1
+Matt Kiersted|MIN|D|26|D D- F D- C+|54|2|7
+Jared Spurgeon|MIN|D|46|B B F F B+|1022|124|319
+Nils Lundkvist|DAL|D|5|B- C D+ D+ C|250|12|46
+Lian Bichsel|DAL|D|6|D B- S S D-|103|8|10
+Miro Heiskanen|DAL|D|4|A- B D C- A+|567|70|287
+Tyler Myers|DAL|D|57|B C+ A+ A+ D-|1154|100|308
+Esa Lindell|DAL|D|23|D- D+ C- B+ A+|776|60|190
+Thomas Harley|DAL|D|55|B- B C B A+|282|39|108
+Kyle Capobianco|DAL|D|20|D C- C- C C-|112|7|10
+Charle-Edouard D'Astous|TBL|D|51|C+ B+ A- C+ D|83|8|29
+John Carlson|TBL|D|74|B S B+ B+ A+|1173|175|618
+Erik Cernak|TBL|D|81|B- D- A A C+|515|26|97
+Max Crozier|TBL|D|24|C- D- B- B- C|61|1|14
+Ryan McDonagh|TBL|D|27|D C- C- C+ A|1072|87|357
+J.J. Moser|TBL|D|90|B D+ D+ D+ A-|352|25|91
+Victor Hedman|TBL|D|77|C A+ A A+ A-|1177|175|641
+Emil Lilleberg|TBL|D|78|C D- B+ B- D|169|5|31
+Brent Burns|COL|D|84|C+ A A- A A-|1595|273|678
+Noah Juulsen|COL|D|47|F D- C- C D-|220|4|24
+Brett Kulak|COL|D|27|B- C- D- D C|679|29|112
+Devon Toews|COL|D|7|B B+ D D S|557|70|247
+Cale Makar|COL|D|8|S S D- D- S|485|140|385
+Sam Malinski|COL|D|70|A B+ D- F A-|196|16|56
+Josh Manson|COL|D|42|B- B A B+ B|718|45|160
+Nick DeSimone|UTA|D|57|D+ D D- D+ B-|103|5|16
+Mikhail Sergachev|UTA|D|98|A+ A+ A- B B+|646|78|310
+Dmitri Simashev|UTA|D|26|C C+ C+ C+ F|44|3|3
+Nate Schmidt|UTA|D|88|C B D+ D B|839|58|206
+Andrew Peeke|UTA|D|20|D- D+ C+ B D|402|18|63
+MacKenzie Weegar|UTA|D|52|C+ B C+ D+ C+|645|65|218
+John Marino|UTA|D|6|B+ C- D D+ A|452|25|137
+Maveric Lamoureux|UTA|D|10|D C- A A C|20|1|3
+Jacob Bernard-Docker|DET|D|25|F F D- D D|207|7|22
+Moritz Seider|DET|D|53|C+ A A B+ B+|426|39|211
+Ben Chiarot|DET|D|8|C+ B- A+ B+ D|821|50|136
+Albert Johansson|DET|D|20|C+ D+ D D+ F|154|6|15
+Justin Faulk|DET|D|72|A A B- C- C+|1074|149|358
+Andreas Englund|DET|D|24|F F C+ B- D-|211|2|18
+Anton Johansson|DET|D|42|D+ C+ B- B- C-|16|1|3
+William Wallinder|DET|D|54|D C C+ B+ C-|11|2|2
+Roman Josi|NSH|D|59|C A+ C D+ B-|1045|205|591
+Ilya Lyubushkin|NSH|D|46|F F C C D+|487|7|63
+Nick Perbix|NSH|D|48|D- D C- B C-|313|17|62
+Daemon Hunt|NSH|D|52|D+ F F D F|61|0|8
+Nicolas Hague|NSH|D|41|C+ C+ A+ S D|439|23|76
+Brady Skjei|NSH|D|76|A B- B- B- C|788|81|230
+Adam Wilsby|NSH|D|2|B+ D D D B-|96|2|25
+Jayden Struble|NSH|D|3|C- D- C+ D+ D-|185|9|28
+Ben Hutton|NYI|D|71|D+ C+ C B- C|575|30|109
+Tony DeAngelo|NYI|D|77|B+ B- D- F C-|496|58|210
+Matthew Kessel|NYI|D|4|D+ D+ B B D-|107|3|11
+William Trudeau|NSH|D|85|D+ C- D D C|3|0|0
+Ryan Pulock|NYI|D|6|B+ B+ B- B B|649|56|186
+Scott Mayfield|NYI|D|24|B- D- A- A- D-|620|30|110
+Adam Pelech|NYI|D|3|B- B- A- B B-|656|31|149
+Alexander Romanov|NYI|D|28|D C+ C- C B-|372|17|67
+Matthew Schaefer|NYI|D|48|A A C C- A-|96|27|46
+Logan Stanley|NYI|D|8|D- B- S A+ C-|292|14|53
+Tristan Luneau|ANA|D|67|F C- D+ C B-|29|4|10
+Pavel Mintyukov|ANA|D|98|B- D+ D+ C+ C-|215|17|55
+Drew Helleson|ANA|D|14|D C- B B- D|127|7|22
+Jackson LaCombe|ANA|D|2|A A- B- C+ B+|245|27|108
+Tyson Hinds|ANA|D|55|D D C C+ D+|19|0|0
+Travis Mitchell|ANA|D|34|F D C+ C+ D-|19|1|1
+Noah Warren|ANA|D|47|C D- A- A+ C|15|0|5
+Ian Moore|ANA|D|3|A- C C+ B- F|70|4|9
+Adam Fox|NYR|D|23|D B- F F A|502|74|367
+Sean Durzi|NYR|D|5|B+ B+ C D C|316|32|117
+Vladislav Gavrikov|NYR|D|44|A- B+ B+ B+ A|533|44|132
+Braden Schneider|NYR|D|4|B C C+ B C|384|20|69
+Matthew Robertson|NYR|D|29|B- B- A- A- C-|74|6|12
+Marcus Pettersson|NYR|D|26|F D- C- C- D+|620|21|161
+Scott Morrow|NYR|D|60|D- D+ C- C+ C+|47|1|12
+Alberts Smits|NYR|D|12|D C- B B- D|16|0|0
+Michael Kesselring|SJS|D|7|C- B- A+ A- D-|207|12|46
+Darnell Nurse|SJS|D|25|A+ B+ A A- C-|814|89|237
+Sam Dickinson|SJS|D|6|B D C- C D|87|2|15
+Nolan Allan|SJS|D|5|D D D+ D+ D-|53|3|8
+Dmitry Orlov|SJS|D|9|D B- C+ C- C-|966|81|291
+Jacob Trouba|SJS|D|65|D+ B+ A B C+|923|86|282
+Eric Pohlkamp|SJS|D|48|D+ C D+ D C+|1|0|0
+Philip Broberg|STL|D|6|S B+ C B- A|245|19|67
+Cam Fowler|STL|D|17|C+ C- D C B|1139|109|418
+Justin Barron|STL|D|72|C D+ D- C- D+|220|20|40
+Colton Parayko|STL|D|55|A- A- B A+ B+|813|81|236
+Brandon Carlo|STL|D|25|C- D+ A- A- C-|707|29|91
+Tyler Tucker|STL|D|75|C C+ B+ C D-|159|8|22
+Quinton Burns|STL|D|42|C- C D+ D+ C+|0|0|0
+Theo Lindstein|STL|D|4|C- C- D- D- B-|23|2|4
+Adam Jiricek|STL|D|36|D- C D+ C- C+|15|1|1
+Jake Christiansen|CBJ|D|2|F D- D- D D+|164|4|18
+Dante Fabbro|CBJ|D|15|D B- C D+ D+|455|30|79
+Erik Gudbranson|CBJ|D|44|C+ C- A A D-|854|35|106
+Damon Severson|CBJ|D|78|C+ A- B C B+|866|83|271
+Denton Mateychuk|CBJ|D|5|B+ B F F B|133|21|29
+Ivan Provorov|CBJ|D|9|B A- B C+ A-|780|87|227
+Zach Werenski|CBJ|D|8|A+ A+ B- B- A+|655|135|342
+Neal Pionk|WPG|D|4|D- B D+ D- A-|603|50|228
+Mario Ferraro|WPG|D|38|C- B- C D D|506|25|90
+Elias Salomonsson|WPG|D|57|C- D+ F F D+|38|1|4
+Josh Morrissey|WPG|D|44|B- A- D D- A+|743|94|337
+Haydn Fleury|WPG|D|24|B+ D+ C+ B F|356|12|37
+Tyrel Bauer|WPG|D|77|C- C B- B- C-|10|1|1
+Dylan DeMelo|WPG|D|2|F F D D+ A-|734|24|164
+Dylan Samberg|WPG|D|54|C C- B- A- A|298|12|59
+Zeev Buium|VAN|D|8|B+ D D- D- D+|93|6|24
+Victor Mancini|VAN|D|90|D F B- A- F|62|2|9
+Filip Hronek|VAN|D|17|B- B+ D+ D- C+|550|49|250
+Jamie Oleksiak|VAN|D|4|C+ B- A+ S D+|773|47|120
+Guillaume Brisebois|VAN|D|55|C- D+ D- D C-|33|1|2
+Luke Schenn|VAN|D|2|F F A- B F|1132|45|169
+Elias Pettersson|VAN|D|25|B B- C- D+ F|115|7|10
+Tom Willander|VAN|D|5|B+ D F D- F|86|5|19
+Simon Benoit|PHI|D|44|A D- A- B+ F|364|6|30
+Jamie Drysdale|PHI|D|9|S B+ D F C-|312|26|83
+Oliver Bonk|PHI|D|59|D- C D- D C|12|2|6
+Rasmus Ristolainen|PHI|D|55|D+ B- C+ B B|824|58|261
+Nick Seeler|PHI|D|24|C+ D C- C C|470|15|61
+Travis Sanheim|PHI|D|6|A A- B+ A B+|677|66|191
+Cam York|PHI|D|8|C+ C+ D D- B-|318|23|81
+David Jiricek|PHI|D|5|F D+ B- B- F|94|2|12
+Bowen Byram|CHI|D|24|A B C+ C- B|334|44|109
+Ian Cole|CHI|D|28|C- F A- B- C+|1006|38|195
+Ethan Del Mastro|CHI|D|38|D+ C- B B+ F|52|2|7
+Wyatt Kaiser|CHI|D|44|B+ C D- D- D|191|12|29
+Alex Vlasic|CHI|D|72|A- C B A+ C|276|9|63
+Sam Rinzel|CHI|D|6|C+ C- C+ B- D-|78|5|18
+Kevin Korchinski|CHI|D|14|D- D D+ C F|109|6|14
+Artyom Levshunov|CHI|D|55|B- C- B C D-|102|3|30
+Declan Carlile|PIT|D|72|C- C- C- C- F|61|5|4
+Erik Karlsson|PIT|D|65|S A+ D- D- B+|1174|218|734
+Kaedan Korczak|PIT|D|6|C+ F C- C+ B-|170|4|41
+Samuel Girard|PIT|D|49|C D F F B+|620|38|211
+Kris Letang|PIT|D|58|B B+ C- D C+|1250|178|634
+Spencer Stastney|PIT|D|24|A- F F D- D+|127|4|18
+Ilya Solovyov|PIT|D|7|D- C A- A- D|48|1|11
+Jake Livanavage|PIT|D|4|D+ C D- D- C+|1|0|0
+Trevor van Riemsdyk|PIT|D|57|C+ F C- B- C+|756|28|133
+Oliver Ekman-Larsson|TOR|D|95|D+ B C D+ C+|1154|156|384
+Jake McCabe|TOR|D|22|A- D+ C+ C- B|740|40|163
+Nick Blankenburg|TOR|D|3|D+ B- F F C|182|19|40
+Darren Raddysh|TOR|D|43|C- A+ B- C- B+|266|35|117
+Morgan Rielly|TOR|D|44|A- B- C C+ C+|968|98|463
+Marshall Rifai|TOR|D|83|D+ C C+ C+ C|5|1|0
+Troy Stecher|TOR|D|28|B- D- F F D|641|27|109
+Dakota Mermis|TOR|D|36|D- D+ D+ D D-|92|5|9
+Cole McWard|TOR|D|82|D+ C- D+ C- C+|9|1|0
+Chris Tanev|TOR|D|8|F F D- C B+|886|36|175
+Carter Yakemchuk|OTT|D|26|D B- B B+ D+|18|2|3
+Thomas Chabot|OTT|D|72|B A- C C A+|582|79|263
+Nikolas Matinpalo|OTT|D|33|A- D B B D|110|1|11
+Jordan Spence|OTT|D|10|C B- F F A-|270|16|79
+Jake Sanderson|OTT|D|85|S A+ C- C A+|312|40|151
+Artem Zub|OTT|D|2|D- C+ B C+ A-|397|24|94
+Tyler Kleven|OTT|D|43|C B A+ A D+|182|9|25
+Seth Jones|FLA|D|3|B- A- B- B+ B|928|109|383
+Radko Gudas|FLA|D|6|D+ C+ B+ C- C-|896|42|169
+Aaron Ekblad|FLA|D|5|C- C+ A- A- B|818|123|288
+Dmitry Kulikov|FLA|D|7|F D- B- C C|1053|50|199
+Gustav Forsling|FLA|D|42|A+ A C D+ A|572|60|162
+Uvis Balinskis|FLA|D|26|B+ B C- D D-|164|10|27
+Niko Mikkola|FLA|D|77|B D+ B B+ B|412|19|58
+Rasmus Dahlin|BUF|D|26|A- A+ B+ C+ A|598|104|339
+Mattias Samuelsson|BUF|D|23|A A- A+ A A-|305|22|71
+Owen Power|BUF|D|25|B B+ B A+ B+|338|29|122
+Zach Metsa|BUF|D|73|D- D+ D D C+|56|2|6
+Olen Zellweger|BUF|D|8|A- B D- D- B-|178|19|38
+Matt Grzelcyk|BUF|D|24|D+ C- F F D+|597|26|161
+Louis Crevier|BUF|D|46|A- B+ S S F|149|10|23
+Conor Timmins|BUF|D|21|D- C+ B+ B D+|198|6|48
+Kevin Bahl|CGY|D|7|C C A+ A+ C|313|12|53
+Zayne Parekh|CGY|D|19|C- C+ F F D|54|6|9
+Zach Whitecloud|CGY|D|28|C- C C+ C+ C-|415|23|67
+Joel Hanley|CGY|D|44|D- D- D F C|315|5|40
+Yan Kuznetsov|CGY|D|37|C+ B B B D|73|4|10
+Simon Nemec|CGY|D|71|D+ B D D D+|171|16|38
+Jake Middleton|CGY|D|55|C+ D+ B+ B+ C-|397|25|71
+Adam Larsson|SEA|D|6|C B+ B B- B|1027|59|209
+Cale Fleury|SEA|D|8|D D+ C- C- D|106|2|5
+Ryker Evans|SEA|D|41|A- C D+ D D|191|17|41
+Vince Dunn|SEA|D|29|C A C D+ D+|638|88|251
+Brandon Montour|SEA|D|62|A S B- D C-|679|98|238
+Josh Mahura|SEA|D|28|D+ D- D D- D+|290|12|48
+Ryan Lindgren|SEA|D|55|C- F D+ D- D+|485|16|95
+Ville Ottavainen|SEA|D|46|C+ C+ B A C+|10|1|1
+Jakob Chychrun|WSH|D|6|A+ S A B A-|635|124|210
+Vincent Desharnais|WSH|D|73|C F A A+ D+|227|2|27
+Martin Fehérváry|WSH|D|42|B+ C+ B- B- B|394|27|79
+Cole Hutson|WSH|D|44|C+ B- D- D- C-|28|7|12
+Rasmus Sandin|WSH|D|38|B- C F F B-|382|25|120
+Timothy Liljegren|WSH|D|27|B+ C+ C+ C- F|325|22|72
+Matt Roy|WSH|D|3|B- C+ B- B B+|525|29|121
+Jack St. Ivany|WSH|D|29|F F C C+ C-|61|0|13
+Mikey Anderson|LAK|D|44|D- D- F D- B+|439|23|82
+Cody Ceci|LAK|D|5|C+ C C B- C+|960|53|192
+Brandt Clarke|LAK|D|92|C C+ C C- B-|199|18|74
+Drew Doughty|LAK|D|8|C A- B C B+|1292|166|551
+Erik Gustafsson|LAK|D|64|F D F D- F|529|48|197
+Brian Dumoulin|LAK|D|2|C- F C A- C|802|31|166
+Joel Edmundson|LAK|D|6|C- B B+ A A-|699|38|117
+Michael DiPietro|BOS|G|30|B- C+ C+ C C+|8|0.887|3
+Jeremy Swayman|BOS|G|1|A A- A C A-|257|0.910|140
+Pyotr Kochetkov|CAR|G|52|B- C C+ B- B-|136|0.906|81
+Brandon Bussi|CAR|G|32|D+ C- D+ C- C-|45|0.891|33
+Brett Epp|EDM|G||C C C C C|0||0
+Tristan Jarry|EDM|G|35|D D+ D- D- D|334|0.907|174
+Frederik Andersen|EDM|G|30|D- D D- D+ D|552|0.913|324
+Devon Levi|EDM|G|27|D+ D D+ D+ D+|46|0.893|23
+Matt Tomkins|EDM|G|90|C C+ C+ C+ C+|7|0.901|4
+Jacob Fowler|MTL|G|32|A B+ A- A B+|26|0.915|16
+Jakub Dobes|MTL|G|75|C+ C+ C C+ B-|65|0.899|38
+Samuel Montembeault|MTL|G|35|D D- D D- D-|231|0.896|90
+Carter Hart|VGK|G|79|D+ D+ D+ D+ C-|254|0.904|111
+Adin Hill|VGK|G|33|D D D C D|221|0.905|112
+Connor Hellebuyck|NJD|G|37|A- A- A B+ B+|628|0.916|348
+Jake Allen|NJD|G|34|C+ B- A- A- B+|505|0.907|230
+Jesper Wallstedt|MIN|G|30|S A A+ A+ A+|55|0.913|30
+Filip Gustavsson|MIN|G|32|A- A- A A A|219|0.911|111
+Calvin Pickard|MIN|G|31|D- D- D D D-|193|0.900|75
+Casey DeSmith|DAL|G|1|B+ A- A- A+ A|223|0.909|100
+Jake Oettinger|DAL|G|29|B B+ C+ A- B+|317|0.910|192
+Dennis Hildeby|TBL|G|35|A- B+ B+ B- B-|29|0.904|10
+Andrei Vasilevskiy|TBL|G|88|S S S S S|609|0.916|377
+Scott Wedgewood|COL|G|41|A A+ A+ S A+|204|0.908|94
+Mackenzie Blackwood|COL|G|39|B+ B+ B+ B A-|303|0.905|134
+Karel Vejmelka|UTA|G|70|D+ D+ C+ C+ C|274|0.898|114
+Sebastian Cossa|UTA|G|33|C+ C- C- C- C-|7|0.873|5
+John Gibson|DET|G|36|C+ B B- C+ B|574|0.909|237
+Daniil Tarasov|DET|G|80|C- C D D D+|104|0.898|34
+Michal Postava|DET|G|35|B- C- C- C C-|2|0.886|1
+Justus Annunen|NSH|G|29|C+ B- C- D+ C+|83|0.897|37
+Juuse Saros|NSH|G|74|C D+ B C- D+|478|0.912|234
+Ilya Sorokin|NYI|G|30|A A+ B+ A B+|318|0.915|160
+Semyon Varlamov|NYI|G|40|C- B- B- B- C+|625|0.915|290
+Laurent Brossoit|ANA|G|31|C- C C C C-|143|0.909|66
+Lukas Dostal|ANA|G|1|D+ D+ D D- D|186|0.897|76
+Ville Husso|ANA|G|33|D- D- D- D D-|170|0.898|82
+Dylan Garand|NYR|G|33|A- B B+ B B|15|0.916|7
+Joonas Korpisalo|NYR|G|70|D+ C+ D D+ D+|334|0.900|140
+James Reimer|NYR|G|47|D- D+ D+ C- C-|540|0.909|232
+Igor Shesterkin|NYR|G|31|A+ S S A S|330|0.917|190
+Yaroslav Askarov|SJS|G|30|D D- F F F|74|0.887|30
+Alex Nedeljkovic|SJS|G|33|C- B- C- D C|225|0.902|95
+Joel Hofer|STL|G|30|B+ B A A+ A|126|0.909|65
+Jordan Binnington|STL|G|50|F F D- F F|381|0.903|187
+Cam Talbot|CBJ|G|33|D D C C- D+|574|0.911|282
+Jet Greaves|CBJ|G|73|A+ A+ A- B+ A|84|0.911|38
+Nico Daws|WPG|G|35|B C+ C+ C+ C+|61|0.897|26
+Stuart Skinner|WPG|G|74|D+ D D+ D- D|235|0.901|125
+Clay Stevenson|WPG|G|33|C+ C+ C C- C|10|0.889|4
+Kevin Lankinen|VAN|G|32|F F F F F|219|0.895|82
+Thatcher Demko|VAN|G|35|C C C+ D+ C-|262|0.909|134
+Leevi Meriläinen|VAN|G|31|D D F D- D-|45|0.889|18
+Dan Vladar|PHI|G|80|C- B- C B+ B+|166|0.897|81
+Joseph Woll|PHI|G|53|B B- B- B B-|125|0.906|64
+Spencer Knight|CHI|G|30|B B+ C- B- C|163|0.902|72
+Arvid Soderblom|CHI|G|40|F F F D- F|115|0.886|25
+Arturs Silovs|PIT|G|37|D F D F D-|68|0.886|32
+Sergei Murashov|PIT|G|1|B- C- D+ C- D+|10|0.882|1
+Anthony Stolarz|TOR|G|41|B+ B+ B B B-|174|0.914|79
+Sergei Bobrovsky|TOR|G|72|D- D- D+ D+ D|817|0.912|459
+Samuel Ersson|OTT|G|30|F F F F F|151|0.884|67
+Jonas Johansson|OTT|G|31|F F F D D-|109|0.887|44
+Linus Ullmark|OTT|G|35|C C- B- A- B|348|0.915|198
+Akira Schmid|FLA|G|40|C D+ C- D D+|90|0.897|37
+Jacob Markstrom|FLA|G|25|D- D D- D D|586|0.906|268
+Ukko-Pekka Luukkonen|BUF|G|1|C B C- B B|200|0.899|97
+Colten Ellis|BUF|G|92|B C+ B- C+ C|22|0.900|11
+Alex Lyon|BUF|G|34|C+ B B B+ B|149|0.903|71
+Devin Cooley|CGY|G|1|B+ A B+ B+ A-|44|0.904|16
+Dustin Wolf|CGY|G|32|B C- B B C+|137|0.901|63
+Joey Daccord|SEA|G|35|C- C- B- C+ C+|181|0.903|73
+Philipp Grubauer|SEA|G|31|C- C B B- B-|411|0.908|184
+Rémi Poirier|WSH|G|1|B- C C C C|0||0
+Charlie Lindgren|WSH|G|79|F D- D- F F|175|0.902|85
+Logan Thompson|WSH|G|48|A+ A A+ B+ A+|214|0.911|123
+Anton Forsberg|LAK|G|31|B+ A B+ A- A-|232|0.905|90
+Darcy Kuemper|LAK|G|35|B- B B B- B|498|0.912|233`;
+const ALLTIME_RAW = `Wayne Gretzky|C|A- A+ S S S D+|EDM|1979–1999
+Mario Lemieux|C|A S S S S S|PIT|1984–2006
+Jaromír Jágr|RW|A- A+ S A+ S A+|PIT|1990–2018
+Sidney Crosby|C|A A S S S B+|PIT|2005–
+Alex Ovechkin|LW|A S A A- A- S|WSH|2005–
+Connor McDavid|C|S A S S S B|EDM|2015–
+Steve Yzerman|C|A A+ S S A+ B|DET|1983–2006
+Joe Sakic|C|A S A+ S A+ B|COL|1988–2009
+Mark Messier|C|A A- A S A+ S|EDM|1979–2004
+Peter Forsberg|C|A B+ S A+ S A|COL|1994–2011
+Mike Bossy|RW|B+ S A+ A+ B+ C+|NYI|1977–1987
+Bryan Trottier|C|B+ A- A S S A-|NYI|1975–1994
+Jari Kurri|RW|A A+ A A+ A B-|EDM|1980–1998
+Brett Hull|RW|C+ S A+ A+ B B|STL|1986–2006
+Teemu Selänne|RW|S S A+ A B+ B|ANA|1992–2014
+Pavel Bure|RW|S A+ A+ A- B C+|VAN|1991–2003
+Sergei Fedorov|C|S A A A+ A B+|DET|1990–2009
+Pavel Datsyuk|C|A- B+ S S A+ C+|DET|2001–2016
+Mats Sundin|C|A- A+ A+ A A S|TOR|1990–2009
+Mike Modano|C|S A A- A A- B+|DAL|1989–2011
+Joe Thornton|C|C+ B+ A+ S S S|SJS|1997–2022
+Patrick Kane|RW|A- A S A+ S D+|CHI|2007–
+Jonathan Toews|C|B+ A- A+ S A A|CHI|2007–2023
+Evgeni Malkin|C|A- A+ S A S A|PIT|2006–
+Nathan MacKinnon|C|S S A+ S S B+|COL|2013–
+Leon Draisaitl|C|B+ S S S S A|EDM|2014–
+Nikita Kucherov|RW|B+ S S S S C|TBL|2014–
+Steven Stamkos|C|B+ S A+ A A- B|TBL|2008–
+Auston Matthews|C|B S S A A- A|TOR|2016–
+Ron Francis|C|B B A S S B+|HFD|1981–2004
+Adam Oates|C|C+ B A S S C|BOS|1985–2004
+Denis Savard|C|S A S A A+ C|CHI|1980–1997
+Peter Šťastný|C|A- A A+ S S B|QUE|1980–1995
+Dale Hawerchuk|C|A A A+ A+ A+ B|WPG|1981–1997
+Luc Robitaille|LW|C+ A+ A+ A B+ B|LAK|1986–2006
+Brendan Shanahan|LW|B A+ A A- B+ S|DET|1987–2009
+Joe Nieuwendyk|C|B A+ A+ A B+ B+|CGY|1986–2007
+Pat LaFontaine|C|S A A A A- C|NYI|1983–1998
+Eric Lindros|C|A- A A- A A S|PHI|1992–2007
+Mike Gartner|RW|S A+ B+ B+ B B|WSH|1979–1998
+Glenn Anderson|RW|A+ A A- A- B+ B|EDM|1980–1996
+Paul Kariya|LW|S A A+ A+ A C|ANA|1994–2010
+Jarome Iginla|RW|A- S A A- B+ S|CGY|1996–2017
+Joe Mullen|RW|A A A A B+ C|CGY|1980–1997
+Dino Ciccarelli|RW|B A+ A A- B C+|MIN|1980–1999
+Dave Andreychuk|LW|C A A+ B+ B A|BUF|1982–2006
+Doug Gilmour|C|A- B+ A S A+ C|TOR|1983–2003
+Pierre Turgeon|C|B+ A A+ A S B|NYI|1987–2007
+Mark Recchi|RW|B+ A A A A C|PHI|1988–2011
+Bernie Nicholls|C|B+ A A A A- B|LAK|1981–1999
+Michel Goulet|LW|A A+ A A B+ B|QUE|1979–1994
+Cam Neely|RW|B S A A- B S|BOS|1983–1996
+Theo Fleury|RW|S A A A A- D|CGY|1988–2003
+Alexander Mogilny|RW|S A+ S A A- B|BUF|1989–2006
+Daniel Sedin|LW|C A A+ S A+ B|VAN|2000–2018
+Henrik Sedin|C|C B+ S S S B|VAN|2000–2018
+Marian Hossa|RW|A- A+ A S A A-|CHI|1997–2017
+Marian Gaborik|RW|S A+ A A- B B|MIN|2000–2018
+Ilya Kovalchuk|LW|A S A+ B+ A- A|ATL|2001–2019
+Martin St. Louis|RW|S A+ A+ A+ A D|TBL|1998–2015
+Vincent Lecavalier|C|A- A A+ A A A|TBL|1998–2016
+Eric Staal|C|B+ A A A A- A|CAR|2003–2023
+Patrick Marleau|LW|S A A- A B+ A-|SJS|1997–2021
+Anže Kopitar|C|B+ A- A+ S A+ A|LAK|2006–
+Patrice Bergeron|C|B+ A A S A B+|BOS|2003–2023
+Henrik Zetterberg|C|A- A A+ S A+ B+|DET|2003–2018
+Rick Nash|LW|A- A+ A+ A- B A+|CBJ|2002–2018
+Zach Parise|LW|A A- A A B+ C+|NJD|2005–2023
+Daniel Alfredsson|RW|A- A A- A+ A B|OTT|1995–2014
+Keith Tkachuk|LW|B A A- B+ B+ S|PHX|1991–2010
+John LeClair|LW|B A+ A B+ B S|PHI|1990–2006
+Peter Bondra|RW|S A+ A- B+ B- B|WSH|1990–2007
+Jeremy Roenick|C|A A A A A B+|CHI|1988–2009
+Claude Giroux|C|B A- A+ S S C+|PHI|2007–
+Brad Marchand|LW|A- A A+ A+ A C+|BOS|2009–
+David Pastrnak|RW|A S A+ A A B|BOS|2014–
+Mitch Marner|RW|A B+ S S S C|TOR|2016–
+Artemi Panarin|LW|B+ A S A+ S D+|NYR|2015–
+Kirill Kaprizov|LW|A- S S A+ A B|MIN|2020–
+Mikko Rantanen|RW|B A+ A+ A A+ A|COL|2015–
+Jamie Benn|LW|B A A A A S|DAL|2009–
+Tyler Seguin|C|A A+ A A- A- B|DAL|2010–
+John Tavares|C|B+ A+ A+ A A- B|NYI|2009–
+Johnny Gaudreau|LW|S A S S S D|CGY|2014–2024
+Taylor Hall|LW|S A A A A- B|EDM|2010–
+Phil Kessel|RW|A S A B+ A B|TOR|2006–2023
+Corey Perry|RW|B A A+ A B A|ANA|2005–
+Ryan Getzlaf|C|B A- A+ A+ S S|ANA|2005–2022
+Jack Eichel|C|A A A A+ A+ A-|VGK|2015–
+Matthew Tkachuk|LW|B A- A+ S A+ A|FLA|2016–
+Aleksander Barkov|C|A A A+ S A+ A|FLA|2013–
+Brayden Point|C|S A+ A+ A+ A- C+|TBL|2016–
+Mark Stone|RW|C A A+ S A+ B|VGK|2015–
+Jason Spezza|C|C A A+ A+ S A-|OTT|2002–2023
+Joe Pavelski|C|C+ A A+ S A B|SJS|2006–2024
+Dany Heatley|LW|B S A+ A- B+ A|OTT|2001–2015
+Nicklas Bäckström|C|B B+ A+ S S B|WSH|2007–2024
+Jack Hughes|C|S A S A+ S D|NJD|2019–
+Steve Larmer|RW|B+ A A A A- B|CHI|1980–1995
+Mark Scheifele|C|B+ A+ A+ A+ A A-|WPG|2011–
+Ray Bourque|D|A- S A A S|BOS|1979–2001
+Paul Coffey|D|S A C+ C+ B|EDM|1980–2001
+Nicklas Lidström|D|A- A+ B B+ S|DET|1991–2012
+Chris Chelios|D|A B+ S B+ A+|CHI|1983–2010
+Al MacInnis|D|B S A A A-|CGY|1981–2004
+Brian Leetch|D|A+ A B- C+ A|NYR|1987–2006
+Scott Niedermayer|D|S A- B B A+|NJD|1991–2010
+Chris Pronger|D|B A S S A+|STL|1993–2012
+Scott Stevens|D|B B+ S A+ A+|NJD|1982–2004
+Rod Langway|D|B C+ A+ A S|WSH|1978–1993
+Phil Housley|D|S A C- D+ B-|BUF|1982–2003
+Larry Murphy|D|B A B- B+ A|LAK|1980–2001
+Mark Howe|D|A A B B A|PHI|1979–1995
+Rob Blake|D|A- S S A A-|LAK|1990–2010
+Sergei Zubov|D|A A+ B- B A+|DAL|1992–2009
+Zdeno Chara|D|C S S S A+|BOS|1997–2022
+Duncan Keith|D|S A- B+ C+ A+|CHI|2005–2022
+Drew Doughty|D|A- A A A S|LAK|2008–
+Erik Karlsson|D|S A+ C- C B+|OTT|2009–
+Victor Hedman|D|A A+ A S A+|TBL|2009–
+Cale Makar|D|S S B B S|COL|2019–
+Quinn Hughes|D|S A C- D+ A|VAN|2019–
+Roman Josi|D|A A+ B B A|NSH|2010–
+Shea Weber|D|B S S S A|NSH|2005–2022
+Ryan Suter|D|B+ B+ B A A+|MIN|2005–
+Brent Burns|D|B+ S A S B+|SJS|2003–
+P.K. Subban|D|A S A A- B+|MTL|2009–2022
+Kris Letang|D|A A B B+ A|PIT|2006–
+Alex Pietrangelo|D|A- A B A A+|STL|2008–
+Zach Werenski|D|S A+ B B A|CBJ|2016–
+Adam Fox|D|B+ A C- C S|NYR|2019–
+Miro Heiskanen|D|S A B B+ S|DAL|2017–
+Rasmus Dahlin|D|A A+ A A A|BUF|2018–
+Mark Giordano|D|B A B B A|CGY|2006–2024
+Dougie Hamilton|D|B S A S B|NJD|2012–
+John Carlson|D|B+ S B A A|WSH|2009–
+Kevin Shattenkirk|D|B+ A C C+ B|STL|2010–2024
+Dion Phaneuf|D|B+ S S A B|CGY|2005–2019
+Brian Campbell|D|S A- D+ C B+|CHI|2000–2016
+Dan Boyle|D|A A B- C+ A-|SJS|1998–2016
+Sergei Gonchar|D|A+ A B- B A|WSH|1994–2015
+Adam Foote|D|B C+ S A A+|COL|1991–2008
+Derian Hatcher|D|C B S S A|DAL|1991–2008
+Kevin Lowe|D|B B- A A A+|EDM|1979–1998
+Gary Suter|D|A A B B B+|CGY|1985–2002
+Mathieu Schneider|D|A A- B C+ B+|MTL|1987–2010
+Kevin Hatcher|D|B+ A+ A S B|WSH|1984–2001
+Eric Desjardins|D|B+ A- B+ B+ A+|PHI|1988–2006
+Brian Rafalski|D|A A- C D+ A|NJD|1999–2011
+Niklas Kronwall|D|B+ B S B A|DET|2003–2019
+Kimmo Timonen|D|A- A- B C A|NSH|1998–2015
+Wade Redden|D|A- A- B B A|OTT|1996–2013
+Ed Jovanovski|D|A A S A B|FLA|1995–2014
+Bryan McCabe|D|B S A A- B|TOR|1995–2011
+Tomas Kaberle|D|A- A- C- B A|TOR|1998–2013
+Teppo Numminen|D|B+ B C+ B A+|PHX|1988–2009
+Jay Bouwmeester|D|S B+ B A A|FLA|2002–2019
+Mike Green|D|S S C+ C+ C|WSH|2005–2020
+Keith Yandle|D|A A B- C+ B+|ARI|2006–2022
+Ryan McDonagh|D|A B B A S|NYR|2010–
+Brent Seabrook|D|B A A A A-|CHI|2005–2020
+Marc-Édouard Vlasic|D|A B B A S|SJS|2006–2025
+Jaccob Slavin|D|A B+ B A S|CAR|2015–
+Charlie McAvoy|D|A A- A A A|BOS|2016–
+Josh Morrissey|D|A A B- C+ A|WPG|2015–
+Morgan Rielly|D|A+ B+ B- B B|TOR|2013–
+Seth Jones|D|A A B A A-|CBJ|2013–
+Aaron Ekblad|D|B+ A A A A|FLA|2014–
+Thomas Chabot|D|A A B B A-|OTT|2016–
+Mattias Ekholm|D|B A A- A A|NSH|2011–
+Devon Toews|D|A B+ B- B S|COL|2018–
+Jakob Chychrun|D|A S A A A-|ARI|2016–
+Moritz Seider|D|B A S A A|DET|2021–
+Evan Bouchard|D|B+ S B B A|EDM|2018–
+Lane Hutson|D|S A D D+ A|MTL|2024–
+Noah Dobson|D|A A B A A|NYI|2019–
+Darnell Nurse|D|S A A A B|EDM|2014–
+Jake Sanderson|D|S A B B+ S|OTT|2022–
+Brandon Montour|D|A S B C+ B|FLA|2016–
+Gustav Forsling|D|S A B C+ A|FLA|2016–
+Torey Krug|D|A A B- D A-|BOS|2011–
+Jeff Petry|D|A A- B A B+|MTL|2010–
+Tyson Barrie|D|A A C D B+|COL|2011–
+Andrei Markov|D|A A- B- B A|MTL|2000–2017
+Sami Salo|D|B S B B B+|VAN|1998–2014
+Sheldon Souray|D|B S S A B|MTL|1997–2013
+Willie Mitchell|D|C C A A A+|VAN|1999–2017
+Robyn Regehr|D|B C S A A|CGY|1999–2015
+Chris Phillips|D|B B A A A|OTT|1997–2015
+Dustin Byfuglien|D|A S S S B|WPG|2007–2020
+Hal Gill|D|C C A S A|PIT|1997–2014
+Darryl Sydor|D|B+ B B B+ A|DAL|1991–2010
+Ulf Samuelsson|D|B C S A A+|PIT|1984–2000
+Calle Johansson|D|A B+ C B A|WSH|1987–2003
+Vladimir Konstantinov|D|A B S B A+|DET|1991–1997
+Mattias Öhlund|D|A A A A A|VAN|1997–2011
+Cam Fowler|D|A B+ B- B B|ANA|2010–
+Jacob Trouba|D|B+ A S A B|NYR|2013–
+Radko Gudas|D|C B S B+ B|FLA|2012–
+Mikhail Sergachev|D|A A+ A- A- A|TBL|2016–
+Patrick Roy|G|A S S A+ S|COL|1984–2003
+Dominik Hašek|G|S S A S A|BUF|1990–2008
+Martin Brodeur|G|A A+ A+ A S|NJD|1991–2015
+Grant Fuhr|G|S S A+ A B+|EDM|1981–2000
+Ed Belfour|G|A+ A+ A A A-|CHI|1988–2007
+Henrik Lundqvist|G|A S A+ A A|NYR|2005–2020
+Roberto Luongo|G|B+ A+ A A+ A|FLA|1999–2019
+Carey Price|G|A A+ A+ A+ S|MTL|2007–2022
+Andrei Vasilevskiy|G|S S S A+ A|TBL|2014–
+Marc-André Fleury|G|S A+ A A- B+|PIT|2003–2024
+Tim Thomas|G|S S A A C+|BOS|2002–2014
+Mike Richter|G|A A+ A+ A A-|NYR|1989–2003
+Curtis Joseph|G|A A+ A A B|STL|1989–2009
+John Vanbiesbrouck|G|A A A A- A|FLA|1981–2002
+Tom Barrasso|G|A A A A- A|PIT|1983–2003
+Billy Smith|G|A A A B+ A|NYI|1971–1989
+Ron Hextall|G|A A- A A A-|PHI|1986–1999
+Mike Vernon|G|A A A- A B+|CGY|1982–2002
+Chris Osgood|G|B A A- A A|DET|1993–2011
+Nikolai Khabibulin|G|A A A- A B+|TBL|1995–2014
+Miikka Kiprusoff|G|A S A A B+|CGY|2000–2013
+Pekka Rinne|G|B A A- A+ A|NSH|2005–2021
+Jonathan Quick|G|S S A A- B|LAK|2007–2024
+Tuukka Rask|G|A A+ A A+ A|BOS|2007–2022
+Sergei Bobrovsky|G|S A+ A A- B+|CBJ|2010–
+Connor Hellebuyck|G|A A+ A+ S A|WPG|2015–
+Igor Shesterkin|G|S S S A A+|NYR|2019–
+Ryan Miller|G|A A A+ A A-|BUF|2002–2021
+Evgeni Nabokov|G|A A A A A-|SJS|2000–2015
+Ilya Sorokin|G|S S A A A|NYI|2020–
+Braden Holtby|G|A A A A- B+|WSH|2011–2022
+Jean-Sébastien Giguère|G|B A A- A A|ANA|1996–2014
+Olaf Kölzig|G|B A A A A|WSH|1989–2009
+Andy Moog|G|A A A- A B+|EDM|1980–1998
+Juuse Saros|G|S A A A- A|NSH|2015–`;
+
+const MIN_GP = 82;
+const MIN_FWD_PPG = 0.30; // drop career fourth-liners
+const SCALE = ['F','D-','D','D+','C-','C','C+','B-','B','B+','A-','A','A+','S'];
+const gv = g => SCALE.indexOf(g);
+const tier = g => g[0];
+const CATS = {
+  F: [['Speed','Top speed and acceleration'],['Shot','Velocity, release and finishing'],['Hands','Puck skill in tight'],['Sense','Reads, positioning, hockey IQ'],['Playmaking','Vision and passing'],['Build','Size and strength']],
+  D: [['Speed','Skating and gap control'],['Shot','Point shot power and scoring'],['Physicality','Hits, net-front, punishment'],['Build','Size and reach'],['Stick-checking','Takeaways, lanes, defensive reads']],
+  G: [['Speed','Lateral push and recovery'],['Reflexes','Point-blank stops'],['Mid-range','Saves on shots from the circles and high slot'],['Long-range','Saves on point shots and long-range attempts'],['Rebounding','Rebound control and tracking']]
+};
+const POSNAME = { F: 'forward', D: 'defenseman', G: 'goaltender' };
+
+function grp(pos) { return pos === 'G' ? 'G' : pos === 'D' ? 'D' : 'F'; }
+const POOLS = { current: { F: [], D: [], G: [] }, alltime: { F: [], D: [], G: [] } };
+CURRENT_RAW.trim().split('\n').forEach(line => {
+  const [name, team, pos, num, grades, a, b, c] = line.split('|');
+  if (+a < MIN_GP) return;
+  const g = grp(pos);
+  if (g === 'F' && ((+b) + (+c)) / (+a) < MIN_FWD_PPG) return;
+  let stat;
+  if (+a === 0) stat = 'NHL debut pending';
+  else if (g === 'G') stat = `${a} GP · ${b ? b.replace(/^0/, '') : '—'} SV% · ${c} W`;
+  else stat = `${a} GP · ${b} G · ${c} A`;
+  POOLS.current[g].push({ name, team, pos: pos === 'L' ? 'LW' : pos === 'R' ? 'RW' : pos, num, grades: grades.split(' '), stat });
+});
+ALLTIME_RAW.trim().split('\n').forEach(line => {
+  const [name, pos, grades, team, years] = line.split('|');
+  POOLS.alltime[grp(pos)].push({ name, team, pos, num: '', grades: grades.split(' '), stat: years });
+});
+
+const $ = id => document.getElementById(id);
+const state = { daily: null, play: 'solo', mode: 'current', pos: 'F', peek: false, slots: [], used: new Set(), current: null, spinning: false, rerolls: 1, spins: 0, online: false, seq: null, seqIdx: 0 };
+
+// setup choices
+document.querySelectorAll('[data-mode]').forEach(b => b.addEventListener('click', () => {
+  state.mode = b.dataset.mode;
+  document.querySelectorAll('[data-mode]').forEach(x => x.setAttribute('aria-pressed', x === b));
+  updateBug();
+}));
+document.querySelectorAll('[data-pos]').forEach(b => b.addEventListener('click', () => {
+  state.pos = b.dataset.pos;
+  document.querySelectorAll('[data-pos]').forEach(x => x.setAttribute('aria-pressed', x === b));
+  updateBug();
+}));
+$('peek').addEventListener('change', e => { state.peek = e.target.checked; });
+
+function updateBug() {
+  $('bug-pool').textContent = `${POOLS[state.mode][state.pos].length} ${state.mode === 'current' ? 'current' : 'legends'}`;
+  $('bug-pos').textContent = POSNAME[state.pos];
+  $('bug-rr').textContent = state.slots.length ? state.rerolls : 1;
+}
+
+function show(id) { ['setup', 'lobby', 'game', 'result'].forEach(s => $(s).hidden = s !== id); window.scrollTo({ top: 0, behavior: 'smooth' }); }
+
+function startGame() { state.online = false; state.daily = null; state.seq = null; initBuild(null); }
+
+// resume: optional saved progress [{name, grade} | null per slot]
+function initBuild(resume) {
+  state.slots = CATS[state.pos].map(([k, h]) => ({ k, h, player: null, grade: null }));
+  state.used = new Set(); state.current = null; state.spins = 0; state.spinning = false;
+  if (!resume) state.rerolls = 1;
+  if (resume) {
+    const pool = POOLS[state.mode][state.pos];
+    resume.forEach((r, i) => {
+      if (!r || !state.slots[i]) return;
+      const p = pool.find(x => x.name === r.name);
+      if (p) { state.slots[i].player = p; state.slots[i].grade = r.grade; state.used.add(p.name); }
+    });
+  }
+  $('slots-title').textContent = `Your ${POSNAME[state.pos]}`;
+  cancelAnimationFrame(rafId);
+  $('strip').style.transform = 'translateY(0px)';
+  $('strip').innerHTML = '<div class="ri"></div><div class="ri hit">Ready</div>';
+  $('window').classList.remove('landed');
+  $('p-meta').textContent = 'Rolling your first player'; $('p-num').textContent = '';
+  audio();
+  $('prompt').textContent = '';
+  renderSlots(); updateControls(); updateBug();
+  $('quit').textContent = state.online ? 'Leave lobby' : 'New build';
+  $('opp-bar').hidden = !state.online;
+  if (state.online) renderOppBar();
+  show('game');
+  if (state.slots.every(s => s.player)) { finish(); return; }
+  setTimeout(spin, 350);
+}
+
+function renderSlots() {
+  const list = $('slot-list'); list.innerHTML = '';
+  const armed = !!state.current && !state.spinning;
+  state.slots.forEach((s, i) => {
+    const b = document.createElement('button');
+    b.className = 'slot ' + (s.player ? 'filled' : 'open') + (armed && !s.player ? ' armed' : '');
+    b.id = 'slot-' + i;
+    b.disabled = !!s.player || !armed;
+    let right = '';
+    if (s.player) right = chip(s.grade);
+    else if (armed && state.peek) right = chip(state.current.grades[i]);
+    else right = `<span class="gr ghost">?</span>`;
+    b.innerHTML = `<div style="min-width:0"><div class="k">${s.k}</div>${s.player ? `<div class="who">${esc(s.player.name)} · ${s.player.team}</div>` : `<div class="h">${s.h}</div>`}</div>${right}`;
+    b.addEventListener('click', () => assign(i));
+    list.appendChild(b);
+  });
+  const filled = state.slots.filter(s => s.player).length;
+  $('slots-filled').textContent = `${filled} / ${state.slots.length} filled`;
+}
+function chip(g) { return `<span class="gr" data-t="${tier(g)}">${g}</span>`; }
+function esc(s) { return s.replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c])); }
+
+function updateControls() {
+  const filled = state.slots.filter(s => s.player).length;
+  const done = filled === state.slots.length;
+  $('spin').disabled = state.spinning || !!state.current || done;
+  $('reroll').disabled = state.spinning || !state.current || state.rerolls < 1;
+  $('rr-left').textContent = `(${state.rerolls})`;
+  $('spin-count').textContent = `Pick ${Math.min(filled + 1, state.slots.length)} of ${state.slots.length}`;
+  $('bug-rr').textContent = state.rerolls;
+}
+
+function pickRandom() {
+  if (state.seq) {
+    while (state.seqIdx < state.seq.length) {
+      const p = state.seq[state.seqIdx++];
+      if (!state.used.has(p.name)) return p;
+    }
+  }
+  const pool = POOLS[state.mode][state.pos].filter(p => !state.used.has(p.name));
+  return pool[Math.floor(Math.random() * pool.length)];
+}
+
+/* ---------- sound (synthesized, no files) ---------- */
+let actx = null, master = null, muted = false;
+try { muted = localStorage.getItem('rinkroll-muted') === '1'; } catch (e) {}
+function audio() {
+  if (muted) return null;
+  try {
+    if (!actx) { const AC = window.AudioContext || window.webkitAudioContext; if (!AC) return null; actx = new AC(); master = actx.createGain(); master.gain.value = 0.55; master.connect(actx.destination); }
+    if (actx.state === 'suspended') actx.resume();
+    return actx;
+  } catch (e) { return null; }
+}
+function env(g, t, peak, a, d) { g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(peak, t + a); g.gain.exponentialRampToValueAtTime(0.0001, t + a + d); }
+function tick(speed) {
+  const c = audio(); if (!c) return;
+  const t = c.currentTime, o = c.createOscillator(), g = c.createGain(), f = c.createBiquadFilter();
+  o.type = 'square'; o.frequency.value = 1500 + speed * 900;
+  f.type = 'bandpass'; f.frequency.value = 2400; f.Q.value = 2;
+  env(g, t, 0.09, 0.002, 0.03);
+  o.connect(f).connect(g).connect(master); o.start(t); o.stop(t + 0.05);
+}
+function horn() {
+  const c = audio(); if (!c) return;
+  const t = c.currentTime, g = c.createGain(), lp = c.createBiquadFilter();
+  lp.type = 'lowpass'; lp.frequency.value = 1400;
+  g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(0.22, t + 0.04); g.gain.setValueAtTime(0.22, t + 0.55); g.gain.exponentialRampToValueAtTime(0.0001, t + 0.95);
+  [174.6, 220, 261.6].forEach((fr, i) => { const o = c.createOscillator(); o.type = 'sawtooth'; o.frequency.value = fr; o.detune.value = (i - 1) * 6; o.connect(lp); o.start(t); o.stop(t + 1); });
+  lp.connect(g).connect(master);
+}
+function pop() {
+  const c = audio(); if (!c) return;
+  const t = c.currentTime, o = c.createOscillator(), g = c.createGain();
+  o.type = 'triangle'; o.frequency.setValueAtTime(520, t); o.frequency.exponentialRampToValueAtTime(1250, t + 0.12);
+  env(g, t, 0.25, 0.005, 0.18);
+  o.connect(g).connect(master); o.start(t); o.stop(t + 0.22);
+}
+function fanfare(good) {
+  const c = audio(); if (!c) return;
+  const notes = good ? [523.3, 659.3, 784, 1046.5] : [392, 349.2, 311.1];
+  notes.forEach((fr, i) => {
+    const t = c.currentTime + i * 0.13, o = c.createOscillator(), g = c.createGain();
+    o.type = 'triangle'; o.frequency.value = fr;
+    env(g, t, 0.22, 0.01, i === notes.length - 1 ? 0.6 : 0.16);
+    o.connect(g).connect(master); o.start(t); o.stop(t + 0.8);
+  });
+}
+function setMute(m) {
+  muted = m;
+  $('mute').setAttribute('aria-pressed', m); $('mute').textContent = m ? 'Sound off' : 'Sound on';
+  try { localStorage.setItem('rinkroll-muted', m ? '1' : '0'); } catch (e) {}
+}
+
+/* ---------- reel ---------- */
+let rafId = 0;
+function spin() {
+  if (state.spinning) return;
+  state.spinning = true; state.current = null;
+  const target = pickRandom();
+  const pool = POOLS[state.mode][state.pos];
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const win = $('window'); win.classList.remove('landed');
+  $('lamp').classList.remove('on');
+  $('prompt').textContent = '';
+  $('p-meta').textContent = 'Rolling…'; $('p-num').textContent = '';
+  renderSlots(); updateControls();
+
+  // build a strip: blank, ~34 random names, the target, one trailing name
+  const n = reduce ? 0 : 34;
+  const names = [''];
+  for (let i = 0; i < n; i++) names.push(pool[Math.floor(Math.random() * pool.length)].name);
+  names.push(target.name);
+  names.push(pool[Math.floor(Math.random() * pool.length)].name);
+  const strip = $('strip');
+  strip.innerHTML = names.map((nm, i) => `<div class="ri${i === names.length - 2 ? ' hit' : ''}">${esc(nm)}</div>`).join('');
+  const row = strip.firstElementChild.getBoundingClientRect().height || 56;
+  const targetIdx = names.length - 2;
+  const endY = -(targetIdx - 1) * row; // target sits in the middle row
+  strip.style.transform = 'translateY(0px)';
+
+  if (reduce) { strip.style.transform = `translateY(${endY}px)`; return land(target); }
+
+  const dur = 2600, t0 = performance.now();
+  const ease = x => 1 - Math.pow(1 - x, 4); // ease-out quart: fast start, long smooth glide
+  let lastIdx = 0;
+  cancelAnimationFrame(rafId);
+  const frame = now => {
+    const x = Math.min(1, (now - t0) / dur);
+    const y = endY * ease(x);
+    strip.style.transform = `translateY(${y.toFixed(2)}px)`;
+    const idx = Math.floor(-y / row + 0.5);
+    if (idx !== lastIdx) { lastIdx = idx; tick(1 - x); }
+    if (x < 1) rafId = requestAnimationFrame(frame);
+    else land(target);
+  };
+  rafId = requestAnimationFrame(frame);
+}
+
+function land(p) {
+  $('p-meta').innerHTML = `<b>${p.team}</b> · ${p.pos} · ${esc(p.stat)}`;
+  $('p-num').textContent = p.num ? '#' + p.num : '';
+  state.current = p; state.spinning = false; state.used.add(p.name);
+  const win = $('window'); void win.offsetWidth; win.classList.add('landed');
+  $('lamp').classList.add('on');
+  horn();
+  $('prompt').innerHTML = `Take one skill from <b>${esc(p.name)}</b>. Tap an open slot.`;
+  renderSlots(); updateControls();
+}
+
+function assign(i) {
+  const s = state.slots[i];
+  if (!state.current || s.player || state.spinning) return;
+  s.player = state.current; s.grade = state.current.grades[i];
+  state.current = null; state.spins++;
+  renderSlots();
+  const el = $('slot-' + i); el.classList.add('pop'); pop();
+  $('lamp').classList.remove('on');
+  updateControls();
+  const filled = state.slots.filter(x => x.player).length;
+  if (state.online && filled < state.slots.length) saveProgress(false);
+  if (state.daily && filled < state.slots.length) dailySaveProgress(false);
+  if (filled === state.slots.length) { $('prompt').textContent = 'Build complete. Checking the tape…'; setTimeout(finish, 900); }
+  else { $('prompt').innerHTML = `${esc(s.player.name)}'s ${s.k.toLowerCase()}: ${chip(s.grade)}`; setTimeout(spin, 750); }
+}
+
+function reroll() {
+  if (state.rerolls < 1 || !state.current) return;
+  state.rerolls--; state.current = null; spin();
+  if (state.online) saveProgress(false);
+  if (state.daily) dailySaveProgress(false);
+}
+
+const ARCH = {
+  F: {
+    'Speed+Shot': ['Speed Sniper', 'Blows past defenders and buries it before the goalie sets.'],
+    'Shot+Hands': ['Pure Sniper', 'Everything around the net goes in. A 50-goal shooter.'],
+    'Hands+Playmaking': ['Dangler', 'Owns the puck on the half wall and makes everyone around him better.'],
+    'Sense+Playmaking': ['Playmaking Pivot', 'Sees plays two passes early. Runs the top power-play unit.'],
+    'Build+Shot': ['Power Forward', 'Wins the net front and hammers rebounds home.'],
+    'Build+Sense': ['Two-Way Workhorse', 'Matched against the other team\'s best line every night.'],
+    'Speed+Playmaking': ['Transition Engine', 'Gets the puck through the neutral zone at full speed.'],
+    'Speed+Hands': ['Highlight Reel', 'Every rush is a clip. Defensemen dread the one-on-one.'],
+    'Build+Hands': ['Net-Front Magician', 'Big body with soft mitts in the blue paint.'],
+    'Sense+Shot': ['Opportunist', 'Finds the soft ice and makes it count.'],
+    'Build+Speed': ['Freight Train', 'A big man who arrives at full speed. Forecheck nightmare.'],
+    _: ['Complete Forward', 'No obvious weakness to game-plan around.']
+  },
+  D: {
+    'Speed+Shot': ['Offensive Dynamo', 'Jumps every rush and quarterbacks the power play.'],
+    'Physicality+Build': ['Shutdown Wall', 'Nobody gets to the net easily. Ever.'],
+    'Speed+Stick-checking': ['Rover', 'Kills plays with his feet and his stick, then starts the breakout.'],
+    'Shot+Build': ['Cannon on the Point', 'One-timers that leave marks on the boards.'],
+    'Physicality+Stick-checking': ['Defensive Anchor', 'First pair, first penalty kill, last minute of every game.'],
+    'Physicality+Shot': ['Two-Way Hammer', 'Hits like a truck and scores from the point.'],
+    _: ['Two-Way Defenseman', 'Steady at both ends of the rink.']
+  },
+  G: {
+    'Speed+Reflexes': ['Acrobat', 'Never out of a play. Highlight saves every night.'],
+    'Reflexes+Mid-range': ['Robber', 'Steals goals from the slot that should have been in.'],
+    'Long-range+Rebounding': ['Technician', 'Square, calm, nothing left loose in the crease.'],
+    'Mid-range+Rebounding': ['Brick Wall', 'Nothing gets through from distance, and nothing comes back out.'],
+    _: ['Franchise Goalie', 'The reason the team is in every game.']
+  }
+};
+
+function finish() {
+  const vals = state.slots.map(s => gv(s.grade));
+  const avg = vals.reduce((a, b) => a + b, 0) / vals.length;
+  const ovr = SCALE[Math.round(avg)];
+  const top = state.slots.map((s, i) => ({ k: s.k, v: vals[i], i })).sort((a, b) => b.v - a.v || a.i - b.i).slice(0, 2).sort((a, b) => a.i - b.i);
+  const key = top.map(t => t.k).join('+');
+  const [arch, sub] = ARCH[state.pos][key] || ARCH[state.pos]._;
+  $('ovr-grade').textContent = ovr; $('ovr-grade').dataset.t = tier(ovr);
+  $('res-kicker').textContent = state.daily ? `Daily #${state.daily.n} · Your ${POSNAME[state.pos]}` : `Your ${POSNAME[state.pos]} · ${state.mode === 'current' ? 'Current NHL' : 'All-Time Greats'}`;
+  $('res-arch').textContent = arch;
+  $('res-sub').textContent = sub;
+  const v = Object.fromEntries(state.slots.map((s, i) => [s.k, vals[i]]));
+  let proj;
+  if (state.pos === 'F') {
+    const g = Math.round(4 + v.Shot * 2.6 + v.Hands * 1.0 + v.Speed * 0.4);
+    const a = Math.round(6 + v.Playmaking * 3.0 + v.Sense * 1.3 + v.Hands * 0.5);
+    proj = [[g, 'Goals'], [a, 'Assists'], [g + a, 'Points']];
+  } else if (state.pos === 'D') {
+    const g = Math.round(1 + v.Shot * 1.5 + v.Speed * 0.3);
+    const a = Math.round(6 + v.Speed * 1.6 + v.Shot * 1.2 + v['Stick-checking'] * 0.8);
+    const toi = (16.5 + avg * 0.65).toFixed(1);
+    proj = [[g, 'Goals'], [a, 'Assists'], [toi, 'TOI / game']];
+  } else {
+    const sv = (0.884 + avg * 0.0027).toFixed(3).replace(/^0/, '');
+    const gaa = Math.max(1.6, 3.55 - avg * 0.14).toFixed(2);
+    const w = Math.round(14 + avg * 2.4);
+    proj = [[sv, 'Save %'], [gaa, 'GAA'], [w, 'Wins']];
+  }
+  $('res-proj').innerHTML = proj.map(([n, l]) => `<div><b>${n}</b><span>${l}</span></div>`).join('') + `<div style="align-self:end"><span>Projected 82 games</span></div>`;
+  $('recap').innerHTML = state.slots.map(s => `<div class="recap-row"><span class="k">${s.k}</span><span class="who">${esc(s.player.name)} · ${s.player.team} · ${s.player.pos}</span>${chip(s.grade)}</div>`).join('');
+  $('toast').textContent = '';
+  ['again'].forEach(id => $(id).hidden = state.online);
+  ['rematch', 'leave-result'].forEach(id => $(id).hidden = !state.online);
+  $('h2h').hidden = !state.online;
+  $('again').textContent = state.daily ? 'Back to menu' : 'Build another';
+  $('daily-note').hidden = !state.daily;
+  if (state.daily) { dailySaveProgress(true); $('daily-note').textContent = `Next daily in ${untilMidnight()}. Share your grid and see who built better.`; }
+  show('result');
+  if (state.online) { saveProgress(true, avg); renderH2H(); }
+  else fanfare(avg >= 7);
+}
+
+function copyText() {
+  const lines = [`Rink Roll · ${POSNAME[state.pos]} (${state.mode === 'current' ? 'Current NHL' : 'All-Time Greats'})`, `Overall ${$('ovr-grade').textContent} · ${$('res-arch').textContent}`]
+    .concat(state.slots.map(s => `${s.k}: ${s.grade} (${s.player.name})`));
+  const text = lines.join('\n');
+  const done = () => { $('toast').textContent = 'Copied'; };
+  try {
+    navigator.clipboard.writeText(text).then(done, () => fallback(text));
+  } catch (e) { fallback(text); }
+}
+function fallback(text) {
+  const ta = document.createElement('textarea'); ta.value = text; ta.setAttribute('readonly', ''); ta.style.position = 'fixed'; ta.style.opacity = '0';
+  document.body.appendChild(ta); ta.select();
+  let ok = false; try { ok = document.execCommand('copy'); } catch (e) {}
+  ta.remove();
+  $('toast').textContent = ok ? 'Copied' : 'Copy is blocked here. Select the parts list to copy it.';
+}
+
+function mulberry32(a) { return () => { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+function seededSeq(pool, seed) {
+  const r = mulberry32(seed), a = pool.slice();
+  for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(r() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; }
+  return a;
+}
+
+/* ---------- play modes, daily, share ---------- */
+function setPlay(play) {
+  state.play = play;
+  document.querySelectorAll('[data-play]').forEach(x => x.setAttribute('aria-pressed', x.dataset.play === play));
+  $('online-panel').hidden = play !== 'online';
+  $('custom-steps').hidden = play === 'daily';
+  $('daily-panel').hidden = play !== 'daily';
+  $('start').hidden = play === 'online';
+  if (play === 'daily') renderDailyPanel();
+  $('start').textContent = play === 'daily' ? (dailyDone() ? 'See today\'s result' : dailyStarted() ? 'Resume today\'s daily' : 'Play today\'s daily') : 'Drop the puck';
+  if (play !== 'online') updateBug();
+}
+document.querySelectorAll('[data-play]').forEach(b => b.addEventListener('click', () => setPlay(b.dataset.play)));
+
+const DAILY_EPOCH = Date.UTC(2026, 10, 5); // Daily #1 = Nov 5, 2026
+function todayKey() { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; }
+function dailyInfo() {
+  const key = todayKey(); const [y, m, d] = key.split('-').map(Number);
+  const n = Math.round((Date.UTC(y, m - 1, d) - DAILY_EPOCH) / 864e5) + 1;
+  const pos = ['F', 'D', 'G'][((n - 1) % 3 + 3) % 3];
+  let h = 2166136261; for (const ch of 'rinkroll-daily-' + key) { h ^= ch.charCodeAt(0); h = Math.imul(h, 16777619); }
+  return { key, n, pos, mode: 'current', seed: h >>> 0 };
+}
+function dailyLoad() { try { return JSON.parse(localStorage.getItem('rinkroll-daily-' + dailyInfo().key) || 'null'); } catch (e) { return null; } }
+function dailySaveProgress(done) {
+  if (!state.daily) return;
+  const body = { slots: state.slots.map(s => s.player ? { name: s.player.name, grade: s.grade } : null), seqIdx: state.seqIdx, rerolls: state.rerolls, done: !!done };
+  try { localStorage.setItem('rinkroll-daily-' + state.daily.key, JSON.stringify(body)); } catch (e) {}
+}
+function dailyDone() { const s = dailyLoad(); return !!(s && s.done); }
+function dailyStarted() { const s = dailyLoad(); return !!(s && s.slots && s.slots.some(Boolean)); }
+function renderDailyPanel() {
+  const D = dailyInfo();
+  const when = new Date().toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' });
+  const note = dailyDone() ? 'You\'ve played today\'s daily. See your result, or come back tomorrow for a new one.'
+    : dailyStarted() ? 'You have today\'s daily in progress. Pick up where you left off.'
+    : 'Everyone gets the same spins today, in the same order. One try, grades hidden, one re-roll.';
+  $('daily-panel').innerHTML = `<div class="daily-n">Daily #${D.n}</div><div class="lobby-info">${esc(when)} · Current NHL · ${POSNAME[D.pos]}</div><p class="note">${note}</p>`;
+}
+function startDaily() {
+  const D = dailyInfo();
+  state.online = false; state.daily = D;
+  state.mode = D.mode; state.pos = D.pos; state.peek = false;
+  state.seq = seededSeq(POOLS[D.mode][D.pos], D.seed);
+  const s = dailyLoad();
+  state.seqIdx = s && s.seqIdx ? s.seqIdx : 0;
+  state.rerolls = s && typeof s.rerolls === 'number' ? s.rerolls : 1;
+  initBuild(s && s.slots && s.slots.some(Boolean) ? s.slots : null);
+}
+function untilMidnight() {
+  const now = new Date(), next = new Date(now); next.setHours(24, 0, 0, 0);
+  const mins = Math.max(1, Math.round((next - now) / 60000));
+  return `${Math.floor(mins / 60)}h ${mins % 60}m`;
+}
+
+const EMO = { S: '🟨', A: '🟦', B: '🟩', C: '⬜', D: '🟧', F: '🟥' };
+function cap(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
+function siteUrl() {
+  try { if (window.top === window && /^https?:$/.test(location.protocol)) return location.origin + location.pathname.replace(/[^/]*$/, ''); } catch (e) {}
+  return '';
+}
+function shareText() {
+  const pool = state.mode === 'current' ? 'Current NHL' : 'All-Time';
+  const head = state.daily ? `Rink Roll Daily #${state.daily.n} · ${cap(POSNAME[state.pos])}` : `Rink Roll · ${cap(POSNAME[state.pos])} · ${pool}`;
+  const grid = state.slots.map(s => EMO[tier(s.grade)]).join('');
+  const lines = [head, `${grid} ${$('ovr-grade').textContent} overall`, $('res-arch').textContent];
+  if (state.online) { const v = $('verdict').textContent; if (v && !/^Waiting|disconnected/.test(v)) lines.push('Head-to-head: ' + v); }
+  const url = siteUrl(); if (url) lines.push(url);
+  return lines.join('\n');
+}
+function copyToClipboard(text, done, failText) {
+  const fb = () => {
+    const ta = document.createElement('textarea'); ta.value = text; ta.setAttribute('readonly', ''); ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select(); let ok = false; try { ok = document.execCommand('copy'); } catch (e) {} ta.remove();
+    ok ? done() : ($('toast').textContent = failText);
+  };
+  try { navigator.clipboard.writeText(text).then(done, fb); } catch (e) { fb(); }
+}
+function shareResult() {
+  const text = shareText();
+  const done = () => { $('toast').textContent = 'Result copied. Paste it anywhere.'; };
+  if (siteUrl() && navigator.share && matchMedia('(pointer: coarse)').matches) {
+    navigator.share({ text }).catch(() => copyToClipboard(text, done, 'Copy is blocked here.'));
+  } else copyToClipboard(text, done, 'Copy is blocked here.');
+}
+$('share').addEventListener('click', shareResult);
+
+/* ---------- head-to-head (peer-to-peer, no accounts) ---------- */
+const CODE_CHARS = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+const CODE_RE = /^[A-HJ-NP-Z2-9]{5}$/;
+const PEER_PREFIX = 'rinkroll-v1-';
+const net = { peer: null, conn: null, role: null, code: null, lobby: null, players: {}, started: false, verdictRound: 0, oppName: 'Opponent', timer: 0, connecting: false };
+
+function newCode() { let s = ''; for (let i = 0; i < 5; i++) s += CODE_CHARS[Math.floor(Math.random() * CODE_CHARS.length)]; return s; }
+function newSeed() { return Math.floor(Math.random() * 2 ** 31); }
+function msg(id, text, err) { const el = $(id); el.textContent = text; el.classList.toggle('err', !!err); }
+function myName() { return ($('my-name').value || '').trim().slice(0, 16) || 'Player'; }
+function cleanName(n) { return String(n || '').replace(/[\u0000-\u001f]/g, '').trim().slice(0, 16) || 'Opponent'; }
+function peerError(e) {
+  const t = e && e.type;
+  if (t === 'peer-unavailable') return 'No lobby found with that code. Check it with your friend, and make sure their lobby screen is still open.';
+  if (t === 'network' || t === 'server-error' || t === 'socket-error' || t === 'socket-closed') return 'Couldn\'t reach the matchmaking server. Check your connection and try again.';
+  if (t === 'browser-incompatible') return 'This browser can\'t do head-to-head. Try a current Chrome, Edge, Firefox or Safari.';
+  return 'Connection problem. Try again.';
+}
+
+try { const n = localStorage.getItem('rinkroll-name'); if (n) $('my-name').value = n; } catch (e) {}
+$('my-name').addEventListener('change', () => { try { localStorage.setItem('rinkroll-name', myName()); } catch (e) {} });
+
+$('join-code').addEventListener('input', e => { e.target.value = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, ''); });
+$('join-code').addEventListener('keydown', e => { if (e.key === 'Enter') $('join').click(); });
+
+function peerAvailable() {
+  if (typeof Peer === 'undefined') { msg('online-msg', 'Head-to-head couldn\'t load. Check your connection and refresh the page.', true); return false; }
+  return true;
+}
+function freshPlayer(role, round) { return { role, round, slots: [], seqIdx: 0, rerolls: 1, done: false, avg: null }; }
+function send(obj) { try { if (net.conn && net.conn.open) net.conn.send(obj); } catch (e) {} }
+function sendLobby() { if (net.role === 'host' && net.lobby) send({ type: 'lobby', L: net.lobby }); }
+function sendProgress() { if (net.players.me) send({ type: 'progress', p: net.players.me }); }
+
+function createLobby() {
+  if (!peerAvailable() || net.connecting) return;
+  audio();
+  try { localStorage.setItem('rinkroll-name', myName()); } catch (e) {}
+  net.connecting = true; $('create').disabled = true; msg('online-msg', 'Creating lobby…');
+  tryHost(0);
+}
+function tryHost(attempt) {
+  const code = newCode();
+  const peer = new Peer(PEER_PREFIX + code);
+  peer.on('open', () => {
+    teardown();
+    net.peer = peer; net.role = 'host'; net.code = code;
+    net.lobby = { code, mode: state.mode, pos: state.pos, peek: state.peek, seed: newSeed(), round: 1 };
+    net.players = { me: freshPlayer('host', 1) };
+    net.connecting = false; $('create').disabled = false; msg('online-msg', '');
+    enterLobby();
+  });
+  peer.on('connection', c => {
+    if (net.conn && net.conn.open) { c.on('open', () => { c.send({ type: 'full' }); setTimeout(() => c.close(), 400); }); return; }
+    attachConn(c);
+  });
+  peer.on('disconnected', () => { try { if (!peer.destroyed) peer.reconnect(); } catch (e) {} });
+  peer.on('error', e => {
+    if (e.type === 'unavailable-id' && attempt < 4) { peer.destroy(); tryHost(attempt + 1); return; }
+    if (net.peer === peer && e.type !== 'peer-unavailable') { msg('lobby-msg', peerError(e), true); return; }
+    net.connecting = false; $('create').disabled = false; msg('online-msg', peerError(e), true);
+  });
+}
+
+function joinLobby(codeIn) {
+  if (!peerAvailable() || net.connecting) return;
+  audio();
+  const code = (codeIn || $('join-code').value).toUpperCase().trim();
+  if (!CODE_RE.test(code)) { msg('online-msg', 'Lobby codes are 5 letters and numbers, like K7QMX.', true); return; }
+  try { localStorage.setItem('rinkroll-name', myName()); } catch (e) {}
+  net.connecting = true; $('join').disabled = true; msg('online-msg', `Connecting to lobby ${code}…`);
+  const peer = new Peer();
+  const fail = text => { net.connecting = false; $('join').disabled = false; msg('online-msg', text, true); try { peer.destroy(); } catch (e) {} };
+  peer.on('open', () => {
+    const c = peer.connect(PEER_PREFIX + code, { reliable: true });
+    const t = setTimeout(() => { if (!c.open) fail('Couldn\'t connect to that lobby. Make sure your friend\'s lobby screen is open, then try again.'); }, 12000);
+    c.on('open', () => {
+      clearTimeout(t);
+      teardown();
+      net.peer = peer; net.role = 'guest'; net.code = code; net.lobby = null; net.players = {};
+      net.connecting = false; $('join').disabled = false; msg('online-msg', '');
+      attachConn(c);
+      enterLobby();
+    });
+  });
+  peer.on('disconnected', () => { try { if (!peer.destroyed) peer.reconnect(); } catch (e) {} });
+  peer.on('error', e => { if (net.peer === peer) msg('lobby-msg', peerError(e), true); else fail(peerError(e)); });
+}
+
+function attachConn(c) {
+  const onOpen = () => {
+    net.conn = c;
+    send({ type: 'hello', name: myName() });
+    sendLobby(); sendProgress();
+    evaluate();
+  };
+  if (c.open) onOpen(); else c.on('open', onOpen);
+  c.on('data', d => onData(d));
+  c.on('close', () => {
+    if (net.conn !== c) return;
+    net.conn = null; delete net.players.opp;
+    if (state.online) {
+      msg('lobby-msg', `${net.oppName} left the lobby.`, true);
+      $('verdict').className = 'verdict wait';
+      if (!$('result').hidden && !$('h2h-table').innerHTML) $('verdict').textContent = `${net.oppName} disconnected.`;
+      renderOppBar();
+      if (net.role === 'guest') { msg('lobby-msg', 'Lost connection to the host. Leave and rejoin with the code.', true); }
+    }
+  });
+}
+
+function onData(d) {
+  if (!d || typeof d !== 'object') return;
+  if (d.type === 'hello') { net.oppName = cleanName(d.name); evaluate(); return; }
+  if (d.type === 'full') { msg('online-msg', 'That lobby already has two players.', true); leaveLobby(); return; }
+  if (d.type === 'lobby' && net.role === 'guest') {
+    const L = d.L; if (!L || !CATS[L.pos] || !POOLS[L.mode]) return;
+    const prev = net.lobby;
+    net.lobby = { code: net.code, mode: L.mode, pos: L.pos, peek: !!L.peek, seed: L.seed >>> 0, round: L.round | 0 };
+    if (!net.players.me || net.players.me.round !== net.lobby.round) {
+      net.players.me = freshPlayer('guest', net.lobby.round);
+      if (prev && prev.round !== net.lobby.round) { net.started = false; show('lobby'); msg('lobby-msg', 'Rematch! Starting…'); }
+      sendProgress();
+    }
+    evaluate(); return;
+  }
+  if (d.type === 'progress' && d.p) {
+    const p = d.p;
+    net.players.opp = { role: p.role === 'host' ? 'host' : 'guest', round: p.round | 0, slots: Array.isArray(p.slots) ? p.slots.slice(0, 6) : [], done: !!p.done, avg: p.avg };
+    evaluate(); return;
+  }
+  if (d.type === 'rematch' && net.role === 'host') { rematch(); return; }
+}
+
+function enterLobby() {
+  state.online = true; net.started = false; net.verdictRound = 0;
+  try { history.replaceState(null, '', '#' + net.code); } catch (e) {}
+  $('lobby-code').textContent = net.code;
+  $('h2h-code').textContent = 'Lobby ' + net.code;
+  $('seats').innerHTML = ''; $('lobby-info').textContent = '';
+  $('lobby-howto').hidden = net.role !== 'host';
+  msg('lobby-msg', net.role === 'host' ? 'Waiting for an opponent…' : 'Connected. Getting the lobby settings…');
+  show('lobby');
+  evaluate();
+}
+
+function teardown() {
+  try { if (net.conn) net.conn.close(); } catch (e) {}
+  try { if (net.peer) net.peer.destroy(); } catch (e) {}
+  net.conn = null; net.peer = null;
+}
+
+function leaveLobby() {
+  teardown();
+  state.online = false; net.code = null; net.lobby = null; net.players = {}; net.started = false; net.role = null;
+  cancelAnimationFrame(rafId); state.spinning = false;
+  try { history.replaceState(null, '', location.pathname + location.search); } catch (e) {}
+  $('again').hidden = false; $('rematch').hidden = true; $('leave-result').hidden = true; $('h2h').hidden = true;
+  setPlay('online');
+  show('setup');
+}
+
+function opponentId() { return net.players.opp ? 'opp' : null; }
+async function nameOf(id) { return id === 'me' ? 'You' : net.oppName; }
+
+function evaluate() {
+  const L = net.lobby; if (!L || !state.online) return;
+  const me = net.players.me, opp = net.players.opp;
+  renderLobby(L, opp);
+  const ready = me && opp && net.conn && me.round === L.round && opp.round === L.round;
+  if (!net.started && ready) { net.started = true; startOnline(L, me); return; }
+  if (net.started) { renderOppBar(); if (!$('result').hidden) renderH2H(); }
+}
+
+function renderLobby(L, opp) {
+  $('lobby-info').textContent = `${L.mode === 'current' ? 'Current NHL' : 'All-Time Greats'} · ${POSNAME[L.pos]} · ${L.peek ? 'easy mode' : 'grades hidden'}`;
+  const seat = (role, name, filled) => `<div class="seat${filled ? '' : ' empty'}"><span class="r">${role}</span><span class="n">${esc(name)}</span></div>`;
+  const meName = myName() + ' (you)';
+  const hasOpp = !!(net.conn && (opp || net.oppName));
+  const host = net.role === 'host' ? meName : net.oppName;
+  const guest = net.role === 'host' ? (net.conn ? net.oppName : 'Waiting…') : meName;
+  $('seats').innerHTML = seat('Host', host, true) + seat('Challenger', guest, net.role === 'guest' || !!net.conn);
+  if (net.role === 'host') $('lobby-howto').hidden = !!net.conn;
+  if (hasOpp && net.conn) msg('lobby-msg', 'Both players in. Starting…');
+}
+
+function startOnline(L, me) {
+  state.daily = null;
+  state.mode = L.mode; state.pos = L.pos; state.peek = !!L.peek;
+  document.querySelectorAll('[data-mode]').forEach(x => x.setAttribute('aria-pressed', x.dataset.mode === state.mode));
+  document.querySelectorAll('[data-pos]').forEach(x => x.setAttribute('aria-pressed', x.dataset.pos === state.pos));
+  $('peek').checked = state.peek;
+  state.online = true;
+  state.seq = seededSeq(POOLS[state.mode][state.pos], (L.seed + L.round * 7919) >>> 0);
+  state.seqIdx = me.seqIdx || 0;
+  state.rerolls = typeof me.rerolls === 'number' ? me.rerolls : 1;
+  const resume = (me.slots && me.slots.some(Boolean)) ? me.slots : null;
+  initBuild(resume);
+}
+
+function saveProgress(done, avg) {
+  if (!state.online || !net.lobby) return;
+  net.players.me = {
+    role: net.role, round: net.lobby.round,
+    slots: state.slots.map(s => s.player ? { name: s.player.name, team: s.player.team, pos: s.player.pos, grade: s.grade } : null),
+    seqIdx: state.seqIdx, rerolls: state.rerolls, done: !!done, avg: done ? avg : null
+  };
+  sendProgress();
+}
+
+function renderOppBar() {
+  if (!state.online) return;
+  const opp = net.players.opp;
+  const n = state.slots.length;
+  const f = opp && net.lobby && opp.round === net.lobby.round ? (opp.slots || []).filter(Boolean).length : 0;
+  const pips = Array.from({ length: n }, (_, i) => `<span class="pip${i < f ? ' on' : ''}"></span>`).join('');
+  const status = !net.conn ? 'disconnected' : f === n ? 'is done' : `${f} / ${n}`;
+  $('opp-bar').innerHTML = `<span><b>${esc(net.oppName)}</b> ${status}</span><span class="pips">${pips}</span>`;
+}
+
+function renderH2H() {
+  const L = net.lobby; if (!L) return;
+  const opp = net.players.opp;
+  const v = $('verdict');
+  const oname = net.oppName;
+  if (!opp || opp.round !== L.round || !opp.done) {
+    const f = opp && opp.round === L.round ? (opp.slots || []).filter(Boolean).length : 0;
+    v.className = 'verdict wait';
+    v.textContent = net.conn ? `Waiting for ${oname} to finish (${f} / ${state.slots.length})…` : `${oname} disconnected.`;
+    $('h2h-table').innerHTML = ''; $('rematch').disabled = true;
+    return;
+  }
+  $('rematch').disabled = !net.conn;
+  const mine = state.slots.map(s => ({ name: s.player.name, team: s.player.team, grade: s.grade }));
+  const theirs = opp.slots || [];
+  const safe = g => SCALE.includes(g) ? g : 'F';
+  let myWins = 0, oppWins = 0;
+  const rows = state.slots.map((s, i) => {
+    const a = mine[i], b = theirs[i] || { name: '—', grade: 'F' };
+    const bg = safe(b.grade);
+    const da = gv(a.grade), db = gv(bg);
+    if (da > db) myWins++; else if (db > da) oppWins++;
+    return `<div class="h2h-row"><span class="who">${esc(a.name)}</span><span class="gr${da < db ? ' lose' : ''}" data-t="${tier(a.grade)}">${a.grade}</span><span class="k">${s.k}</span><span class="gr${db < da ? ' lose' : ''}" data-t="${tier(bg)}">${bg}</span><span class="who r">${esc(String(b.name || '—'))}</span></div>`;
+  });
+  const myAvg = mine.reduce((s, x) => s + gv(x.grade), 0) / mine.length;
+  const oppAvg = state.slots.reduce((s, _, i) => s + gv(safe(theirs[i] && theirs[i].grade)), 0) / state.slots.length;
+  const myO = SCALE[Math.round(myAvg)], oppO = SCALE[Math.round(oppAvg)];
+  const head = `<div class="h2h-row head"><span class="hide-sm">You</span><span></span><span></span><span></span><span class="hide-sm" style="text-align:right">${esc(oname)}</span></div>`;
+  const total = `<div class="h2h-row total"><span class="who">${myWins} categories won</span><span class="gr${myAvg < oppAvg ? ' lose' : ''}" data-t="${tier(myO)}">${myO}</span><span class="k">Overall</span><span class="gr${oppAvg < myAvg ? ' lose' : ''}" data-t="${tier(oppO)}">${oppO}</span><span class="who r">${oppWins} categories won</span></div>`;
+  $('h2h-table').innerHTML = head + rows.join('') + total;
+  let res;
+  if (Math.abs(myAvg - oppAvg) > 1e-9) res = myAvg > oppAvg ? 'win' : 'loss';
+  else res = myWins > oppWins ? 'win' : oppWins > myWins ? 'loss' : 'tie';
+  v.className = 'verdict ' + (res === 'tie' ? '' : res);
+  v.textContent = res === 'win' ? `You win · ${myWins}–${oppWins} in categories` : res === 'loss' ? `${oname} wins · ${oppWins}–${myWins} in categories` : 'Dead even';
+  if (net.verdictRound !== L.round) { net.verdictRound = L.round; fanfare(res !== 'loss'); }
+}
+
+function rematch() {
+  if (!net.lobby || !net.conn) return;
+  $('rematch').disabled = true;
+  if (net.role === 'guest') {
+    send({ type: 'rematch' });
+    msg('lobby-msg', 'Rematch requested. Waiting for the host…');
+    show('lobby'); return;
+  }
+  net.lobby = { ...net.lobby, round: net.lobby.round + 1, seed: newSeed() };
+  net.players.me = freshPlayer('host', net.lobby.round);
+  net.started = false;
+  msg('lobby-msg', 'Rematch! Starting…');
+  show('lobby');
+  sendLobby(); sendProgress();
+  evaluate();
+}
+
+$('create').addEventListener('click', createLobby);
+$('join').addEventListener('click', () => joinLobby());
+$('leave-lobby').addEventListener('click', leaveLobby);
+$('leave-result').addEventListener('click', leaveLobby);
+$('rematch').addEventListener('click', rematch);
+function copyOut(text, toastId, label) {
+  const ok = () => { $(toastId).textContent = label; };
+  const fb = () => {
+    const ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select(); let done = false; try { done = document.execCommand('copy'); } catch (e) {} ta.remove();
+    $(toastId).textContent = done ? label : text;
+  };
+  try { navigator.clipboard.writeText(text).then(ok, fb); } catch (e) { fb(); }
+}
+$('copy-code').addEventListener('click', () => copyOut(net.code || '', 'code-toast', 'Code copied'));
+$('copy-link').addEventListener('click', () => copyOut(location.origin + location.pathname + '#' + (net.code || ''), 'code-toast', 'Invite link copied'));
+window.addEventListener('beforeunload', teardown);
+
+(function initFromLink() {
+  const h = (location.hash || '').slice(1).toUpperCase();
+  if (CODE_RE.test(h)) { setPlay('online'); $('join-code').value = h; msg('online-msg', `You've been invited to lobby ${h}. Enter your name and press Join.`); }
+})();
+
+$('start').addEventListener('click', () => state.play === 'daily' ? startDaily() : startGame());
+$('spin').addEventListener('click', spin);
+$('reroll').addEventListener('click', reroll);
+$('quit').addEventListener('click', () => { if (state.online) leaveLobby(); else show('setup'); });
+$('again').addEventListener('click', () => { show('setup'); setPlay(state.play); });
+$('copy').addEventListener('click', copyText);
+$('mute').addEventListener('click', () => setMute(!muted));
+setMute(muted);
+updateBug();
+</script>
+
+</body>
+</html>

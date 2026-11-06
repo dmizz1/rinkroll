@@ -1,0 +1,235 @@
+Wayne Gretzky|C|A- A+ S S S D+|EDM|1979–1999
+Mario Lemieux|C|A S S S S S|PIT|1984–2006
+Jaromír Jágr|RW|A- A+ S A+ S A+|PIT|1990–2018
+Sidney Crosby|C|A A S S S B+|PIT|2005–
+Alex Ovechkin|LW|A S A A- A- S|WSH|2005–
+Connor McDavid|C|S A S S S B|EDM|2015–
+Steve Yzerman|C|A A+ S S A+ B|DET|1983–2006
+Joe Sakic|C|A S A+ S A+ B|COL|1988–2009
+Mark Messier|C|A A- A S A+ S|EDM|1979–2004
+Peter Forsberg|C|A B+ S A+ S A|COL|1994–2011
+Mike Bossy|RW|B+ S A+ A+ B+ C+|NYI|1977–1987
+Bryan Trottier|C|B+ A- A S S A-|NYI|1975–1994
+Jari Kurri|RW|A A+ A A+ A B-|EDM|1980–1998
+Brett Hull|RW|C+ S A+ A+ B B|STL|1986–2006
+Teemu Selänne|RW|S S A+ A B+ B|ANA|1992–2014
+Pavel Bure|RW|S A+ A+ A- B C+|VAN|1991–2003
+Sergei Fedorov|C|S A A A+ A B+|DET|1990–2009
+Pavel Datsyuk|C|A- B+ S S A+ C+|DET|2001–2016
+Mats Sundin|C|A- A+ A+ A A S|TOR|1990–2009
+Mike Modano|C|S A A- A A- B+|DAL|1989–2011
+Joe Thornton|C|C+ B+ A+ S S S|SJS|1997–2022
+Patrick Kane|RW|A- A S A+ S D+|CHI|2007–
+Jonathan Toews|C|B+ A- A+ S A A|CHI|2007–2023
+Evgeni Malkin|C|A- A+ S A S A|PIT|2006–
+Nathan MacKinnon|C|S S A+ S S B+|COL|2013–
+Leon Draisaitl|C|B+ S S S S A|EDM|2014–
+Nikita Kucherov|RW|B+ S S S S C|TBL|2014–
+Steven Stamkos|C|B+ S A+ A A- B|TBL|2008–
+Auston Matthews|C|B S S A A- A|TOR|2016–
+Ron Francis|C|B B A S S B+|HFD|1981–2004
+Adam Oates|C|C+ B A S S C|BOS|1985–2004
+Denis Savard|C|S A S A A+ C|CHI|1980–1997
+Peter Šťastný|C|A- A A+ S S B|QUE|1980–1995
+Dale Hawerchuk|C|A A A+ A+ A+ B|WPG|1981–1997
+Luc Robitaille|LW|C+ A+ A+ A B+ B|LAK|1986–2006
+Brendan Shanahan|LW|B A+ A A- B+ S|DET|1987–2009
+Joe Nieuwendyk|C|B A+ A+ A B+ B+|CGY|1986–2007
+Pat LaFontaine|C|S A A A A- C|NYI|1983–1998
+Eric Lindros|C|A- A A- A A S|PHI|1992–2007
+Mike Gartner|RW|S A+ B+ B+ B B|WSH|1979–1998
+Glenn Anderson|RW|A+ A A- A- B+ B|EDM|1980–1996
+Paul Kariya|LW|S A A+ A+ A C|ANA|1994–2010
+Jarome Iginla|RW|A- S A A- B+ S|CGY|1996–2017
+Joe Mullen|RW|A A A A B+ C|CGY|1980–1997
+Dino Ciccarelli|RW|B A+ A A- B C+|MIN|1980–1999
+Dave Andreychuk|LW|C A A+ B+ B A|BUF|1982–2006
+Doug Gilmour|C|A- B+ A S A+ C|TOR|1983–2003
+Pierre Turgeon|C|B+ A A+ A S B|NYI|1987–2007
+Mark Recchi|RW|B+ A A A A C|PHI|1988–2011
+Bernie Nicholls|C|B+ A A A A- B|LAK|1981–1999
+Michel Goulet|LW|A A+ A A B+ B|QUE|1979–1994
+Cam Neely|RW|B S A A- B S|BOS|1983–1996
+Theo Fleury|RW|S A A A A- D|CGY|1988–2003
+Alexander Mogilny|RW|S A+ S A A- B|BUF|1989–2006
+Daniel Sedin|LW|C A A+ S A+ B|VAN|2000–2018
+Henrik Sedin|C|C B+ S S S B|VAN|2000–2018
+Marian Hossa|RW|A- A+ A S A A-|CHI|1997–2017
+Marian Gaborik|RW|S A+ A A- B B|MIN|2000–2018
+Ilya Kovalchuk|LW|A S A+ B+ A- A|ATL|2001–2019
+Martin St. Louis|RW|S A+ A+ A+ A D|TBL|1998–2015
+Vincent Lecavalier|C|A- A A+ A A A|TBL|1998–2016
+Eric Staal|C|B+ A A A A- A|CAR|2003–2023
+Patrick Marleau|LW|S A A- A B+ A-|SJS|1997–2021
+Anže Kopitar|C|B+ A- A+ S A+ A|LAK|2006–
+Patrice Bergeron|C|B+ A A S A B+|BOS|2003–2023
+Henrik Zetterberg|C|A- A A+ S A+ B+|DET|2003–2018
+Rick Nash|LW|A- A+ A+ A- B A+|CBJ|2002–2018
+Zach Parise|LW|A A- A A B+ C+|NJD|2005–2023
+Daniel Alfredsson|RW|A- A A- A+ A B|OTT|1995–2014
+Keith Tkachuk|LW|B A A- B+ B+ S|PHX|1991–2010
+John LeClair|LW|B A+ A B+ B S|PHI|1990–2006
+Peter Bondra|RW|S A+ A- B+ B- B|WSH|1990–2007
+Jeremy Roenick|C|A A A A A B+|CHI|1988–2009
+Claude Giroux|C|B A- A+ S S C+|PHI|2007–
+Brad Marchand|LW|A- A A+ A+ A C+|BOS|2009–
+David Pastrnak|RW|A S A+ A A B|BOS|2014–
+Mitch Marner|RW|A B+ S S S C|TOR|2016–
+Artemi Panarin|LW|B+ A S A+ S D+|NYR|2015–
+Kirill Kaprizov|LW|A- S S A+ A B|MIN|2020–
+Mikko Rantanen|RW|B A+ A+ A A+ A|COL|2015–
+Jamie Benn|LW|B A A A A S|DAL|2009–
+Tyler Seguin|C|A A+ A A- A- B|DAL|2010–
+John Tavares|C|B+ A+ A+ A A- B|NYI|2009–
+Johnny Gaudreau|LW|S A S S S D|CGY|2014–2024
+Taylor Hall|LW|S A A A A- B|EDM|2010–
+Phil Kessel|RW|A S A B+ A B|TOR|2006–2023
+Corey Perry|RW|B A A+ A B A|ANA|2005–
+Ryan Getzlaf|C|B A- A+ A+ S S|ANA|2005–2022
+Jack Eichel|C|A A A A+ A+ A-|VGK|2015–
+Matthew Tkachuk|LW|B A- A+ S A+ A|FLA|2016–
+Aleksander Barkov|C|A A A+ S A+ A|FLA|2013–
+Brayden Point|C|S A+ A+ A+ A- C+|TBL|2016–
+Mark Stone|RW|C A A+ S A+ B|VGK|2015–
+Jason Spezza|C|C A A+ A+ S A-|OTT|2002–2023
+Joe Pavelski|C|C+ A A+ S A B|SJS|2006–2024
+Dany Heatley|LW|B S A+ A- B+ A|OTT|2001–2015
+Nicklas Bäckström|C|B B+ A+ S S B|WSH|2007–2024
+Jack Hughes|C|S A S A+ S D|NJD|2019–
+Steve Larmer|RW|B+ A A A A- B|CHI|1980–1995
+Mark Scheifele|C|B+ A+ A+ A+ A A-|WPG|2011–
+Ray Bourque|D|A- S A A S|BOS|1979–2001
+Paul Coffey|D|S A C+ C+ B|EDM|1980–2001
+Nicklas Lidström|D|A- A+ B B+ S|DET|1991–2012
+Chris Chelios|D|A B+ S B+ A+|CHI|1983–2010
+Al MacInnis|D|B S A A A-|CGY|1981–2004
+Brian Leetch|D|A+ A B- C+ A|NYR|1987–2006
+Scott Niedermayer|D|S A- B B A+|NJD|1991–2010
+Chris Pronger|D|B A S S A+|STL|1993–2012
+Scott Stevens|D|B B+ S A+ A+|NJD|1982–2004
+Rod Langway|D|B C+ A+ A S|WSH|1978–1993
+Phil Housley|D|S A C- D+ B-|BUF|1982–2003
+Larry Murphy|D|B A B- B+ A|LAK|1980–2001
+Mark Howe|D|A A B B A|PHI|1979–1995
+Rob Blake|D|A- S S A A-|LAK|1990–2010
+Sergei Zubov|D|A A+ B- B A+|DAL|1992–2009
+Zdeno Chara|D|C S S S A+|BOS|1997–2022
+Duncan Keith|D|S A- B+ C+ A+|CHI|2005–2022
+Drew Doughty|D|A- A A A S|LAK|2008–
+Erik Karlsson|D|S A+ C- C B+|OTT|2009–
+Victor Hedman|D|A A+ A S A+|TBL|2009–
+Cale Makar|D|S S B B S|COL|2019–
+Quinn Hughes|D|S A C- D+ A|VAN|2019–
+Roman Josi|D|A A+ B B A|NSH|2010–
+Shea Weber|D|B S S S A|NSH|2005–2022
+Ryan Suter|D|B+ B+ B A A+|MIN|2005–
+Brent Burns|D|B+ S A S B+|SJS|2003–
+P.K. Subban|D|A S A A- B+|MTL|2009–2022
+Kris Letang|D|A A B B+ A|PIT|2006–
+Alex Pietrangelo|D|A- A B A A+|STL|2008–
+Zach Werenski|D|S A+ B B A|CBJ|2016–
+Adam Fox|D|B+ A C- C S|NYR|2019–
+Miro Heiskanen|D|S A B B+ S|DAL|2017–
+Rasmus Dahlin|D|A A+ A A A|BUF|2018–
+Mark Giordano|D|B A B B A|CGY|2006–2024
+Dougie Hamilton|D|B S A S B|NJD|2012–
+John Carlson|D|B+ S B A A|WSH|2009–
+Kevin Shattenkirk|D|B+ A C C+ B|STL|2010–2024
+Dion Phaneuf|D|B+ S S A B|CGY|2005–2019
+Brian Campbell|D|S A- D+ C B+|CHI|2000–2016
+Dan Boyle|D|A A B- C+ A-|SJS|1998–2016
+Sergei Gonchar|D|A+ A B- B A|WSH|1994–2015
+Adam Foote|D|B C+ S A A+|COL|1991–2008
+Derian Hatcher|D|C B S S A|DAL|1991–2008
+Kevin Lowe|D|B B- A A A+|EDM|1979–1998
+Gary Suter|D|A A B B B+|CGY|1985–2002
+Mathieu Schneider|D|A A- B C+ B+|MTL|1987–2010
+Kevin Hatcher|D|B+ A+ A S B|WSH|1984–2001
+Eric Desjardins|D|B+ A- B+ B+ A+|PHI|1988–2006
+Brian Rafalski|D|A A- C D+ A|NJD|1999–2011
+Niklas Kronwall|D|B+ B S B A|DET|2003–2019
+Kimmo Timonen|D|A- A- B C A|NSH|1998–2015
+Wade Redden|D|A- A- B B A|OTT|1996–2013
+Ed Jovanovski|D|A A S A B|FLA|1995–2014
+Bryan McCabe|D|B S A A- B|TOR|1995–2011
+Tomas Kaberle|D|A- A- C- B A|TOR|1998–2013
+Teppo Numminen|D|B+ B C+ B A+|PHX|1988–2009
+Jay Bouwmeester|D|S B+ B A A|FLA|2002–2019
+Mike Green|D|S S C+ C+ C|WSH|2005–2020
+Keith Yandle|D|A A B- C+ B+|ARI|2006–2022
+Ryan McDonagh|D|A B B A S|NYR|2010–
+Brent Seabrook|D|B A A A A-|CHI|2005–2020
+Marc-Édouard Vlasic|D|A B B A S|SJS|2006–2025
+Jaccob Slavin|D|A B+ B A S|CAR|2015–
+Charlie McAvoy|D|A A- A A A|BOS|2016–
+Josh Morrissey|D|A A B- C+ A|WPG|2015–
+Morgan Rielly|D|A+ B+ B- B B|TOR|2013–
+Seth Jones|D|A A B A A-|CBJ|2013–
+Aaron Ekblad|D|B+ A A A A|FLA|2014–
+Thomas Chabot|D|A A B B A-|OTT|2016–
+Mattias Ekholm|D|B A A- A A|NSH|2011–
+Devon Toews|D|A B+ B- B S|COL|2018–
+Jakob Chychrun|D|A S A A A-|ARI|2016–
+Moritz Seider|D|B A S A A|DET|2021–
+Evan Bouchard|D|B+ S B B A|EDM|2018–
+Lane Hutson|D|S A D D+ A|MTL|2024–
+Noah Dobson|D|A A B A A|NYI|2019–
+Darnell Nurse|D|S A A A B|EDM|2014–
+Jake Sanderson|D|S A B B+ S|OTT|2022–
+Brandon Montour|D|A S B C+ B|FLA|2016–
+Gustav Forsling|D|S A B C+ A|FLA|2016–
+Torey Krug|D|A A B- D A-|BOS|2011–
+Jeff Petry|D|A A- B A B+|MTL|2010–
+Tyson Barrie|D|A A C D B+|COL|2011–
+Andrei Markov|D|A A- B- B A|MTL|2000–2017
+Sami Salo|D|B S B B B+|VAN|1998–2014
+Sheldon Souray|D|B S S A B|MTL|1997–2013
+Willie Mitchell|D|C C A A A+|VAN|1999–2017
+Robyn Regehr|D|B C S A A|CGY|1999–2015
+Chris Phillips|D|B B A A A|OTT|1997–2015
+Dustin Byfuglien|D|A S S S B|WPG|2007–2020
+Hal Gill|D|C C A S A|PIT|1997–2014
+Darryl Sydor|D|B+ B B B+ A|DAL|1991–2010
+Ulf Samuelsson|D|B C S A A+|PIT|1984–2000
+Calle Johansson|D|A B+ C B A|WSH|1987–2003
+Vladimir Konstantinov|D|A B S B A+|DET|1991–1997
+Mattias Öhlund|D|A A A A A|VAN|1997–2011
+Cam Fowler|D|A B+ B- B B|ANA|2010–
+Jacob Trouba|D|B+ A S A B|NYR|2013–
+Radko Gudas|D|C B S B+ B|FLA|2012–
+Mikhail Sergachev|D|A A+ A- A- A|TBL|2016–
+Patrick Roy|G|A S S A+ S|COL|1984–2003
+Dominik Hašek|G|S S A S A|BUF|1990–2008
+Martin Brodeur|G|A A+ A+ A S|NJD|1991–2015
+Grant Fuhr|G|S S A+ A B+|EDM|1981–2000
+Ed Belfour|G|A+ A+ A A A-|CHI|1988–2007
+Henrik Lundqvist|G|A S A+ A A|NYR|2005–2020
+Roberto Luongo|G|B+ A+ A A+ A|FLA|1999–2019
+Carey Price|G|A A+ A+ A+ S|MTL|2007–2022
+Andrei Vasilevskiy|G|S S S A+ A|TBL|2014–
+Marc-André Fleury|G|S A+ A A- B+|PIT|2003–2024
+Tim Thomas|G|S S A A C+|BOS|2002–2014
+Mike Richter|G|A A+ A+ A A-|NYR|1989–2003
+Curtis Joseph|G|A A+ A A B|STL|1989–2009
+John Vanbiesbrouck|G|A A A A- A|FLA|1981–2002
+Tom Barrasso|G|A A A A- A|PIT|1983–2003
+Billy Smith|G|A A A B+ A|NYI|1971–1989
+Ron Hextall|G|A A- A A A-|PHI|1986–1999
+Mike Vernon|G|A A A- A B+|CGY|1982–2002
+Chris Osgood|G|B A A- A A|DET|1993–2011
+Nikolai Khabibulin|G|A A A- A B+|TBL|1995–2014
+Miikka Kiprusoff|G|A S A A B+|CGY|2000–2013
+Pekka Rinne|G|B A A- A+ A|NSH|2005–2021
+Jonathan Quick|G|S S A A- B|LAK|2007–2024
+Tuukka Rask|G|A A+ A A+ A|BOS|2007–2022
+Sergei Bobrovsky|G|S A+ A A- B+|CBJ|2010–
+Connor Hellebuyck|G|A A+ A+ S A|WPG|2015–
+Igor Shesterkin|G|S S S A A+|NYR|2019–
+Ryan Miller|G|A A A+ A A-|BUF|2002–2021
+Evgeni Nabokov|G|A A A A A-|SJS|2000–2015
+Ilya Sorokin|G|S S A A A|NYI|2020–
+Braden Holtby|G|A A A A- B+|WSH|2011–2022
+Jean-Sébastien Giguère|G|B A A- A A|ANA|1996–2014
+Olaf Kölzig|G|B A A A A|WSH|1989–2009
+Andy Moog|G|A A A- A B+|EDM|1980–1998
+Juuse Saros|G|S A A A- A|NSH|2015–
