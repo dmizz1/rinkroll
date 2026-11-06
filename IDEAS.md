@@ -1,5 +1,15 @@
 # Thinking jar (ideas for later, not built yet)
 
+## Roadmap (D.M, Nov 6 2026)
+1. Revamp head-to-head: real matchup sims
+   - Forwards and defensemen: 3-on-3 overtime (each build is the star on an otherwise average unit; ~10-12 possessions: win the puck, create a chance, finish; live play-by-play; tied goes to a 3-round shootout)
+   - Goalies: shootout duel vs the same 10 average shooters
+   - Result screen: score + "why you won" (which categories swung it)
+   - Optional twist: shared-spin draft (claiming a category locks it for the opponent)
+2. Account system (see Accounts below)
+3. DONE Nov 6: clicking the RINK·ROLL title returns to the main menu
+4. Advertise and earn revenue (see Marketing below)
+
 ## Accounts (optional; the game works fully without one)
 - Build history: every finished build saved with date, mode, players, grades
 - Average build stat: overall, by mode and by position
