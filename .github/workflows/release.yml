@@ -1,0 +1,57 @@
+name: Scheduled release
+
+# Ships the waiting release branch to the live site at an exact time.
+# GitHub's timers can run a few minutes late, so this starts early (twice, as a backup)
+# and waits until the release time before pushing.
+on:
+  schedule:
+    - cron: "40 16 7 11 *"   # 16:40 UTC Nov 7
+    - cron: "5 17 7 11 *"    # 17:05 UTC Nov 7 (backup)
+  workflow_dispatch:
+    inputs:
+      now:
+        description: "Release right away instead of waiting"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+env:
+  BRANCH: release-2026-11-07
+  RELEASE_AT: "2026-11-07T17:30:00Z"   # 12:30 PM Eastern
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Ship it at the release time
+        run: |
+          if ! git ls-remote --exit-code --heads origin "$BRANCH" >/dev/null; then echo "Already released."; exit 0; fi
+          target=$(date -u -d "$RELEASE_AT" +%s); now=$(date -u +%s)
+          if [ "${{ inputs.now }}" != "true" ]; then
+            if [ $((now - target)) -gt 21600 ]; then echo "Release time passed more than 6 hours ago; skipping."; exit 0; fi
+            if [ $now -lt $target ]; then echo "Waiting $((target - now))s until $RELEASE_AT"; sleep $((target - now)); fi
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git fetch origin main "$BRANCH"
+          git checkout -B main origin/main
+          git merge --no-edit -X theirs "origin/$BRANCH" -m "Release: $BRANCH"
+          python3 build.py
+          git add -A netlify rink-roll.html
+          git diff --cached --quiet || git commit -m "Rebuild site for $BRANCH"
+          git push origin main
+          git push origin --delete "$BRANCH"
+          echo "Released at $(date -u)"
