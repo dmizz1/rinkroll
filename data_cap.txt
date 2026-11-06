@@ -450,8 +450,8 @@ Tony DeAngelo|NYI|4500000
 Scott Mayfield|NYI|3500000
 Logan Stanley|NYI|1500000
 Matthew Schaefer|NYI|986250
+Ben Hutton|NYI|900000
 Matthew Kessel|NYI|850000
-Ben Hutton|NYI|850000
 Ilya Sorokin|NYI|8250000
 Semyon Varlamov|NYI|2750000
 Pavel Dorofeyev|NYR|11000000
