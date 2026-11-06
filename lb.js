@@ -68,6 +68,13 @@ async function loadDailyPreview() {
   el.hidden = false; el.innerHTML = '<p class="note">Loading today\'s top builds…</p>';
   try {
     const data = await lbGet(dailyInfo().key);
+    if (!dailyDone()) {
+      // no spoilers: other people's builds stay hidden until you've finished today's Daily
+      const n = data.total;
+      el.innerHTML = `<h3 class="lb-h">Today's leaderboard <small>${n} ${n === 1 ? 'build' : 'builds'} posted</small></h3>`
+        + `<p class="note lb-locked">${n ? 'Finish today\'s Daily to see everyone\'s builds and where you rank.' : 'No builds posted yet. Finish today\'s Daily and be the first.'}</p>`;
+      return;
+    }
     el.innerHTML = `<h3 class="lb-h">Today's top builds <small>${data.total} posted</small></h3>` + lbRowsHtml(data.entries, 5, null);
   } catch (e) { el.innerHTML = ''; el.hidden = true; }
 }
