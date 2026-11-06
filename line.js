@@ -63,7 +63,9 @@ function drawOptions() {
     pick.push(take(fromTop ? topBag : restBag));
   }
   if (line.variant === 'cap' && !pick.some(affordable)) {
-    const cheap = pool.filter(p => affordable(p) && !pick.includes(p));
+    // swap in an affordable player, still preferring teams' top two lines
+    const cheapTop = pool.filter(p => p.top && affordable(p) && !pick.includes(p));
+    const cheap = cheapTop.length && Math.random() < 0.9 ? cheapTop : pool.filter(p => affordable(p) && !pick.includes(p));
     if (cheap.length) pick[2] = cheap[Math.floor(Math.random() * cheap.length)];
   }
   line.options = pick;

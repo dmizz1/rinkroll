@@ -347,7 +347,7 @@ Dakota Joshua|TOR|C|81|F C- C F F A|298|50|46|0
 Vinni Lettieri|TOR|C|71|C D D F F D|163|16|17|0
 Zack MacEwen|TOR|R|19|F D+ F C+ F A+|251|19|19|0
 Kirill Marchenko|TOR|R|86|A+ B+ B+ A- A- B|306|108|114|1
-Auston Matthews|TOR|C|34|D+ A- A- B+ A B+|706|439|367|1
+Auston Matthews|TOR|C|34|C S A- B+ A A-|706|439|367|1
 Gavin McKenna|TOR|L|92|B C+ B- C- B- F|17|5|6|0
 William Nylander|TOR|R|88|A- S A+ B A C-|767|302|410|1
 Nick Paul|TOR|L|20|C+ D+ D+ C+ D+ A|554|106|114|0
@@ -742,7 +742,7 @@ Nick Seeler|PHI|D|24|C+ D C- C C|470|15|61|0
 Cam York|PHI|D|8|C+ C+ D D- B-|318|23|81|1
 Dan Vladar|PHI|G|80|C- B- C B+ B+|166|0.897|81|1
 Joseph Woll|PHI|G|53|B B- B- B B-|125|0.906|64|0
-Connor Bedard|CHI|C|98|B A- A- C- A D+|229|79|136|1
+Connor Bedard|CHI|C|98|B S A- C- A D+|229|79|136|1
 Tyler Bertuzzi|CHI|L|59|F B+ A D+ B- B-|583|170|201|1
 Dillon Boucher|CHI|L|36|D+ C C C C B-|1|0|0|0
 Ryan Donato|CHI|C|8|C B C+ D+ C C-|581|125|137|0

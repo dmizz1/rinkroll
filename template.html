@@ -224,6 +224,11 @@ button:focus-visible, [tabindex]:focus-visible { outline: 3px solid var(--gold);
 .lb-players { font-family: var(--data); font-size: 12px; color: var(--frost); overflow-wrap: anywhere; }
 .lb-preview { background: var(--boards); border: 1px solid var(--rule); border-radius: 6px; padding: 14px 16px; }
 
+.optimal .note { margin: 0 0 10px; font-size: 15px; }
+.optimal .note b { color: var(--ice); }
+.recap-row.diff { border: 1px solid rgba(244,201,93,.5); }
+.recap-row em { font-style: normal; color: var(--gold); font-size: 13px; }
+
 /* nav, daily */
 .site-nav { display: flex; gap: 18px; margin-top: 10px; font-family: var(--data); font-size: 14px; letter-spacing: .1em; text-transform: uppercase; }
 .site-nav a { color: var(--frost); text-decoration: none; border-bottom: 1px solid var(--rule); }
@@ -475,6 +480,11 @@ button:focus-visible, [tabindex]:focus-visible { outline: 3px solid var(--gold);
     <div id="parts">
       <h3>The parts list</h3>
       <div class="recap" id="recap"></div>
+    </div>
+    <div class="optimal" id="optimal" hidden>
+      <h3>Best possible build</h3>
+      <p class="note" id="optimal-verdict"></p>
+      <div class="recap" id="optimal-rows"></div>
     </div>
     <div class="tcard-wrap" id="tcard-wrap" hidden>
       <h3>Your card</h3>
@@ -838,6 +848,7 @@ function finish() {
   if (state.daily) { dailySaveProgress(true); $('daily-note').textContent = `Next daily in ${untilMidnight()}. Share your grid and see who built better.`; }
   show('result');
   renderBuildExtras(state.result);
+  renderOptimal();
   showDailyLeaderboard();
   if (state.online) { saveProgress(true, avg); renderH2H(); }
   else fanfare(avg >= 7);

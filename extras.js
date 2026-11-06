@@ -200,3 +200,39 @@ function renderBuildExtras(r) {
     footer: 'Created by D.M · Projected 82 games'
   });
 }
+
+/* ----- best possible build from the same players ----- */
+// Each drawn player fills exactly one category; find the assignment with the highest total grade.
+function optimalBuild() {
+  const ps = state.slots.map(s => s.player), n = ps.length;
+  let best = -1, bestPerm = null;
+  const perm = [], used = new Array(n).fill(false);
+  (function rec(i, score) {
+    if (i === n) { if (score > best) { best = score; bestPerm = perm.slice(); } return; }
+    for (let j = 0; j < n; j++) {
+      if (used[j]) continue;
+      used[j] = true; perm[i] = j;
+      rec(i + 1, score + gv(ps[j].grades[i]));
+      used[j] = false;
+    }
+  })(0, 0);
+  return { total: best, rows: bestPerm.map((j, i) => ({ k: state.slots[i].k, player: ps[j], grade: ps[j].grades[i] })) };
+}
+function renderOptimal() {
+  const box = $('optimal'); if (!box) return;
+  const opt = optimalBuild();
+  const mine = state.slots.reduce((a, s) => a + gv(s.grade), 0);
+  const n = state.slots.length;
+  const optOvr = SCALE[Math.round(opt.total / n)], myOvr = SCALE[Math.round(mine / n)];
+  const perfect = mine >= opt.total;
+  const rows = opt.rows.map((r, i) => {
+    const same = state.slots[i].player === r.player;
+    return `<div class="recap-row${same ? '' : ' diff'}"><span class="k">${r.k}</span><span class="who">${esc(r.player.name)}${same ? '' : ` <em>instead of ${esc(state.slots[i].player.name)}</em>`}</span>${chip(r.grade)}</div>`;
+  }).join('');
+  $('optimal-verdict').innerHTML = perfect
+    ? 'You found the best possible build from your players. Perfect draft.'
+    : `With the same players, the best possible build was <b>${optOvr}</b> overall. Yours was <b>${myOvr}</b>. You got ${Math.round(100 * mine / opt.total)}% of the way there.`;
+  $('optimal-rows').innerHTML = rows;
+  box.hidden = false;
+  if (state.result) state.result.optimal = { ovr: optOvr, perfect };
+}

@@ -1,3 +1,7 @@
 # Manual grade overrides for Current NHL players. They survive monthly stats updates.
 # Format: Player Name|Category|Grade      (grades: F, D-, D, D+, C-, C, C+, B-, B, B+, A-, A, A+, S)
 Alex Ovechkin|Shot|S
+Auston Matthews|Speed|C
+Auston Matthews|Shot|S
+Auston Matthews|Build|A-
+Connor Bedard|Shot|S

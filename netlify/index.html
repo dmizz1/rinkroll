@@ -235,6 +235,11 @@ button:focus-visible, [tabindex]:focus-visible { outline: 3px solid var(--gold);
 .lb-players { font-family: var(--data); font-size: 12px; color: var(--frost); overflow-wrap: anywhere; }
 .lb-preview { background: var(--boards); border: 1px solid var(--rule); border-radius: 6px; padding: 14px 16px; }
 
+.optimal .note { margin: 0 0 10px; font-size: 15px; }
+.optimal .note b { color: var(--ice); }
+.recap-row.diff { border: 1px solid rgba(244,201,93,.5); }
+.recap-row em { font-style: normal; color: var(--gold); font-size: 13px; }
+
 /* nav, daily */
 .site-nav { display: flex; gap: 18px; margin-top: 10px; font-family: var(--data); font-size: 14px; letter-spacing: .1em; text-transform: uppercase; }
 .site-nav a { color: var(--frost); text-decoration: none; border-bottom: 1px solid var(--rule); }
@@ -494,6 +499,11 @@ button:focus-visible, [tabindex]:focus-visible { outline: 3px solid var(--gold);
     <div id="parts">
       <h3>The parts list</h3>
       <div class="recap" id="recap"></div>
+    </div>
+    <div class="optimal" id="optimal" hidden>
+      <h3>Best possible build</h3>
+      <p class="note" id="optimal-verdict"></p>
+      <div class="recap" id="optimal-rows"></div>
     </div>
     <div class="tcard-wrap" id="tcard-wrap" hidden>
       <h3>Your card</h3>
@@ -871,7 +881,7 @@ Dakota Joshua|TOR|C|81|F C- C F F A|298|50|46|0
 Vinni Lettieri|TOR|C|71|C D D F F D|163|16|17|0
 Zack MacEwen|TOR|R|19|F D+ F C+ F A+|251|19|19|0
 Kirill Marchenko|TOR|R|86|A+ B+ B+ A- A- B|306|108|114|1
-Auston Matthews|TOR|C|34|D+ A- A- B+ A B+|706|439|367|1
+Auston Matthews|TOR|C|34|C S A- B+ A A-|706|439|367|1
 Gavin McKenna|TOR|L|92|B C+ B- C- B- F|17|5|6|0
 William Nylander|TOR|R|88|A- S A+ B A C-|767|302|410|1
 Nick Paul|TOR|L|20|C+ D+ D+ C+ D+ A|554|106|114|0
@@ -1266,7 +1276,7 @@ Nick Seeler|PHI|D|24|C+ D C- C C|470|15|61|0
 Cam York|PHI|D|8|C+ C+ D D- B-|318|23|81|1
 Dan Vladar|PHI|G|80|C- B- C B+ B+|166|0.897|81|1
 Joseph Woll|PHI|G|53|B B- B- B B-|125|0.906|64|0
-Connor Bedard|CHI|C|98|B A- A- C- A D+|229|79|136|1
+Connor Bedard|CHI|C|98|B S A- C- A D+|229|79|136|1
 Tyler Bertuzzi|CHI|L|59|F B+ A D+ B- B-|583|170|201|1
 Dillon Boucher|CHI|L|36|D+ C C C C B-|1|0|0|0
 Ryan Donato|CHI|C|8|C B C+ D+ C C-|581|125|137|0
@@ -2709,6 +2719,7 @@ function finish() {
   if (state.daily) { dailySaveProgress(true); $('daily-note').textContent = `Next daily in ${untilMidnight()}. Share your grid and see who built better.`; }
   show('result');
   renderBuildExtras(state.result);
+  renderOptimal();
   showDailyLeaderboard();
   if (state.online) { saveProgress(true, avg); renderH2H(); }
   else fanfare(avg >= 7);
@@ -2941,6 +2952,42 @@ function renderBuildExtras(r) {
   });
 }
 
+/* ----- best possible build from the same players ----- */
+// Each drawn player fills exactly one category; find the assignment with the highest total grade.
+function optimalBuild() {
+  const ps = state.slots.map(s => s.player), n = ps.length;
+  let best = -1, bestPerm = null;
+  const perm = [], used = new Array(n).fill(false);
+  (function rec(i, score) {
+    if (i === n) { if (score > best) { best = score; bestPerm = perm.slice(); } return; }
+    for (let j = 0; j < n; j++) {
+      if (used[j]) continue;
+      used[j] = true; perm[i] = j;
+      rec(i + 1, score + gv(ps[j].grades[i]));
+      used[j] = false;
+    }
+  })(0, 0);
+  return { total: best, rows: bestPerm.map((j, i) => ({ k: state.slots[i].k, player: ps[j], grade: ps[j].grades[i] })) };
+}
+function renderOptimal() {
+  const box = $('optimal'); if (!box) return;
+  const opt = optimalBuild();
+  const mine = state.slots.reduce((a, s) => a + gv(s.grade), 0);
+  const n = state.slots.length;
+  const optOvr = SCALE[Math.round(opt.total / n)], myOvr = SCALE[Math.round(mine / n)];
+  const perfect = mine >= opt.total;
+  const rows = opt.rows.map((r, i) => {
+    const same = state.slots[i].player === r.player;
+    return `<div class="recap-row${same ? '' : ' diff'}"><span class="k">${r.k}</span><span class="who">${esc(r.player.name)}${same ? '' : ` <em>instead of ${esc(state.slots[i].player.name)}</em>`}</span>${chip(r.grade)}</div>`;
+  }).join('');
+  $('optimal-verdict').innerHTML = perfect
+    ? 'You found the best possible build from your players. Perfect draft.'
+    : `With the same players, the best possible build was <b>${optOvr}</b> overall. Yours was <b>${myOvr}</b>. You got ${Math.round(100 * mine / opt.total)}% of the way there.`;
+  $('optimal-rows').innerHTML = rows;
+  box.hidden = false;
+  if (state.result) state.result.optimal = { ovr: optOvr, perfect };
+}
+
 /* ---------- line builder (3F 2D 1G) + season sim ---------- */
 const CAP_LIMIT = 26000000;
 const LINE_SLOTS = [['F', 'Forward 1'], ['F', 'Forward 2'], ['F', 'Forward 3'], ['D', 'Defense 1'], ['D', 'Defense 2'], ['G', 'Goalie']];
@@ -3006,7 +3053,9 @@ function drawOptions() {
     pick.push(take(fromTop ? topBag : restBag));
   }
   if (line.variant === 'cap' && !pick.some(affordable)) {
-    const cheap = pool.filter(p => affordable(p) && !pick.includes(p));
+    // swap in an affordable player, still preferring teams' top two lines
+    const cheapTop = pool.filter(p => p.top && affordable(p) && !pick.includes(p));
+    const cheap = cheapTop.length && Math.random() < 0.9 ? cheapTop : pool.filter(p => affordable(p) && !pick.includes(p));
     if (cheap.length) pick[2] = cheap[Math.floor(Math.random() * cheap.length)];
   }
   line.options = pick;
