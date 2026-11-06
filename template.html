@@ -561,6 +561,7 @@ const CAP_RAW = `__CAPS__`;
 
 const MIN_GP = 82;
 const MIN_FWD_PPG = 0.40; // drop career fourth-liners
+const MIN_D_PPG = 0.20;   // drop career depth defensemen
 const SCALE = ['F','D-','D','D+','C-','C','C+','B-','B','B+','A-','A','A+','S'];
 const gv = g => SCALE.indexOf(g);
 const tier = g => g[0];
@@ -581,6 +582,7 @@ CURRENT_RAW.trim().split('\n').forEach(line => {
   if (+a < MIN_GP) return;
   const g = grp(pos);
   if (g === 'F' && ((+b) + (+c)) / (+a) < MIN_FWD_PPG) return;
+  if (g === 'D' && ((+b) + (+c)) / (+a) < MIN_D_PPG) return;
   let stat;
   if (+a === 0) stat = 'NHL debut pending';
   else if (g === 'G') stat = `${a} GP · ${b ? b.replace(/^0/, '') : '—'} SV% · ${c} W`;
