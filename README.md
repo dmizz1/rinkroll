@@ -21,7 +21,7 @@ To refresh only cap hits (after big trades or signings): **Actions** → **Updat
 | File | What it is |
 |---|---|
 | `template.html` | The game: layout, styles and game logic |
-| `online_peer.js` | Head-to-head play (PeerJS) for the public site |
+| `online_poll.js` | Head-to-head play for the public site (talks to `/api/lobby`) |
 | `pages/*.body.html` | How to Play and Privacy page content |
 | `data_current.txt` | Current NHL players and grades (rewritten monthly) |
 | `data_alltime.txt` | Modern Era Stars (1980 and up: 75 F, 75 D, 35 G), graded by hand |
@@ -31,6 +31,7 @@ To refresh only cap hits (after big trades or signings): **Actions** → **Updat
 | `line.js` | Line builder (Cap Line and Skill Line) and the season sim |
 | `lb.js` | Daily leaderboard (public site only) |
 | `functions/leaderboard.mjs` | Leaderboard API, stored in Netlify Blobs |
+| `functions/lobby.mjs` | Head-to-head lobby API, stored in Netlify Blobs |
 | `build.py` | Builds everything into `netlify/` |
 
 After editing anything, run `python3 build.py` and commit the `netlify/` folder too.

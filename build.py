@@ -35,7 +35,7 @@ open(P('rink-roll.html'), 'w', encoding='utf-8').write(art)
 t = tpl.replace('__NAV__', NAV)
 start = t.index('/* ---------- head-to-head ---------- */')
 end = t.index('initNet();\n') + len('initNet();\n')
-t = t[:start] + read('online_peer.js') + t[end:]
+t = t[:start] + read('online_poll.js') + t[end:]
 
 def rep(a, b):
     global t
@@ -48,16 +48,15 @@ rep('''    <div class="online-panel" id="online-panel" hidden>
 ''')
 rep('<button class="btn" id="copy-code">Copy code</button>', '<button class="btn" id="copy-code">Copy code</button><button class="btn" id="copy-link">Copy invite link</button>')
 rep("Send this code to a friend. They open Rink Roll, choose Head-to-head, and enter it under Join a lobby. The game starts as soon as they're in.",
-    "Send the invite link (or just the code) to a friend. Keep this page open: the lobby lives in your browser. The game starts as soon as they join.")
+    "Send the invite link (or just the code) to a friend. The game starts as soon as they join, and works across any devices and networks.")
 rep('.op-msg {', '''.name-row { grid-column: 1 / -1; display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
 .name-row label { font-family: var(--display); font-weight: 800; font-size: 20px; text-transform: uppercase; letter-spacing: .04em; }
 .name-input { flex: 0 1 260px; min-width: 0; background: #060c16; border: 2px solid var(--rule); border-radius: 4px; padding: 8px 12px; color: var(--ice); font: 600 18px var(--body); }
 .name-input:focus { outline: none; border-color: var(--gold); }
 .op-msg {''')
 rep('<meta name="claude:viewport-fit-sides" content="cover">\n', '')
-rep('<script>\nconst CURRENT_RAW', '<script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>\n<script>\nconst CURRENT_RAW')
 rep('Data: NHL rosters, stats and EDGE tracking updated __DATA_DATE__.</div>',
-    'Data: NHL rosters, stats and EDGE tracking updated __DATA_DATE__.</div>\n    <div>Head-to-head connects the two browsers directly through PeerJS. No accounts, and nothing is stored on a server. <a href="how-to-play.html">How to play</a> · <a href="privacy.html">Privacy policy</a></div>')
+    'Data: NHL rosters, stats and EDGE tracking updated __DATA_DATE__.</div>\n    <div>Head-to-head lobbies run through this site, so it works on any network, with no accounts. <a href="how-to-play.html">How to play</a> · <a href="privacy.html">Privacy policy</a></div>')
 
 def social(title, desc, url):
     img = SITE + 'og.png'
