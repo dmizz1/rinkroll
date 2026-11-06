@@ -280,7 +280,46 @@ button:focus-visible, [tabindex]:focus-visible { outline: 3px solid var(--gold);
 .h2h-row.total { background: var(--boards-2); border: 1px solid var(--rule); }
 @media (max-width: 560px) { .h2h-row { grid-template-columns: minmax(0,1fr) auto minmax(0,1fr); } .h2h-row .who { display: none; } .h2h-row.head span.hide-sm { display: none; } }
 
-@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
+/* ---------- arena visuals (body.fx) ---------- */
+body { position: relative; }
+.wrap { position: relative; z-index: 1; }
+.fx-lights, .fx-crowd, .fx-team, .fx-flash, .fx-confetti { display: none; pointer-events: none; }
+body.fx { background-image:
+    var(--ice-tex, none),
+    linear-gradient(90deg, transparent calc(50% - 1px), rgba(230,57,70,.12) calc(50% - 1px), rgba(230,57,70,.12) calc(50% + 1px), transparent calc(50% + 1px)),
+    linear-gradient(90deg, transparent 23%, rgba(59,123,234,.07) 23%, rgba(59,123,234,.07) 24.2%, transparent 24.2%, transparent 75.8%, rgba(59,123,234,.07) 75.8%, rgba(59,123,234,.07) 77%, transparent 77%),
+    radial-gradient(1200px 500px at 50% -120px, #1b2f55 0%, transparent 70%);
+  background-size: 512px 512px, auto, auto, auto; }
+body.fx .fx-lights { display: block; position: fixed; inset: 0; overflow: hidden; z-index: 0; }
+body.fx .beam { position: absolute; top: -20vh; width: 38vw; min-width: 260px; height: 140vh; transform-origin: 50% 0; background: linear-gradient(180deg, rgba(190,215,255,.10), rgba(190,215,255,.025) 55%, transparent 80%); clip-path: polygon(45% 0, 55% 0, 100% 100%, 0 100%); animation: sweep 14s ease-in-out infinite alternate; }
+body.fx .beam.b1 { left: 2vw; animation-duration: 13s; }
+body.fx .beam.b2 { left: 34vw; animation-duration: 17s; animation-delay: -6s; opacity: .7; }
+body.fx .beam.b3 { right: 2vw; animation-duration: 15s; animation-delay: -3s; }
+@keyframes sweep { from { transform: rotate(-14deg); } to { transform: rotate(14deg); } }
+body.fx .fx-crowd { display: block; position: absolute; left: 0; right: 0; top: 0; height: 150px; z-index: 0; background: var(--crowd) repeat-x top center / auto 150px; opacity: .95; -webkit-mask-image: linear-gradient(#000 55%, transparent); mask-image: linear-gradient(#000 55%, transparent); }
+body.fx .fx-team { display: block; position: fixed; inset: 0; z-index: 0; opacity: 0; background: radial-gradient(ellipse 80% 60% at 50% 25%, var(--tc1, #3b7bea), transparent 70%); }
+body.fx .fx-team.on { animation: teamtint 2.2s ease-out; }
+@keyframes teamtint { 0% { opacity: 0; } 18% { opacity: .30; } 100% { opacity: 0; } }
+body.fx .fx-flash { display: block; position: fixed; inset: 0; z-index: 2; opacity: 0; background: radial-gradient(circle at 50% 0%, rgba(230,57,70,.45), transparent 55%); }
+body.fx .fx-flash.on { animation: goalflash 1s ease-out; }
+@keyframes goalflash { 0%, 30%, 60% { opacity: 1; } 15%, 45% { opacity: .2; } 100% { opacity: 0; } }
+body.fx .fx-confetti { position: fixed; inset: 0; z-index: 60; width: 100%; height: 100%; }
+body.fx .fx-confetti.on { display: block; }
+body.fx .masthead { padding-top: 64px; }
+/* jumbotron reel */
+body.fx .reel { background: linear-gradient(180deg, #1c2a44, #101a2c); border-color: #2c3d5c; box-shadow: 0 18px 40px rgba(0,0,0,.45), inset 0 1px 0 rgba(255,255,255,.06); transition: border-color .6s, box-shadow .6s; }
+body.fx .reel.team { animation: teamedge 2.2s ease-out; }
+@keyframes teamedge { 0% { border-color: #2c3d5c; } 15% { border-color: var(--tc2); box-shadow: 0 0 0 3px var(--tc2), 0 0 40px var(--tc2); } 100% { border-color: #2c3d5c; } }
+body.fx .window { background-color: #04070c; background-image: radial-gradient(rgba(255,190,90,.10) 1px, transparent 1.6px); background-size: 4px 4px; border: 3px solid #0b111c; box-shadow: inset 0 0 0 1px #24324c, inset 0 0 30px rgba(0,0,0,.8); }
+body.fx .window::before { background: linear-gradient(#04070c 10%, rgba(4,7,12,.5)); }
+body.fx .window::after { background: linear-gradient(rgba(4,7,12,.5), #04070c 90%); }
+body.fx .ri { color: rgba(255,181,71,.55); text-shadow: 0 0 6px rgba(255,160,40,.35); letter-spacing: .05em; }
+body.fx .ri.hit { color: #ffcf7a; text-shadow: 0 0 10px rgba(255,170,60,.75), 0 0 2px #fff3d6; }
+body.fx .landed .ri.hit { color: #fff1c9; }
+body.fx .p-meta { color: #c7d4e2; }
+
+@media (prefers-reduced-motion: reduce) {
+  body.fx .beam { animation: none; } *, *::before, *::after { animation: none !important; transition: none !important; } }
 </style>
 
 <div class="wrap">
@@ -291,7 +330,7 @@ button:focus-visible, [tabindex]:focus-visible { outline: 3px solid var(--gold);
       <p class="tag">Spin real NHL players. Steal one skill from each. Build a monster.</p>
       __NAV__
     </div>
-    <div class="scorebug" id="bug"><span>Pool <b id="bug-pool">—</b></span><span>Pos <b id="bug-pos">—</b></span><span>Re-rolls <b id="bug-rr">—</b></span><button class="mute" id="mute" aria-pressed="false">Sound on</button></div>
+    <div class="scorebug" id="bug"><span>Pool <b id="bug-pool">—</b></span><span>Pos <b id="bug-pos">—</b></span><span>Re-rolls <b id="bug-rr">—</b></span><button class="mute" id="mute" aria-pressed="false">Sound on</button><button class="mute" id="fx-toggle" aria-pressed="true">Arena on</button></div>
   </header>
 
   <!-- SETUP -->
@@ -747,6 +786,7 @@ function land(p) {
   const win = $('window'); void win.offsetWidth; win.classList.add('landed');
   $('lamp').classList.add('on');
   horn();
+  fxLand(p);
   $('prompt').innerHTML = `Take one skill from <b>${esc(p.name)}</b>. Tap an open slot.`;
   renderSlots(); updateControls();
 }
@@ -758,6 +798,7 @@ function assign(i) {
   state.current = null; state.spins++;
   renderSlots();
   const el = $('slot-' + i); el.classList.add('pop'); pop();
+  if (s.grade === 'S') fxBurst('small');
   $('lamp').classList.remove('on');
   updateControls();
   const filled = state.slots.filter(x => x.player).length;
@@ -848,6 +889,7 @@ function finish() {
   if (state.daily) { dailySaveProgress(true); $('daily-note').textContent = `Next daily in ${untilMidnight()}. Share your grid and see who built better.`; }
   show('result');
   renderBuildExtras(state.result);
+  if (ovr === 'S' || ovr === 'A+') fxBurst('big');
   renderOptimal();
   showDailyLeaderboard();
   if (state.online) { saveProgress(true, avg); renderH2H(); }
@@ -879,6 +921,7 @@ function seededSeq(pool, seed) {
 }
 
 /*__EXTRAS__*/
+/*__FX__*/
 /*__LINE__*/
 /*__LBJS__*/
 /* ---------- play modes, daily, share ---------- */

@@ -34,3 +34,8 @@ To refresh only cap hits (after big trades or signings): **Actions** → **Updat
 | `build.py` | Builds everything into `netlify/` |
 
 After editing anything, run `python3 build.py` and commit the `netlify/` folder too.
+
+## Classic look backup
+The arena visuals (ice, spotlights, crowd, jumbotron reel, team colors, confetti) live in `visuals.js` and the `body.fx` styles.
+Visitors can switch them off with the **Arena on/off** button in the header.
+The site as it was before the visual upgrade is saved on the `classic-look` branch.

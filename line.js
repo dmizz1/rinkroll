@@ -96,7 +96,7 @@ function choose(i) {
   if (line.busy) return;
   const p = line.options[i]; if (!p || !affordable(p)) return;
   line.picks.push(p); line.used.add(p.name); line.step++;
-  pop(); renderLineBoard();
+  pop(); fxLand(p); renderLineBoard();
   if (line.step >= LINE_SLOTS.length) { line.busy = true; setTimeout(runSeason, 500); }
   else drawOptions();
 }
@@ -202,7 +202,7 @@ function revealPlayoffs(S) {
     $('season-finish').textContent = S.finish;
     $('season-finish').className = 'verdict ' + (S.cup ? 'win' : S.confRank > 8 ? 'loss' : '');
     $('season-awards').innerHTML = S.trophies.length ? trophyChips(S.trophies) + (S.smythe ? `<span class="no-hw">Conn Smythe: ${esc(S.smythe.name)}</span>` : '') : trophyChips([]);
-    if (S.cup) horn(); fanfare(S.cup || S.path.length >= 2);
+    if (S.cup) { horn(); fxBurst('big'); } fanfare(S.cup || S.path.length >= 2);
     line.busy = false;
     renderCard({
       kicker: line.variant === 'cap' ? 'Cap Line' : 'Skill Line',

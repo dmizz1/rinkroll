@@ -18,12 +18,13 @@ SITE = 'https://rinkroll.app/'
 
 EXTRAS = read('extras.js')
 LINE = read('line.js')
+FX = read('visuals.js')
 LBJS = read('lb.js')
 CAPS = read('data_cap.txt').strip() if os.path.exists(P('data_cap.txt')) else ''
 assert '`' not in CAPS and '${' not in CAPS
 
 def inject(t):
-    return t.replace('/*__EXTRAS__*/', EXTRAS).replace('/*__LINE__*/', LINE).replace('/*__LBJS__*/', LBJS).replace('__CAPS__', CAPS).replace('__CURRENT__', cur).replace('__ALLTIME__', alt).replace('__DATA_DATE__', DATA_DATE)
+    return t.replace('/*__EXTRAS__*/', EXTRAS).replace('/*__LINE__*/', LINE).replace('/*__FX__*/', FX).replace('/*__LBJS__*/', LBJS).replace('__CAPS__', CAPS).replace('__CURRENT__', cur).replace('__ALLTIME__', alt).replace('__DATA_DATE__', DATA_DATE)
 
 # ---------- 1. Claude artifact ----------
 art = inject(tpl.replace('__NAV__', '')).replace('__LB__', 'false')
