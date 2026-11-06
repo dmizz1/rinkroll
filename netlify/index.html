@@ -578,7 +578,7 @@ body.fx .p-meta { color: #c7d4e2; }
     <div><b>Fan-made game.</b> Rink Roll is not affiliated with, endorsed by, or sponsored by the National Hockey League, the NHL Players' Association, or any team. Player names and statistics are used for reference only.</div>
     <div><b>How the grades work.</b> Current players are ranked against everyone at their position, then curved: roughly the top 2% earn S and the bottom 8% get F. Speed blends max skating speed and 20+ mph bursts. Shot blends shot velocity, goal rate and shooting %. Hands, Sense and Playmaking use finishing from the slot, offensive-zone time, points, assists and power-play production. Build is height and weight. Defense adds Physicality (size, penalty minutes, shot power) and Stick-checking (ice time, plus/minus, clean play). Goalie grades come from save % by shot distance, three-season save %, and career save %. Small samples are pulled toward average.</div>
     <div>Public NHL data doesn't split saves by glove or blocker side, so goalies are graded on save % by shot distance instead: Mid-range and Long-range. Modern Era Stars covers players whose careers fall mostly between 1980 and 2026 (75 forwards, 75 defensemen, 35 goalies), graded by hand from each player's career and reputation.</div>
-    <div>Current mode only includes players with at least 82 career NHL regular-season games, and forwards need at least 0.30 career points per game. Data: NHL rosters, stats and EDGE tracking updated November 6, 2026.</div>
+    <div>Current mode only includes players with at least 82 career NHL regular-season games, and forwards need at least 0.40 career points per game. Data: NHL rosters, stats and EDGE tracking updated November 6, 2026.</div>
     <div>Head-to-head lobbies run through this site, so it works on any network, with no accounts. <a href="how-to-play.html">How to play</a> · <a href="privacy.html">Privacy policy</a></div>
   </footer>
 </div>
@@ -2389,7 +2389,7 @@ Nico Daws|WPG|1100000
 Clay Stevenson|WPG|850000`;
 
 const MIN_GP = 82;
-const MIN_FWD_PPG = 0.30; // drop career fourth-liners
+const MIN_FWD_PPG = 0.40; // drop career fourth-liners
 const SCALE = ['F','D-','D','D+','C-','C','C+','B-','B','B+','A-','A','A+','S'];
 const gv = g => SCALE.indexOf(g);
 const tier = g => g[0];
