@@ -173,6 +173,17 @@ for (const G of ['F', 'D', 'G']) {
   }
 }
 
+// ---------- manual overrides (overrides.txt: Name|Category|Grade) ----------
+if (existsSync(join(ROOT, 'overrides.txt'))) {
+  const VALID = new Set(CUT.map(c => c[1]));
+  readFileSync(join(ROOT, 'overrides.txt'), 'utf8').split('\n').map(s => s.replace(/#.*/, '').trim()).filter(Boolean).forEach(line => {
+    const [name, cat, grade] = line.split('|').map(s => s.trim());
+    const p = players.find(x => x.name === name);
+    if (!p || !p.gr || !(cat in p.gr) || !VALID.has(grade)) { console.log(`Override skipped: ${line}`); return; }
+    p.gr[cat] = grade; console.log(`Override: ${name} ${cat} → ${grade}`);
+  });
+}
+
 // ---------- 4. top-two-lines tag (per team: 6 F and 4 D by recent ice time, 1 starting G) ----------
 const TOP_N = { F: 6, D: 4, G: 1 };
 for (const team of teams) for (const G of ['F', 'D', 'G']) {

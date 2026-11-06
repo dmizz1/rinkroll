@@ -477,7 +477,7 @@ Boone Jenner|WSH|C|22|C B- C B- B- B+|822|218|210|0
 Jordan Kyrou|WSH|R|25|A- B B A B+ D+|502|173|219|0
 Ryan Leonard|WSH|R|9|A- B+ B- D+ B- B-|98|26|30|0
 Ivan Miroshnichenko|WSH|L|63|C- C+ C- D+ D C+|55|6|8|0
-Alex Ovechkin|WSH|L|8|F A+ A- B+ B+ A-|1587|930|761|1
+Alex Ovechkin|WSH|L|8|F S A- B+ B+ A-|1587|930|761|1
 Aliaksei Protas|WSH|L|21|A- B+ B A- B- A|335|69|107|1
 Ilya Protas|WSH|L|62|D- D+ C C+ B A|18|2|8|0
 Justin Sourdif|WSH|C|34|B- B- C+ C C- C|94|19|21|0
