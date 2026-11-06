@@ -8,6 +8,7 @@
 //   Screens (proxy)     crease shots, power-play goals and tip attempts: what a net-front screener produces   [EDGE + stats]
 //   Puck battles (proxy) takeaways per 60, takeaways minus giveaways, shots from the corners / behind the net  [stats + EDGE]
 //   Offensive physicality  hits per 60, penalty minutes per game, weight                                      [stats + roster]
+// Weights differ by position: forwards lean on net-front work, defensemen on battles and physicality.
 // Screens and puck battles are not tracked publicly, so those two use the closest public signals.
 import { writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
@@ -19,7 +20,12 @@ const now = new Date();
 const startYear = now.getUTCMonth() >= 8 ? now.getUTCFullYear() : now.getUTCFullYear() - 1;
 const sid = y => Number(`${y}${y + 1}`);
 const SEASONS = [sid(startYear - 1), sid(startYear)];
-const W = { netfront: 0.25, tips: 0.20, screens: 0.15, battles: 0.20, physicality: 0.20 };
+// forwards earn grit around the net; defensemen earn it in battles and with the body
+const WEIGHTS = {
+  F: { netfront: 0.25, tips: 0.15, screens: 0.15, battles: 0.20, physicality: 0.25 },
+  D: { netfront: 0.10, tips: 0.10, screens: 0.10, battles: 0.30, physicality: 0.40 }
+};
+const COMPONENTS = Object.keys(WEIGHTS.F);
 const CUT = [[.98, 'S'], [.94, 'A+'], [.89, 'A'], [.83, 'A-'], [.76, 'B+'], [.68, 'B'], [.60, 'B-'], [.51, 'C+'], [.42, 'C'], [.33, 'C-'], [.24, 'D+'], [.16, 'D'], [.08, 'D-'], [0, 'F']];
 
 async function getJSON(url, tries = 3) {
@@ -87,6 +93,7 @@ for (const G of ['F', 'D']) {
   });
   const Q = P.filter(p => p.gp >= 20);
   const R = {}; ['innerPG', 'innerShare', 'creasePG', 'tipSPG', 'tipGPG', 'ppgPG', 'take60', 'tgDiff', 'deepPG', 'hits60', 'pimPG', 'wgt'].forEach(k => R[k] = pctRank(Q, p => p[k]));
+  const W = WEIGHTS[G];
   P.forEach(p => {
     const s = k => shrink(R[k](p[k]), p.gp);
     p.c = {
@@ -94,12 +101,12 @@ for (const G of ['F', 'D']) {
       tips: 0.6 * s('tipSPG') + 0.4 * s('tipGPG'),
       screens: 0.5 * s('creasePG') + 0.25 * s('ppgPG') + 0.25 * s('tipSPG'),
       battles: 0.5 * s('take60') + 0.2 * s('tgDiff') + 0.3 * s('deepPG'),
-      physicality: 0.5 * s('hits60') + 0.2 * s('pimPG') + 0.3 * R.wgt(p.wgt)
+      physicality: G === 'D' ? 0.55 * s('hits60') + 0.15 * s('pimPG') + 0.30 * R.wgt(p.wgt) : 0.5 * s('hits60') + 0.2 * s('pimPG') + 0.3 * R.wgt(p.wgt)
     };
     p.c.grit = Object.entries(W).reduce((a, [k, w]) => a + w * p.c[k], 0);
   });
-  const g = {}; for (const k of ['grit', ...Object.keys(W)]) g[k] = pctRank(P, p => p.c[k]);
-  for (const p of P) lines.push([p.name, p.team, p.pos, ...['grit', ...Object.keys(W)].map(k => grade(g[k](p.c[k])))].join('|'));
+  const g = {}; for (const k of ['grit', ...COMPONENTS]) g[k] = pctRank(P, p => p.c[k]);
+  for (const p of P) lines.push([p.name, p.team, p.pos, ...['grit', ...COMPONENTS].map(k => grade(g[k](p.c[k])))].join('|'));
 }
 writeFileSync(join(ROOT, 'data_grit.txt'), lines.join('\n') + '\n');
 console.log(`Wrote grit grades for ${lines.length} skaters (seasons ${SEASONS.join(', ')}).`);
