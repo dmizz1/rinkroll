@@ -14,6 +14,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Saira+Extra+Condensed:wght@600;800;900&family=Barlow:wght@400;500;600;700&family=Saira+Semi+Condensed:wght@500;700&display=swap">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cpath d='M6 26v14c0 6 11.6 11 26 11s26-5 26-11V26z' fill='%23161b22'/%3E%3Cellipse cx='32' cy='26' rx='26' ry='11' fill='%233a4250'/%3E%3Cellipse cx='32' cy='26' rx='26' ry='11' fill='none' stroke='%23aab4c3' stroke-width='2.5'/%3E%3Cpath d='M6 40c0 6 11.6 11 26 11s26-5 26-11' fill='none' stroke='%23aab4c3' stroke-width='2.5'/%3E%3C/svg%3E">
 <style>
 /* Layout: an arena scoreboard over the ice. Setup → build board (spinner + slots) → final player card. Committed night-game look. */
 :root {
@@ -56,6 +57,7 @@ button:focus-visible, [tabindex]:focus-visible { outline: 3px solid var(--gold);
 /* header */
 .masthead { display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; flex-wrap: wrap; padding-block: 28px 18px; border-bottom: 2px solid var(--rule); position: relative; }
 .masthead::after { content: ""; position: absolute; left: 0; right: 0; bottom: -2px; height: 2px; background: linear-gradient(90deg, var(--blue-line) 0 22%, transparent 22% 39%, var(--lamp) 39% 61%, transparent 61% 78%, var(--blue-line) 78%); }
+.credit { font-family: var(--data); font-size: 12px; letter-spacing: .16em; text-transform: uppercase; color: var(--frost); margin: 0 0 6px; }
 .brand { font-family: var(--display); font-weight: 900; font-size: clamp(44px, 9vw, 76px); line-height: .85; letter-spacing: .01em; text-transform: uppercase; margin: 0; }
 .brand span { color: var(--lamp); }
 .tag { font-family: var(--data); color: var(--frost); font-size: 14px; letter-spacing: .08em; text-transform: uppercase; margin: 6px 0 0; }
@@ -227,6 +229,7 @@ button:focus-visible, [tabindex]:focus-visible { outline: 3px solid var(--gold);
 <div class="wrap">
   <header class="masthead">
     <div>
+      <p class="credit">Created by D.M</p>
       <h1 class="brand">Rink<span>·</span>Roll</h1>
       <p class="tag">Spin real NHL players. Steal one skill from each. Build a monster.</p>
       <nav class="site-nav" aria-label="Site"><a href="how-to-play.html">How to play</a><a href="privacy.html">Privacy</a></nav>
@@ -241,7 +244,7 @@ button:focus-visible, [tabindex]:focus-visible { outline: 3px solid var(--gold);
       <div class="choices" role="group" aria-label="How to play">
         <button class="choice" data-play="solo" aria-pressed="true"><span class="t">Solo</span><span class="d">Spin and build at your own pace.</span></button>
         <button class="choice" data-play="daily" aria-pressed="false"><span class="t">Daily</span><span class="d">Same spins for everyone, one try a day. Compare builds with friends.</span></button>
-        <button class="choice" data-play="online" aria-pressed="false"><span class="t">Head-to-head</span><span class="d">Make a lobby, send the code, and draft against a friend from the same spins.</span></button>
+        <button class="choice" data-play="online" aria-pressed="false"><span class="t">Head-to-head</span><span class="d">Make a lobby, send the code, and draft against a friend. Each of you gets your own spins, and grades stay hidden.</span></button>
       </div>
     </div>
     <div class="daily-panel" id="daily-panel" hidden></div>
@@ -261,7 +264,7 @@ button:focus-visible, [tabindex]:focus-visible { outline: 3px solid var(--gold);
         <button class="choice" data-pos="G" aria-pressed="false"><span class="t">Goaltender</span><span class="d">Netminders only.</span><span class="cats">Speed · Reflexes · Mid-range · Long-range · Rebounding</span></button>
       </div>
     </div>
-    <div class="step">
+    <div class="step" id="rules-step">
       <h2>Rules <small>Step 4</small></h2>
       <label class="toggle"><input type="checkbox" id="peek"> Show each player's grades before I pick a slot (easy mode)</label>
       <div class="scale" style="margin-top:14px">Grade scale:
@@ -274,7 +277,7 @@ button:focus-visible, [tabindex]:focus-visible { outline: 3px solid var(--gold);
       <div class="name-row"><label for="my-name">Your name</label><input id="my-name" class="name-input" maxlength="16" autocomplete="nickname" placeholder="Player"></div>
       <div class="op-col">
         <h3>Host a lobby</h3>
-        <p class="note">Uses the pool, position and rules you picked above. You'll get a code to send.</p>
+        <p class="note">Uses the pool and position you picked above. Grades are always hidden in head-to-head. You'll get a code to send.</p>
         <button class="go" id="create">Create lobby</button>
       </div>
       <div class="op-col">
@@ -1762,6 +1765,7 @@ function setPlay(play) {
   document.querySelectorAll('[data-play]').forEach(x => x.setAttribute('aria-pressed', x.dataset.play === play));
   $('online-panel').hidden = play !== 'online';
   $('custom-steps').hidden = play === 'daily';
+  $('rules-step').hidden = play === 'online';
   $('daily-panel').hidden = play !== 'daily';
   $('start').hidden = play === 'online';
   if (play === 'daily') renderDailyPanel();
@@ -1890,7 +1894,7 @@ function tryHost(attempt) {
   peer.on('open', () => {
     teardown();
     net.peer = peer; net.role = 'host'; net.code = code;
-    net.lobby = { code, mode: state.mode, pos: state.pos, peek: state.peek, seed: newSeed(), round: 1 };
+    net.lobby = { code, mode: state.mode, pos: state.pos, peek: false, seed: newSeed(), round: 1 };
     net.players = { me: freshPlayer('host', 1) };
     net.connecting = false; $('create').disabled = false; msg('online-msg', '');
     enterLobby();
@@ -2018,7 +2022,7 @@ function evaluate() {
 }
 
 function renderLobby(L, opp) {
-  $('lobby-info').textContent = `${L.mode === 'current' ? 'Current NHL' : 'All-Time Greats'} · ${POSNAME[L.pos]} · ${L.peek ? 'easy mode' : 'grades hidden'}`;
+  $('lobby-info').textContent = `${L.mode === 'current' ? 'Current NHL' : 'All-Time Greats'} · ${POSNAME[L.pos]} · grades hidden`;
   const seat = (role, name, filled) => `<div class="seat${filled ? '' : ' empty'}"><span class="r">${role}</span><span class="n">${esc(name)}</span></div>`;
   const meName = myName() + ' (you)';
   const hasOpp = !!(net.conn && (opp || net.oppName));
@@ -2031,12 +2035,13 @@ function renderLobby(L, opp) {
 
 function startOnline(L, me) {
   state.daily = null;
-  state.mode = L.mode; state.pos = L.pos; state.peek = !!L.peek;
+  state.mode = L.mode; state.pos = L.pos; state.peek = false; // head-to-head is always grades-hidden
   document.querySelectorAll('[data-mode]').forEach(x => x.setAttribute('aria-pressed', x.dataset.mode === state.mode));
   document.querySelectorAll('[data-pos]').forEach(x => x.setAttribute('aria-pressed', x.dataset.pos === state.pos));
   $('peek').checked = state.peek;
   state.online = true;
-  state.seq = seededSeq(POOLS[state.mode][state.pos], (L.seed + L.round * 7919) >>> 0);
+  const seat = (me && me.role === 'host') ? 0 : 104729; // host and challenger get different spins
+  state.seq = seededSeq(POOLS[state.mode][state.pos], (L.seed + L.round * 7919 + seat) >>> 0);
   state.seqIdx = me.seqIdx || 0;
   state.rerolls = typeof me.rerolls === 'number' ? me.rerolls : 1;
   const resume = (me.slots && me.slots.some(Boolean)) ? me.slots : null;

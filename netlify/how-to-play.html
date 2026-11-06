@@ -9,6 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Saira+Extra+Condensed:wght@600;800;900&family=Barlow:wght@400;500;600;700&family=Saira+Semi+Condensed:wght@500;700&display=swap">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cpath d='M6 26v14c0 6 11.6 11 26 11s26-5 26-11V26z' fill='%23161b22'/%3E%3Cellipse cx='32' cy='26' rx='26' ry='11' fill='%233a4250'/%3E%3Cellipse cx='32' cy='26' rx='26' ry='11' fill='none' stroke='%23aab4c3' stroke-width='2.5'/%3E%3Cpath d='M6 40c0 6 11.6 11 26 11s26-5 26-11' fill='none' stroke='%23aab4c3' stroke-width='2.5'/%3E%3C/svg%3E">
 <style>
 /* Layout: an arena scoreboard over the ice. Setup → build board (spinner + slots) → final player card. Committed night-game look. */
 :root {
@@ -51,6 +52,7 @@ button:focus-visible, [tabindex]:focus-visible { outline: 3px solid var(--gold);
 /* header */
 .masthead { display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; flex-wrap: wrap; padding-block: 28px 18px; border-bottom: 2px solid var(--rule); position: relative; }
 .masthead::after { content: ""; position: absolute; left: 0; right: 0; bottom: -2px; height: 2px; background: linear-gradient(90deg, var(--blue-line) 0 22%, transparent 22% 39%, var(--lamp) 39% 61%, transparent 61% 78%, var(--blue-line) 78%); }
+.credit { font-family: var(--data); font-size: 12px; letter-spacing: .16em; text-transform: uppercase; color: var(--frost); margin: 0 0 6px; }
 .brand { font-family: var(--display); font-weight: 900; font-size: clamp(44px, 9vw, 76px); line-height: .85; letter-spacing: .01em; text-transform: uppercase; margin: 0; }
 .brand span { color: var(--lamp); }
 .tag { font-family: var(--data); color: var(--frost); font-size: 14px; letter-spacing: .08em; text-transform: uppercase; margin: 6px 0 0; }
@@ -240,6 +242,7 @@ button:focus-visible, [tabindex]:focus-visible { outline: 3px solid var(--gold);
 <div class="wrap">
   <header class="masthead">
     <div>
+      <p class="credit">Created by D.M</p>
       <a class="home" href="./"><p class="brand">Rink<span>·</span>Roll</p></a>
       <p class="tag">Spin real NHL players. Steal one skill from each. Build a monster.</p>
       <nav class="site-nav" aria-label="Site"><a href="how-to-play.html">How to play</a><a href="privacy.html">Privacy</a></nav>
@@ -266,7 +269,7 @@ button:focus-visible, [tabindex]:focus-visible { outline: 3px solid var(--gold);
   <h3>Daily challenge</h3>
   <p>Every day there is one numbered Daily. Everyone who plays it gets the exact same players in the exact same order, so the only difference between your build and a friend's is how you assigned them. The position rotates each day between forward, defenseman and goaltender. Grades are hidden, you get one re-roll, and you get one try. When you finish, the Share button copies a spoiler-free grid of colored squares that shows how your build graded without giving away which players you drew.</p>
   <h3>Head-to-head</h3>
-  <p>One player creates a lobby and sends the five-character code or invite link to a friend. When the friend joins, both players get the same spins in the same order and build at their own pace. A progress bar shows how many slots your opponent has filled, but not what they picked. When you both finish, the builds are compared category by category. The higher overall grade wins, and categories won breaks a tie. Hit Rematch for a new set of spins in the same lobby.</p>
+  <p>One player creates a lobby and sends the five-character code or invite link to a friend. When the friend joins, each player gets their own spins and builds at their own pace. Grades are always hidden in head-to-head, so it comes down to hockey knowledge. A progress bar shows how many slots your opponent has filled, but not what they picked. When you both finish, the builds are compared category by category. The higher overall grade wins, and categories won breaks a tie. Hit Rematch for a new set of spins in the same lobby.</p>
 
   <h2>Player pools</h2>
   <p><b>Current NHL</b> includes rostered NHL players with at least 82 career regular-season games. Forwards also need at least 0.30 career points per game, which keeps the pool to players with a real offensive role.</p>

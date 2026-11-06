@@ -45,7 +45,7 @@ function tryHost(attempt) {
   peer.on('open', () => {
     teardown();
     net.peer = peer; net.role = 'host'; net.code = code;
-    net.lobby = { code, mode: state.mode, pos: state.pos, peek: state.peek, seed: newSeed(), round: 1 };
+    net.lobby = { code, mode: state.mode, pos: state.pos, peek: false, seed: newSeed(), round: 1 };
     net.players = { me: freshPlayer('host', 1) };
     net.connecting = false; $('create').disabled = false; msg('online-msg', '');
     enterLobby();
@@ -173,7 +173,7 @@ function evaluate() {
 }
 
 function renderLobby(L, opp) {
-  $('lobby-info').textContent = `${L.mode === 'current' ? 'Current NHL' : 'All-Time Greats'} · ${POSNAME[L.pos]} · ${L.peek ? 'easy mode' : 'grades hidden'}`;
+  $('lobby-info').textContent = `${L.mode === 'current' ? 'Current NHL' : 'All-Time Greats'} · ${POSNAME[L.pos]} · grades hidden`;
   const seat = (role, name, filled) => `<div class="seat${filled ? '' : ' empty'}"><span class="r">${role}</span><span class="n">${esc(name)}</span></div>`;
   const meName = myName() + ' (you)';
   const hasOpp = !!(net.conn && (opp || net.oppName));
@@ -186,12 +186,13 @@ function renderLobby(L, opp) {
 
 function startOnline(L, me) {
   state.daily = null;
-  state.mode = L.mode; state.pos = L.pos; state.peek = !!L.peek;
+  state.mode = L.mode; state.pos = L.pos; state.peek = false; // head-to-head is always grades-hidden
   document.querySelectorAll('[data-mode]').forEach(x => x.setAttribute('aria-pressed', x.dataset.mode === state.mode));
   document.querySelectorAll('[data-pos]').forEach(x => x.setAttribute('aria-pressed', x.dataset.pos === state.pos));
   $('peek').checked = state.peek;
   state.online = true;
-  state.seq = seededSeq(POOLS[state.mode][state.pos], (L.seed + L.round * 7919) >>> 0);
+  const seat = (me && me.role === 'host') ? 0 : 104729; // host and challenger get different spins
+  state.seq = seededSeq(POOLS[state.mode][state.pos], (L.seed + L.round * 7919 + seat) >>> 0);
   state.seqIdx = me.seqIdx || 0;
   state.rerolls = typeof me.rerolls === 'number' ? me.rerolls : 1;
   const resume = (me.slots && me.slots.some(Boolean)) ? me.slots : null;

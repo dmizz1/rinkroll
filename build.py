@@ -99,6 +99,7 @@ def page(slug, title, desc, body_file):
     body = read(os.path.join('pages', body_file)).replace('__CONTACT__', CONTACT)
     content = (f'<title>{title}</title>\n' + fonts + style + '\n' + DOC_CSS +
                '\n<div class="wrap">\n  <header class="masthead">\n    <div>\n'
+               '      <p class="credit">Created by D.M</p>\n'
                '      <a class="home" href="./"><p class="brand">Rink<span>·</span>Roll</p></a>\n'
                '      <p class="tag">Spin real NHL players. Steal one skill from each. Build a monster.</p>\n'
                '      ' + NAV + '\n    </div>\n  </header>\n' + body +
