@@ -3506,7 +3506,11 @@ $('share').addEventListener('click', shareResult);
 const CODE_CHARS = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
 const CODE_RE = /^[A-HJ-NP-Z2-9]{5}$/;
 const PEER_PREFIX = 'rinkroll-v1-';
-const net = { peer: null, conn: null, role: null, code: null, lobby: null, players: {}, started: false, verdictRound: 0, oppName: 'Opponent', timer: 0, connecting: false };
+const net = { peer: null, conn: null, role: null, code: null, lobby: null, players: {}, started: false, verdictRound: 0, oppName: 'Opponent', timer: 0, connecting: false,
+  cid: '', oppCid: '', lastHeard: 0, beat: 0, retry: 0, retries: 0 };
+try { net.cid = sessionStorage.getItem('rinkroll-cid') || ''; } catch (e) {}
+if (!net.cid) { net.cid = 'c' + Math.random().toString(36).slice(2, 12); try { sessionStorage.setItem('rinkroll-cid', net.cid); } catch (e) {} }
+const STALE_MS = 9000;  // no word from the other phone for this long = probably paused or dropped
 
 function newCode() { let s = ''; for (let i = 0; i < 5; i++) s += CODE_CHARS[Math.floor(Math.random() * CODE_CHARS.length)]; return s; }
 function newSeed() { return Math.floor(Math.random() * 2 ** 31); }
@@ -3555,8 +3559,19 @@ function tryHost(attempt) {
     enterLobby();
   });
   peer.on('connection', c => {
-    if (net.conn && net.conn.open) { c.on('open', () => { c.send({ type: 'full' }); setTimeout(() => c.close(), 400); }); return; }
-    attachConn(c);
+    if (!(net.conn && net.conn.open)) { attachConn(c); return; }
+    // someone new while a challenger is connected: let them in only if it's the same
+    // challenger reconnecting, or the current connection has gone silent
+    let decided = false;
+    c.on('data', d => {
+      if (decided) return; decided = true;
+      const same = d && d.type === 'hello' && d.cid && d.cid === net.oppCid;
+      const dead = Date.now() - net.lastHeard > STALE_MS;
+      if (same || dead) {
+        const old = net.conn; net.conn = null; try { old.close(); } catch (e) {}
+        attachConn(c); onData(d);
+      } else { try { c.send({ type: 'full' }); } catch (e) {} setTimeout(() => { try { c.close(); } catch (e) {} }, 400); }
+    });
   });
   peer.on('disconnected', () => { try { if (!peer.destroyed) peer.reconnect(); } catch (e) {} });
   peer.on('error', e => {
@@ -3593,29 +3608,31 @@ function joinLobby(codeIn) {
 
 function attachConn(c) {
   const onOpen = () => {
-    net.conn = c;
-    send({ type: 'hello', name: myName() });
+    net.conn = c; net.lastHeard = Date.now(); net.retries = 0; clearTimeout(net.retry);
+    send({ type: 'hello', name: myName(), cid: net.cid });
     sendLobby(); sendProgress();
+    startHeartbeat();
     evaluate();
   };
   if (c.open) onOpen(); else c.on('open', onOpen);
   c.on('data', d => onData(d));
   c.on('close', () => {
     if (net.conn !== c) return;
-    net.conn = null; delete net.players.opp;
+    net.conn = null;
     if (state.online) {
-      msg('lobby-msg', `${net.oppName} left the lobby.`, true);
-      $('verdict').className = 'verdict wait';
-      if (!$('result').hidden && !$('h2h-table').innerHTML) $('verdict').textContent = `${net.oppName} disconnected.`;
       renderOppBar();
-      if (net.role === 'guest') { msg('lobby-msg', 'Lost connection to the host. Leave and rejoin with the code.', true); }
+      if (net.role === 'guest') { msg('lobby-msg', 'Lost the connection. Reconnecting…', true); scheduleReconnect(); }
+      else msg('lobby-msg', `Lost the connection to ${net.oppName}. Waiting for them to reconnect…`, true);
+      if (!$('result').hidden && !$('h2h-table').innerHTML) { $('verdict').className = 'verdict wait'; $('verdict').textContent = `${net.oppName} lost connection. Waiting for them to reconnect…`; }
     }
   });
 }
 
 function onData(d) {
   if (!d || typeof d !== 'object') return;
-  if (d.type === 'hello') { net.oppName = cleanName(d.name); evaluate(); return; }
+  net.lastHeard = Date.now();
+  if (d.type === 'ping') return;
+  if (d.type === 'hello') { net.oppName = cleanName(d.name); if (d.cid) net.oppCid = String(d.cid).slice(0, 20); evaluate(); return; }
   if (d.type === 'full') { msg('online-msg', 'That lobby already has two players.', true); leaveLobby(); return; }
   if (d.type === 'lobby' && net.role === 'guest') {
     const L = d.L; if (!L || !CATS[L.pos] || !POOLS[L.mode]) return;
@@ -3636,6 +3653,49 @@ function onData(d) {
   if (d.type === 'rematch' && net.role === 'host') { rematch(); return; }
 }
 
+// Every 2.5s: ping, and re-send our state until both phones are on the same round.
+// Messages are idempotent, so repeats are harmless; this recovers anything a phone dropped.
+function startHeartbeat() {
+  clearInterval(net.beat);
+  net.beat = setInterval(() => {
+    if (!state.online) { clearInterval(net.beat); return; }
+    if (net.conn && net.conn.open) {
+      send({ type: 'ping' });
+      const L = net.lobby, opp = net.players.opp, me = net.players.me;
+      const synced = L && me && opp && me.round === L.round && opp.round === L.round;
+      if (!net.started || !synced) { sendLobby(); sendProgress(); }
+      else if (Date.now() - net.lastHeard > 4000) sendProgress();
+      if (net.role === 'guest' && Date.now() - net.lastHeard > STALE_MS * 2) { try { net.conn.close(); } catch (e) {} }
+    }
+    if (!$('lobby').hidden) evaluate();
+    renderOppBar();
+  }, 2500);
+}
+function scheduleReconnect() {
+  clearTimeout(net.retry);
+  if (!state.online || net.role !== 'guest' || !net.code) return;
+  if (net.retries >= 20) { msg('lobby-msg', `Couldn't reconnect to the host. Make sure ${net.oppName}'s game is open, then leave and rejoin with code ${net.code}.`, true); return; }
+  net.retries++;
+  net.retry = setTimeout(() => {
+    if (!state.online || (net.conn && net.conn.open)) return;
+    const go = () => {
+      try {
+        const c = net.peer.connect(PEER_PREFIX + net.code, { reliable: true });
+        c.on('open', () => attachConn(c));
+        setTimeout(() => { if (!c.open) scheduleReconnect(); }, 6000);
+      } catch (e) { scheduleReconnect(); }
+    };
+    if (!net.peer || net.peer.destroyed) { net.peer = new Peer(); net.peer.on('open', go); net.peer.on('error', () => {}); }
+    else if (net.peer.disconnected) { try { net.peer.reconnect(); } catch (e) {} setTimeout(go, 1500); }
+    else go();
+  }, net.retries === 1 ? 500 : 3000);
+}
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState !== 'visible' || !state.online) return;
+  if (net.conn && net.conn.open) { send({ type: 'hello', name: myName(), cid: net.cid }); sendLobby(); sendProgress(); }
+  else if (net.role === 'guest') { net.retries = 0; scheduleReconnect(); }
+});
+
 function enterLobby() {
   state.online = true; net.started = false; net.verdictRound = 0;
   try { history.replaceState(null, '', '#' + net.code); } catch (e) {}
@@ -3649,7 +3709,9 @@ function enterLobby() {
 }
 
 function teardown() {
-  try { if (net.conn) net.conn.close(); } catch (e) {}
+  clearInterval(net.beat); clearTimeout(net.retry);
+  const c = net.conn; net.conn = null;
+  try { if (c) c.close(); } catch (e) {}
   try { if (net.peer) net.peer.destroy(); } catch (e) {}
   net.conn = null; net.peer = null;
 }
@@ -3677,7 +3739,7 @@ function evaluate() {
 }
 
 function renderLobby(L, opp) {
-  $('lobby-info').textContent = `${L.mode === 'current' ? 'Current NHL' : 'All-Time Greats'} · ${POSNAME[L.pos]} · grades hidden`;
+  $('lobby-info').textContent = `${L.mode === 'current' ? 'Current NHL' : 'Modern Era Stars'} · ${POSNAME[L.pos]} · grades hidden`;
   const seat = (role, name, filled) => `<div class="seat${filled ? '' : ' empty'}"><span class="r">${role}</span><span class="n">${esc(name)}</span></div>`;
   const meName = myName() + ' (you)';
   const hasOpp = !!(net.conn && (opp || net.oppName));
@@ -3685,7 +3747,13 @@ function renderLobby(L, opp) {
   const guest = net.role === 'host' ? (net.conn ? net.oppName : 'Waiting…') : meName;
   $('seats').innerHTML = seat('Host', host, true) + seat('Challenger', guest, net.role === 'guest' || !!net.conn);
   if (net.role === 'host') $('lobby-howto').hidden = !!net.conn;
-  if (hasOpp && net.conn) msg('lobby-msg', 'Both players in. Starting…');
+  if (hasOpp && net.conn) {
+    const me = net.players.me, synced = me && opp && me.round === L.round && opp.round === L.round;
+    const quiet = Date.now() - net.lastHeard > STALE_MS;
+    if (synced) msg('lobby-msg', 'Both players in. Starting…');
+    else if (quiet) msg('lobby-msg', `Waiting for ${net.oppName}… Their game may be closed or in the background. Ask them to open Rink Roll.`, true);
+    else msg('lobby-msg', L.round > 1 ? `Rematch! Waiting for ${net.oppName} to jump in…` : `Waiting for ${net.oppName}…`);
+  }
 }
 
 function startOnline(L, me) {
@@ -3719,7 +3787,7 @@ function renderOppBar() {
   const n = state.slots.length;
   const f = opp && net.lobby && opp.round === net.lobby.round ? (opp.slots || []).filter(Boolean).length : 0;
   const pips = Array.from({ length: n }, (_, i) => `<span class="pip${i < f ? ' on' : ''}"></span>`).join('');
-  const status = !net.conn ? 'disconnected' : f === n ? 'is done' : `${f} / ${n}`;
+  const status = !net.conn ? 'reconnecting…' : Date.now() - net.lastHeard > STALE_MS ? 'not responding…' : f === n ? 'is done' : `${f} / ${n}`;
   $('opp-bar').innerHTML = `<span><b>${esc(net.oppName)}</b> ${status}</span><span class="pips">${pips}</span>`;
 }
 
