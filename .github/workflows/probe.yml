@@ -1,0 +1,20 @@
+name: Probe cap sources (temporary)
+on: workflow_dispatch
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          UA="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0 Safari/537.36"
+          for u in \
+            https://puckpedia.com/team/edmonton-oilers \
+            https://d11update.puckpedia.com/team/edmonton-oilers \
+            https://www.spotrac.com/nhl/edmonton-oilers/cap/_/year/2026 \
+            https://www.hockey-reference.com/contracts/EDM.html \
+            https://capwages.com/teams/edmonton_oilers ; do
+            code=$(curl -s -o /tmp/p.html -w "%{http_code}" -A "$UA" -L --max-time 30 "$u")
+            size=$(wc -c < /tmp/p.html)
+            hits=$(grep -o -i "mcdavid" /tmp/p.html | wc -l)
+            money=$(grep -o '\$[0-9][0-9,]\{6,\}' /tmp/p.html | head -3 | tr '\n' ' ')
+            echo "RESULT $code size=$size mcdavid=$hits money=[$money] $u"
+          done
