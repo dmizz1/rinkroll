@@ -431,7 +431,7 @@ Ryan McLeod|BUF|C|71|A+ C+ C+ A- B+ C+ F|394|67|118|1
 Josh Norris|BUF|C|9|B+ A B+ B B- B- D+|298|106|89|0
 Noah Ostlund|BUF|C|86|D B- C+ B- C+ D- D|83|15|21|1
 Jack Quinn|BUF|R|22|A C+ C+ C- B C- F|275|67|95|1
-Tage Thompson|BUF|C|72|A- S A B B+ A+ B|544|226|198|1
+Tage Thompson|BUF|C|72|A- S A B B+ S B|544|226|198|1
 Jason Zucker|BUF|L|17|D B+ A- B- B C- A|838|242|227|0
 Louis Crevier|BUF|D|46|A- B+ A+ S F|149|10|23|0
 Rasmus Dahlin|BUF|D|26|B+ A+ B+ C+ A|598|104|339|1
