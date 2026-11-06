@@ -83,7 +83,7 @@ function drawOptions() {
     b.className = 'opt'; b.id = 'opt-' + i; b.disabled = !ok;
     const detail = line.variant === 'cap'
       ? `<span class="opt-cap">${moneyFixed(p.cap)}</span>${ok ? '' : '<span class="opt-warn">Over the cap</span>'}`
-      : `<span class="opt-grades">${p.grades.map((gr, k) => `<span title="${CATS[g][k][0]}">${chip(gr)}</span>`).join('')}</span>`;
+      : `<span class="opt-grades">${p.grades.map((gr, k) => `<span title="${(catsFor(g, line.variant === 'cap' ? 'current' : line.mode)[k] || [''])[0]}">${chip(gr)}</span>`).join('')}</span>`;
     b.innerHTML = `<span class="opt-name">${esc(p.name)}</span><span class="opt-meta">${esc(p.team)} · ${esc(p.pos)}${p.num ? ' · #' + esc(String(p.num)) : ''}</span><span class="opt-stat">${esc(p.stat)}</span>${detail}`;
     b.style.animationDelay = (i * 90) + 'ms';
     b.addEventListener('click', () => choose(i));

@@ -373,7 +373,7 @@ body.fx .p-meta { color: #c7d4e2; }
     <div class="step" id="pos-step">
       <h2>Position <small>Step 3</small></h2>
       <div class="choices" role="group" aria-label="Position" id="pos-choices">
-        <button class="choice" data-pos="F" aria-pressed="true"><span class="t">Forward</span><span class="d">Centers and wingers.</span><span class="cats">Speed · Shot · Hands · Sense · Playmaking · Build</span></button>
+        <button class="choice" data-pos="F" aria-pressed="true"><span class="t">Forward</span><span class="d">Centers and wingers.</span><span class="cats">Speed · Shot · Hands · Sense · Playmaking · Build · Grit <small>(Current NHL)</small></span></button>
         <button class="choice" data-pos="D" aria-pressed="false"><span class="t">Defenseman</span><span class="d">Blueliners only.</span><span class="cats">Speed · Shot · Physicality · Build · Stick-checking</span></button>
         <button class="choice" data-pos="G" aria-pressed="false"><span class="t">Goaltender</span><span class="d">Netminders only.</span><span class="cats">Speed · Reflexes · Mid-range · Long-range · Rebounding</span></button>
       </div>
@@ -546,7 +546,7 @@ body.fx .p-meta { color: #c7d4e2; }
 
   <footer class="foot">
     <div><b>Fan-made game.</b> Rink Roll is not affiliated with, endorsed by, or sponsored by the National Hockey League, the NHL Players' Association, or any team. Player names and statistics are used for reference only.</div>
-    <div><b>How the grades work.</b> Current players are ranked against everyone at their position, then curved: roughly the top 2% earn S and the bottom 8% get F. Speed blends max skating speed and 20+ mph bursts. Shot blends shot velocity, goal rate and shooting %. Hands, Sense and Playmaking use finishing from the slot, offensive-zone time, points, assists and power-play production. Build is height and weight. Defense adds Physicality (size, penalty minutes, shot power, puck battles) and Stick-checking (ice time, plus/minus, clean play). Goalie grades come from save % by shot distance, three-season save %, and career save %. Small samples are pulled toward average.</div>
+    <div><b>How the grades work.</b> Current players are ranked against everyone at their position, then curved: roughly the top 2% earn S and the bottom 8% get F. Speed blends max skating speed and 20+ mph bursts. Shot blends shot velocity, goal rate and shooting %. Hands, Sense and Playmaking use finishing from the slot, offensive-zone time, points, assists and power-play production. Build is height and weight. Grit (Current NHL forwards only) blends net-front presence, tips, screens, puck battles and offensive physicality. Defense adds Physicality (size, penalty minutes, shot power, puck battles) and Stick-checking (ice time, plus/minus, clean play). Goalie grades come from save % by shot distance, three-season save %, and career save %. Small samples are pulled toward average.</div>
     <div>Public NHL data doesn't split saves by glove or blocker side, so goalies are graded on save % by shot distance instead: Mid-range and Long-range. Modern Era Stars covers players whose careers fall mostly between 1980 and 2026 (75 forwards, 75 defensemen, 35 goalies), graded by hand from each player's career and reputation.</div>
     <div>Current mode only includes players with at least 82 career NHL regular-season games, and forwards need at least 0.40 career points per game. Data: NHL rosters, stats and EDGE tracking updated __DATA_DATE__.</div>
   </footer>
@@ -567,6 +567,9 @@ const CATS = {
   D: [['Speed','Skating and gap control'],['Shot','Point shot power and scoring'],['Physicality','Hits, net-front, punishment'],['Build','Size and reach'],['Stick-checking','Takeaways, lanes, defensive reads']],
   G: [['Speed','Lateral push and recovery'],['Reflexes','Point-blank stops'],['Mid-range','Saves on shots from the circles and high slot'],['Long-range','Saves on point shots and long-range attempts'],['Rebounding','Rebound control and tracking']]
 };
+// Grit is a 7th forward category in the Current NHL pool only (Modern Era Stars keeps 6)
+const GRIT = ['Grit', 'Net-front, tips, screens, puck battles'];
+function catsFor(pos, mode) { return pos === 'F' && mode === 'current' ? [...CATS.F, GRIT] : CATS[pos]; }
 const POSNAME = { F: 'forward', D: 'defenseman', G: 'goaltender' };
 
 function grp(pos) { return pos === 'G' ? 'G' : pos === 'D' ? 'D' : 'F'; }
@@ -615,7 +618,7 @@ function startGame() { state.online = false; state.daily = null; state.seq = nul
 
 // resume: optional saved progress [{name, grade} | null per slot]
 function initBuild(resume) {
-  state.slots = CATS[state.pos].map(([k, h]) => ({ k, h, player: null, grade: null }));
+  state.slots = catsFor(state.pos, state.mode).map(([k, h]) => ({ k, h, player: null, grade: null }));
   state.used = new Set(); state.current = null; state.spins = 0; state.spinning = false;
   if (!resume) state.rerolls = 1;
   if (resume) {
@@ -831,6 +834,12 @@ const ARCH = {
     'Build+Hands': ['Net-Front Magician', 'Big body with soft mitts in the blue paint.'],
     'Sense+Shot': ['Opportunist', 'Finds the soft ice and makes it count.'],
     'Build+Speed': ['Freight Train', 'A big man who arrives at full speed. Forecheck nightmare.'],
+    'Shot+Grit': ['Garbage-Goal Scorer', 'Lives in the crease and cashes every rebound and tip.'],
+    'Build+Grit': ['Net-Front Bulldozer', 'Plants in front of the goalie and does not move.'],
+    'Speed+Grit': ['Forechecking Menace', 'First in on every dump-in and wins the puck back.'],
+    'Hands+Grit': ['Dirty-Area Dangler', 'Tips, whacks and backhands from the blue paint.'],
+    'Sense+Grit': ['Hard-Minutes Grinder', 'Wins the battle and already knows where the puck is going.'],
+    'Playmaking+Grit': ['Corner Playmaker', 'Wins it below the goal line and feeds the slot.'],
     _: ['Complete Forward', 'No obvious weakness to game-plan around.']
   },
   D: {

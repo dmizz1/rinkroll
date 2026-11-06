@@ -27,6 +27,10 @@ jobs:
         with:
           python-version: "3.12"
 
+      - name: Grade Grit for forwards
+        continue-on-error: true   # keep last month's Grit grades if this step fails
+        run: node tools/grit.mjs
+
       - name: Pull NHL stats and regrade players
         run: node tools/update-stats.mjs
 
@@ -41,7 +45,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data_current.txt data_meta.json netlify
+          git add data_current.txt data_meta.json data_grit.txt netlify
           git add data_cap.txt 2>/dev/null || true
           if git diff --cached --quiet; then
             echo "No changes this month."

@@ -19,7 +19,7 @@ const fresh = (round, name) => ({ round, slots: [], seqIdx: 0, rerolls: 1, done:
 
 function cleanSlots(slots) {
   if (!Array.isArray(slots)) return [];
-  return slots.slice(0, 6).map(s => s && typeof s === 'object' ? {
+  return slots.slice(0, 7).map(s => s && typeof s === 'object' ? {
     name: clean(s.name, 40), team: clean(s.team, 4), pos: clean(s.pos, 3), grade: SCALE.includes(s.grade) ? s.grade : 'F'
   } : null);
 }

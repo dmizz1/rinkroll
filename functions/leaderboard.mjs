@@ -7,7 +7,7 @@
 import { getStore } from '@netlify/blobs';
 
 const SCALE = ['F', 'D-', 'D', 'D+', 'C-', 'C', 'C+', 'B-', 'B', 'B+', 'A-', 'A', 'A+', 'S'];
-const SLOTS = { F: 6, D: 5, G: 5 };
+const SLOTS = { F: [6, 7], D: [5], G: [5] }; // forwards: 7 with Grit (Current NHL); 6 allowed for builds started before Grit
 const DAY_RE = /^\d{4}-\d{2}-\d{2}$/;
 const json = (body, status = 200) => new Response(JSON.stringify(body), {
   status, headers: { 'content-type': 'application/json', 'cache-control': 'no-store' }
@@ -60,7 +60,7 @@ export default async (req) => {
   const grades = Array.isArray(body.grades) ? body.grades.map(String) : [];
   const players = Array.isArray(body.players) ? body.players.map(p => clean(p, 40)) : [];
   if (!DAY_RE.test(day) || !dayIsCurrent(day)) return json({ error: 'You can only post to today\'s leaderboard.' }, 400);
-  if (!SLOTS[pos] || grades.length !== SLOTS[pos] || players.length !== SLOTS[pos]) return json({ error: 'That build doesn\'t look complete.' }, 400);
+  if (!SLOTS[pos] || !SLOTS[pos].includes(grades.length) || players.length !== grades.length) return json({ error: 'That build doesn\'t look complete.' }, 400);
   if (!grades.every(g => SCALE.includes(g)) || players.some(p => !p)) return json({ error: 'That build doesn\'t look right.' }, 400);
   if (name.length < 2) return json({ error: 'Enter a name with at least 2 characters.' }, 400);
   if (device.length < 8) return json({ error: 'Invalid request.' }, 400);

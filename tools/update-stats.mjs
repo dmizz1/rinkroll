@@ -117,7 +117,7 @@ const pctRank = (arr, key) => {
 };
 const shrink = (x, n, k) => x == null ? 0.5 : 0.5 + (x - 0.5) * (n / (n + k));
 const CUT = [[.98, 'S'], [.94, 'A+'], [.89, 'A'], [.83, 'A-'], [.76, 'B+'], [.68, 'B'], [.60, 'B-'], [.51, 'C+'], [.42, 'C'], [.33, 'C-'], [.24, 'D+'], [.16, 'D'], [.08, 'D-'], [0, 'F']];
-const ORDER = { F: ['Speed', 'Shot', 'Hands', 'Sense', 'Playmaking', 'Build'], D: ['Speed', 'Shot', 'Physicality', 'Build', 'Stick-checking'], G: ['Speed', 'Reflexes', 'Mid-range', 'Long-range', 'Rebounding'] };
+const ORDER = { F: ['Speed', 'Shot', 'Hands', 'Sense', 'Playmaking', 'Build', 'Grit'], D: ['Speed', 'Shot', 'Physicality', 'Build', 'Stick-checking'], G: ['Speed', 'Reflexes', 'Mid-range', 'Long-range', 'Rebounding'] };
 
 for (const G of ['F', 'D', 'G']) {
   const P = players.filter(p => grp(p) === G && p.gp != null);
@@ -179,9 +179,19 @@ for (const G of ['F', 'D', 'G']) {
     });
   }
   for (const c of ORDER[G]) {
+    if (c === 'Grit') continue; // filled in from data_grit.txt below
     const rk = pctRank(P.map(p => ({ v: p.sc[c] })), 'v');
     P.forEach(p => { p.gr = p.gr || {}; p.gr[c] = CUT.find(([t]) => rk(p.sc[c]) >= t)[1]; });
   }
+}
+
+// ---------- Grit (forwards): graded by tools/grit.mjs, which runs first and writes data_grit.txt ----------
+{
+  const grit = new Map();
+  if (existsSync(join(ROOT, 'data_grit.txt'))) for (const l of readFileSync(join(ROOT, 'data_grit.txt'), 'utf8').split('\n')) { const f = l.split('|'); if (f[3]) grit.set(f[0], f[3]); }
+  let miss = 0;
+  for (const p of players) if (p.gr && p.pos !== 'D' && p.pos !== 'G') { p.gr.Grit = grit.get(p.name) || (miss++, 'C'); }
+  console.log(`Grit: ${grit.size} graded, ${miss} forwards defaulted to C`);
 }
 
 // ---------- manual overrides (overrides.txt: Name|Category|Grade) ----------
