@@ -1,5 +1,5 @@
 /* ---------- line builder (3F 2D 1G) + season sim ---------- */
-const CAP_LIMIT = 26000000;
+const CAP_LIMIT = 50e6;
 const LINE_SLOTS = [['F', 'Forward 1'], ['F', 'Forward 2'], ['F', 'Forward 3'], ['D', 'Defense 1'], ['D', 'Defense 2'], ['G', 'Goalie']];
 const LINE_WEIGHT = [0.15, 0.15, 0.15, 0.125, 0.125, 0.30];
 const normName = s => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[^a-z]/g, '');
@@ -35,7 +35,7 @@ function startLine(variant) {
   line.variant = variant; line.mode = variant === 'cap' ? 'current' : state.mode;
   line.picks = []; line.used = new Set(); line.redraws = 1; line.step = 0; line.busy = false; line.season = null;
   state.online = false; state.daily = null;
-  $('line-kicker').textContent = variant === 'cap' ? 'Cap Line · $26M cap · Current NHL' : `Skill Line · ${line.mode === 'current' ? 'Current NHL' : 'Modern Era Stars'}`;
+  $('line-kicker').textContent = variant === 'cap' ? 'Cap Line · $50M cap · Current NHL' : `Skill Line · ${line.mode === 'current' ? 'Current NHL' : 'Modern Era Stars'}`;
   $('line-build').hidden = false; $('season').hidden = true;
   audio();
   show('line');
@@ -114,7 +114,7 @@ function renderLineBoard() {
   if (line.variant === 'cap') {
     const pct = Math.min(100, used / CAP_LIMIT * 100);
     cb.hidden = false;
-    cb.innerHTML = `<div class="cap-nums"><b>${moneyFixed(used)}</b> used · <b>${moneyFixed(CAP_LIMIT - used)}</b> left of $26.00M</div><div class="cap-track"><div class="cap-fill" style="width:${pct.toFixed(1)}%"></div></div>`;
+    cb.innerHTML = `<div class="cap-nums"><b>${moneyFixed(used)}</b> used · <b>${moneyFixed(CAP_LIMIT - used)}</b> left of $50.00M</div><div class="cap-track"><div class="cap-fill" style="width:${pct.toFixed(1)}%"></div></div>`;
   } else cb.hidden = true;
 }
 
@@ -175,7 +175,7 @@ function runSeason() {
   $('line-ovr').textContent = grade; $('line-ovr').dataset.t = tier(grade);
   $('season-path').innerHTML = ''; $('season-awards').innerHTML = ''; $('season-finish').textContent = 'Simulating the season…';
   $('line-recap').innerHTML = line.picks.map((p, i) => `<div class="recap-row"><span class="k">${LINE_SLOTS[i][1]}</span><span class="who">${esc(p.name)} · ${esc(p.team)}${line.variant === 'cap' ? ' · ' + moneyFixed(p.cap) : ''}</span>${chip(SCALE[Math.round(ovrVal(p))])}</div>`).join('')
-    + (line.variant === 'cap' ? `<div class="recap-row total-row"><span class="k">Cap total</span><span class="who">${moneyFixed(capUsed())} of $26.00M</span><span></span></div>` : '');
+    + (line.variant === 'cap' ? `<div class="recap-row total-row"><span class="k">Cap total</span><span class="who">${moneyFixed(capUsed())} of $50.00M</span><span></span></div>` : '');
   $('line-toast').textContent = '';
   window.scrollTo({ top: 0, behavior: 'smooth' });
   // tick the record up game by game
@@ -220,7 +220,7 @@ function revealPlayoffs(S) {
 
 function lineShareText() {
   const S = line.season; if (!S) return '';
-  const lines = [`Rink Roll · ${line.variant === 'cap' ? 'Cap Line ($26M)' : 'Skill Line'}`, `${S.W}-${S.L}-${S.OTL} · ${S.pts} pts · ${S.finish}`];
+  const lines = [`Rink Roll · ${line.variant === 'cap' ? 'Cap Line ($50M)' : 'Skill Line'}`, `${S.W}-${S.L}-${S.OTL} · ${S.pts} pts · ${S.finish}`];
   if (S.trophies.length) lines.push('🏆 ' + S.trophies.join(', '));
   lines.push(line.picks.map(p => p.name).join(', '));
   const url = siteUrl(); if (url) lines.push(url);

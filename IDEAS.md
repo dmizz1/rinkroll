@@ -1,5 +1,11 @@
 # Thinking jar (ideas for later, not built yet)
 
+## Queued for the next update (saved, not deployed yet)
+- Tage Thompson: Build S
+- Adam Fox: Speed B+, Shot B, Build D+, Stick-checking S
+- Defensemen need 0.20 career points per game (pool 205 -> 170)
+- Cap Line: $50M cap (was $26M)
+
 ## Roadmap (D.M, Nov 6 2026)
 1. Revamp head-to-head: real matchup sims
    - Forwards and defensemen: 3-on-3 overtime (each build is the star on an otherwise average unit; ~10-12 possessions: win the puck, create a chance, finish; live play-by-play; tied goes to a 3-round shootout)
