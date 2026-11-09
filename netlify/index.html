@@ -486,7 +486,7 @@ body.fx .acct-btn { top: 64px; }
       <nav class="site-nav" aria-label="Site"><a href="/how-to-play.html">How to play</a><a href="/privacy.html">Privacy</a></nav>
     </div>
     <a href="/#account" id="acct-link" class="acct-btn"><span class="acct-btn-av" id="acct-btn-av" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg></span><span class="acct-btn-txt"><span class="acct-btn-k" id="acct-btn-k">Account</span><span class="acct-btn-l" id="acct-btn-l">Sign in</span></span></a>
-    <div class="scorebug" id="bug"><span>Pool <b id="bug-pool">—</b></span><span>Pos <b id="bug-pos">—</b></span><span>Re-rolls <b id="bug-rr">—</b></span><button class="mute" id="mute" aria-pressed="false">Sound on</button><button class="mute" id="fx-toggle" aria-pressed="true">Arena on</button></div>
+    <div class="scorebug" id="bug"><span>Pool <b id="bug-pool">—</b></span><span>Pos <b id="bug-pos">—</b></span><span>Re-rolls <b id="bug-rr">—</b></span><button class="mute" id="mute" aria-pressed="false">Sound on</button><button class="mute" id="fx-toggle" aria-pressed="true">Arena on</button><button class="mute" id="menu-btn" type="button">Main menu</button></div>
   </header>
 
   <!-- SETUP -->
@@ -4410,6 +4410,7 @@ $('reroll').addEventListener('click', reroll);
 $('quit').addEventListener('click', () => { if (state.online) leaveLobby(); else show('setup'); });
 // clicking the RINK·ROLL title goes back to the main menu from anywhere
 $('home-link').addEventListener('click', e => { e.preventDefault(); if (state.online) leaveLobby(); else show('setup'); });
+$('menu-btn').addEventListener('click', () => { if (location.hash) history.replaceState(null, '', location.pathname); if (state.online) leaveLobby(); else show('setup'); });
 $('again').addEventListener('click', () => { show('setup'); setPlay(state.play); });
 $('copy').addEventListener('click', copyText);
 $('mute').addEventListener('click', () => setMute(!muted));

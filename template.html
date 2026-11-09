@@ -337,7 +337,7 @@ body.fx .p-meta { color: #c7d4e2; }
       __NAV__
     </div>
     <!--__ACCT_BTN__-->
-    <div class="scorebug" id="bug"><span>Pool <b id="bug-pool">—</b></span><span>Pos <b id="bug-pos">—</b></span><span>Re-rolls <b id="bug-rr">—</b></span><button class="mute" id="mute" aria-pressed="false">Sound on</button><button class="mute" id="fx-toggle" aria-pressed="true">Arena on</button></div>
+    <div class="scorebug" id="bug"><span>Pool <b id="bug-pool">—</b></span><span>Pos <b id="bug-pos">—</b></span><span>Re-rolls <b id="bug-rr">—</b></span><button class="mute" id="mute" aria-pressed="false">Sound on</button><button class="mute" id="fx-toggle" aria-pressed="true">Arena on</button><button class="mute" id="menu-btn" type="button">Main menu</button></div>
   </header>
 
   <!-- SETUP -->
@@ -1310,6 +1310,7 @@ $('reroll').addEventListener('click', reroll);
 $('quit').addEventListener('click', () => { if (state.online) leaveLobby(); else show('setup'); });
 // clicking the RINK·ROLL title goes back to the main menu from anywhere
 $('home-link').addEventListener('click', e => { e.preventDefault(); if (state.online) leaveLobby(); else show('setup'); });
+$('menu-btn').addEventListener('click', () => { if (location.hash) history.replaceState(null, '', location.pathname); if (state.online) leaveLobby(); else show('setup'); });
 $('again').addEventListener('click', () => { show('setup'); setPlay(state.play); });
 $('copy').addEventListener('click', copyText);
 $('mute').addEventListener('click', () => setMute(!muted));
