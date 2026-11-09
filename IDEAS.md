@@ -52,15 +52,15 @@ Daily
 - Every Game: 82-day streak (calendar with 82)
 - Top of the Board: #1 on a Daily leaderboard (#1 trophy)
 Head-to-head
-- First Win (handshake)
+- First Win (puck in the net)
 - Win Streak: 5 in a row (lit goal lamp)
 - Rivalry: 10 games vs the same person (crossed sticks)
 - Comeback: won after losing the first 3 categories (upward arrow)
 Line Builder
 - Presidents' Trophy: finish first in the season sim
 - Champion: win the Cup
-- Cap Wizard: win the Cup with under $5M of cap left
-- Moneyball: make the playoffs on less than half the cap
+- Cap Wizard: win the Cup with under $7M of cap left (wizard hat)
+- Money Puck: make the playoffs on less than half the cap
 Look
 - Bronze / silver / gold tiers for repeatable badges (e.g. Champion: 1 / 5 / 25 Cups)
 - Flat icons in site colors inside a puck-shaped frame; locked badges show as gray outline with ???
