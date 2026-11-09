@@ -28,7 +28,7 @@
 ## Other ideas
 - Daily streaks (current + best)
 - Shareable profile page: rinkroll.app/u/name
-- Badges: talk through which ones and their icons (e.g. First S grade, A+ defenseman, 10-game H2H win streak, Line Builder Cup win)
+- Badges: shown on the account page (list agreed Nov 9, see Badges below)
 - Friends list, friends' daily results, personal rivalries (You vs. Jake: 7-4)
 - Ranked H2H matchmaking ("Find a match"), once traffic supports it
 - Monthly leaderboard resets
@@ -36,3 +36,33 @@
 
 ## Marketing (discussed; not doing yet)
 - Wordle-style emoji share text, visitor counts, tip jar, ad space
+
+## Badges (agreed Nov 9; live on the account page; no position badges)
+Grades
+- First Star: first S grade in any category (gold star)
+- Perfect Pick: every player placed in his best category in one build (bullseye)
+- Honor Roll: A- or better overall build (ribbon rosette)
+- S-Tier: S overall build (crown)
+- Optimal: matched the best possible build exactly (puzzle piece)
+- Dumpster Fire: F overall build, joke badge (flaming trash can)
+Daily
+- Rookie Season: first Daily (skate)
+- Hat Trick: 3-day streak (three hats)
+- Iron Man: 30-day streak (flexed arm)
+- Every Game: 82-day streak (calendar with 82)
+- Top of the Board: #1 on a Daily leaderboard (#1 trophy)
+Head-to-head
+- First Win (handshake)
+- Win Streak: 5 in a row (lit goal lamp)
+- Rivalry: 10 games vs the same person (crossed sticks)
+- Comeback: won after losing the first 3 categories (upward arrow)
+Line Builder
+- Presidents' Trophy: finish first in the season sim
+- Champion: win the Cup
+- Cap Wizard: win the Cup with under $5M of cap left
+- Moneyball: make the playoffs on less than half the cap
+Look
+- Bronze / silver / gold tiers for repeatable badges (e.g. Champion: 1 / 5 / 25 Cups)
+- Flat icons in site colors inside a puck-shaped frame; locked badges show as gray outline with ???
+- Pick 3 to show on your profile and next to your name on the leaderboard
+- Next: draw icon mockups
