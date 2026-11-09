@@ -85,3 +85,21 @@ button.badge:hover .puck { transform: translateY(-2px); }
 .acct-danger { border-top: 1px solid var(--rule); padding-top: 12px; margin-top: 4px; }
 .acct-toast { position: fixed; left: 50%; bottom: 20px; transform: translateX(-50%); z-index: 50; background: var(--boards-2); border: 2px solid var(--g-s); color: var(--ice); border-radius: 999px; padding: 10px 18px; font-weight: 700; display: flex; gap: 10px; align-items: center; box-shadow: 0 10px 30px rgba(0,0,0,.5); max-width: calc(100vw - 32px); }
 .site-nav .acct-nav { color: var(--ice); border-color: var(--lamp); }
+
+/* account button in the top-right of the header */
+.acct-btn { position: absolute; top: 28px; right: 0; display: flex; align-items: center; gap: 10px; min-height: 52px; padding: 6px 16px 6px 6px;
+  background: var(--boards); border: 2px solid var(--rule); border-left: 4px solid var(--lamp); border-radius: 8px; color: var(--ice); text-decoration: none; box-shadow: 0 8px 20px rgba(0,0,0,.35); max-width: 46vw; }
+.acct-btn:hover { border-color: var(--frost); border-left-color: var(--lamp); background: var(--boards-2); }
+.acct-btn:focus-visible { outline: 2px solid var(--blue-line); outline-offset: 3px; }
+body.fx .acct-btn { top: 64px; }
+.acct-btn-av { width: 38px; height: 38px; flex: none; border-radius: 50%; display: grid; place-items: center; background: var(--night); border: 2px solid var(--lamp); color: var(--ice); font: 900 17px var(--display); }
+.acct-btn-txt { display: grid; min-width: 0; line-height: 1.05; }
+.acct-btn-k { font: 700 11px var(--data); letter-spacing: .14em; text-transform: uppercase; color: var(--frost); }
+.acct-btn-l { font: 900 22px var(--display); letter-spacing: .04em; text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+@media (max-width: 600px) {
+  .acct-btn { position: static; order: -1; margin-left: auto; min-height: 44px; padding: 4px 12px 4px 4px; gap: 8px; }
+  .masthead > div:first-child { flex-basis: 100%; }
+  body.fx .masthead { padding-top: 40px; }
+  .acct-btn-av { width: 32px; height: 32px; font-size: 14px; }
+  .acct-btn-l { font-size: 18px; }
+}

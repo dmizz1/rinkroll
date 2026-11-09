@@ -56,7 +56,10 @@ async function acctLoad() {
 }
 function acctNav() {
   const a = $('acct-link'); if (!a) return;
-  a.textContent = ACCT.user ? ACCT.user.name : 'Sign in';
+  $('acct-btn-l').textContent = ACCT.user ? ACCT.user.name : 'Sign in';
+  $('acct-btn-k').textContent = ACCT.user ? 'Your account' : 'Account';
+  a.classList.toggle('in', !!ACCT.user);
+  if (ACCT.user) $('acct-btn-av').textContent = (ACCT.user.name || '?').replace(/[^A-Za-z0-9]/g, '').slice(0, 2).toUpperCase() || '?';
   const n = $('lb-name');
   if (n) { if (ACCT.user) { n.value = ACCT.user.name; n.readOnly = true; n.title = 'Your account name'; } else { n.readOnly = false; n.title = ''; } }
 }
@@ -65,7 +68,7 @@ async function acctImport() {
   const dailies = [];
   try {
     for (let i = 0; i < localStorage.length; i++) {
-      const k = localStorage.key(i), m = /^rinkroll-daily-(\d{4}-\d{2}-\d{2})$/.exec(k || ''); if (!m) continue;
+      const k = localStorage.key(i), m = /^rinkroll-daily-(\d{4}-\d{2}-\d{2})(?:~\w+)?$/.exec(k || ''); if (!m || k !== 'rinkroll-daily-' + dailyStoreKey(m[1])) continue; // skip a Daily that was reset
       const s = JSON.parse(localStorage.getItem(k) || 'null');
       if (s && s.done && Array.isArray(s.slots) && s.slots.every(Boolean)) dailies.push({ day: m[1], pos: dailyPosFor(m[1]), slots: s.slots });
     }

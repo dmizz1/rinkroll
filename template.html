@@ -336,6 +336,7 @@ body.fx .p-meta { color: #c7d4e2; }
       <p class="tag">Spin real NHL players. Steal one skill from each. Build a monster.</p>
       __NAV__
     </div>
+    <!--__ACCT_BTN__-->
     <div class="scorebug" id="bug"><span>Pool <b id="bug-pool">—</b></span><span>Pos <b id="bug-pos">—</b></span><span>Re-rolls <b id="bug-rr">—</b></span><button class="mute" id="mute" aria-pressed="false">Sound on</button><button class="mute" id="fx-toggle" aria-pressed="true">Arena on</button></div>
   </header>
 
@@ -989,11 +990,15 @@ function dailyInfo() {
   let h = 2166136261; for (const ch of 'rinkroll-daily-' + key) { h ^= ch.charCodeAt(0); h = Math.imul(h, 16777619); }
   return { key, n, pos, mode: 'current', seed: h >>> 0 };
 }
-function dailyLoad() { try { return JSON.parse(localStorage.getItem('rinkroll-daily-' + dailyInfo().key) || 'null'); } catch (e) { return null; } }
+// A Daily can be reset (everyone's progress and the leaderboard start over) by giving its date a new version here.
+// Keep this list in sync with DAY_RESETS in lib/account.mjs.
+const DAILY_RESET = { '2026-11-09': 'r1' };
+function dailyStoreKey(key) { return key + (DAILY_RESET[key] ? '~' + DAILY_RESET[key] : ''); }
+function dailyLoad() { try { return JSON.parse(localStorage.getItem('rinkroll-daily-' + dailyStoreKey(dailyInfo().key)) || 'null'); } catch (e) { return null; } }
 function dailySaveProgress(done) {
   if (!state.daily) return;
   const body = { slots: state.slots.map(s => s.player ? { name: s.player.name, grade: s.grade } : null), seqIdx: state.seqIdx, rseqIdx: state.rseqIdx || 0, rerolls: state.rerolls, done: !!done };
-  try { localStorage.setItem('rinkroll-daily-' + state.daily.key, JSON.stringify(body)); } catch (e) {}
+  try { localStorage.setItem('rinkroll-daily-' + dailyStoreKey(state.daily.key), JSON.stringify(body)); } catch (e) {}
 }
 function dailyDone() { const s = dailyLoad(); return !!(s && s.done); }
 function dailyStarted() { const s = dailyLoad(); return !!(s && s.slots && s.slots.some(Boolean)); }

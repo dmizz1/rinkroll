@@ -20,7 +20,7 @@ function lbRowsHtml(entries, limit, highlightT) {
     return `<li class="${e.t === highlightT ? 'me' : ''}"><span class="lb-rank">${i + 1}</span><span class="lb-main"><span class="lb-name">${e.handle ? `<a href="#u=${esc(e.handle)}">${esc(e.name)}</a>` : esc(e.name)}${e.sc && typeof miniBadges === 'function' ? miniBadges(e.sc) : ''}</span><span class="lb-chips">${chips}</span><span class="lb-players">${e.players.map(esc).join(' · ')}</span></span><span class="gr" data-t="${tier(ovr)}">${ovr}</span></li>`;
   }).join('') + '</ol>';
 }
-function lbMine(day) { try { return JSON.parse(localStorage.getItem('rinkroll-lb-' + day) || 'null'); } catch (e) { return null; } }
+function lbMine(day) { try { return JSON.parse(localStorage.getItem('rinkroll-lb-' + dailyStoreKey(day)) || 'null'); } catch (e) { return null; } }
 
 async function showDailyLeaderboard() {
   const box = $('lboard');
@@ -52,7 +52,7 @@ async function submitDaily(ev) {
     if (!r.ok) { $('lb-msg').textContent = data.error || 'Couldn\'t post your build. Try again.'; $('lb-submit').disabled = false; return; }
     const list = await lbGet(state.daily.key).catch(() => null);
     const meT = list && list.entries.find(e => e.name === name.slice(0, 16) && e.grades.join() === body.grades.join());
-    try { localStorage.setItem('rinkroll-lb-' + state.daily.key, JSON.stringify({ rank: data.rank, total: data.total, t: meT ? meT.t : null })); } catch (e) {}
+    try { localStorage.setItem('rinkroll-lb-' + dailyStoreKey(state.daily.key), JSON.stringify({ rank: data.rank, total: data.total, t: meT ? meT.t : null })); } catch (e) {}
     $('lb-form').hidden = true;
     $('lb-msg').textContent = data.already ? `You already posted today. You're #${data.rank} of ${data.total}.` : `Posted! You're #${data.rank} of ${data.total} today.`;
     if (list) { $('lb-list').innerHTML = lbRowsHtml(list.entries, 50, meT && meT.t); $('lb-count').textContent = `${list.total} builds`; }

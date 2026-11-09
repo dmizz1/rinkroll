@@ -1,5 +1,6 @@
 2026-11-09|Accounts: badges, streaks, history.
 2026-11-09|Same Daily spins for everyone.
+2026-11-09|Today's Daily reset; play it again.
 2026-11-09|Cap Line cap raised to $50M.
 2026-11-09|Defense pool trimmed; grade tweaks.
 2026-11-06|Grit added for current forwards.

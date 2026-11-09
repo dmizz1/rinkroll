@@ -14,7 +14,10 @@ DATA_DATE = json.load(open(P('data_meta.json'), encoding='utf-8'))['updated']
 
 SHARE_DESC = 'Spin real NHL players, steal one graded skill from each, and build a monster. Play solo, the Daily, the salary-cap Line Builder, or head-to-head with a friend.'
 NAV = '<nav class="site-nav" aria-label="Site"><a href="/how-to-play.html">How to play</a><a href="/privacy.html">Privacy</a><a href="/#account" class="acct-nav">Account</a></nav>'
-GAME_NAV = '<nav class="site-nav" aria-label="Site"><a href="/how-to-play.html">How to play</a><a href="/privacy.html">Privacy</a><a href="/#account" id="acct-link" class="acct-nav">Sign in</a></nav>'
+GAME_NAV = '<nav class="site-nav" aria-label="Site"><a href="/how-to-play.html">How to play</a><a href="/privacy.html">Privacy</a></nav>'
+ACCT_BTN = ('<a href="/#account" id="acct-link" class="acct-btn"><span class="acct-btn-av" id="acct-btn-av" aria-hidden="true">'
+            '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg>'
+            '</span><span class="acct-btn-txt"><span class="acct-btn-k" id="acct-btn-k">Account</span><span class="acct-btn-l" id="acct-btn-l">Sign in</span></span></a>')
 CONTACT = 'shlumpedd13@gmail.com'
 SITE = 'https://rinkroll.app/'
 
@@ -33,7 +36,7 @@ art = inject(tpl.replace('__NAV__', '')).replace('__LB__', 'false')
 open(P('rink-roll.html'), 'w', encoding='utf-8').write(art)
 
 # ---------- 2. standalone game ----------
-t = tpl.replace('__NAV__', GAME_NAV).replace('<!--__ACCOUNT_HTML__-->', read('account.html')).replace('/*__ACCOUNT_CSS__*/', read('account.css')).replace('/*__ACCOUNTJS__*/', read('account.js'))
+t = tpl.replace('__NAV__', GAME_NAV).replace('<!--__ACCT_BTN__-->', ACCT_BTN).replace('<!--__ACCOUNT_HTML__-->', read('account.html')).replace('/*__ACCOUNT_CSS__*/', read('account.css')).replace('/*__ACCOUNTJS__*/', read('account.js'))
 start = t.index('/* ---------- head-to-head ---------- */')
 end = t.index('initNet();\n') + len('initNet();\n')
 t = t[:start] + read('online_poll.js') + t[end:]

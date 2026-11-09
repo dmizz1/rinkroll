@@ -5,7 +5,7 @@
 //   e/<day>/<device>   one document per submission, written only if new, so no entry is ever lost
 //   s/<day>            a cached summary of all entries for the day, rebuilt from the entries as they arrive
 import { getStore } from '@netlify/blobs';
-import { currentUser } from '../lib/account.mjs';
+import { currentUser, dayStore } from '../lib/account.mjs';
 
 const SCALE = ['F', 'D-', 'D', 'D+', 'C-', 'C', 'C+', 'B-', 'B', 'B+', 'A-', 'A', 'A+', 'S'];
 const SLOTS = { F: [6, 7], D: [5], G: [5] }; // forwards: 7 with Grit (Current NHL); 6 allowed for builds started before Grit
@@ -27,16 +27,16 @@ function dayIsCurrent(day) {
 
 // Read every entry for a day, using the cached summary and fetching only new ones.
 async function loadDay(store, day) {
-  const summary = (await store.get(`s/${day}`, { type: 'json' })) || { entries: {} };
+  const summary = (await store.get(`s/${dayStore(day)}`, { type: 'json' })) || { entries: {} };
   const known = summary.entries || {};
   const keys = [];
-  const { blobs } = await store.list({ prefix: `e/${day}/` });
+  const { blobs } = await store.list({ prefix: `e/${dayStore(day)}/` });
   blobs.forEach(b => keys.push(b.key));
   const missing = keys.filter(k => !known[k]);
   if (missing.length) {
     const got = await Promise.all(missing.map(k => store.get(k, { type: 'json' }).then(v => [k, v]).catch(() => [k, null])));
     got.forEach(([k, v]) => { if (v) known[k] = summaryEntry(v); });
-    try { await store.setJSON(`s/${day}`, { entries: known, updated: Date.now() }); } catch {}
+    try { await store.setJSON(`s/${dayStore(day)}`, { entries: known, updated: Date.now() }); } catch {}
   }
   return Object.values(known);
 }
@@ -71,7 +71,7 @@ export default async (req) => {
 
   const avg = Math.round(grades.reduce((a, g) => a + SCALE.indexOf(g), 0) / grades.length * 1000) / 1000;
   const entry = { name, pos, grades, players, avg, t: Date.now(), ...(user ? { uid: user.uid, handle: user.handle, sc: (user.showcase || []).filter(k => user.badges && user.badges[k]).slice(0, 3) } : {}) };
-  const key = `e/${day}/${device}`;
+  const key = `e/${dayStore(day)}/${device}`;
   const res = await store.setJSON(key, entry, { onlyIfNew: true });
   const already = res && res.modified === false;
 

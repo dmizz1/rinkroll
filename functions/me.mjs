@@ -8,7 +8,7 @@
 //                { action: 'delete', confirm: 'DELETE' }
 import { getStore } from '@netlify/blobs';
 import {
-  store, json, clean, sameOrigin, currentUser, hashPassword, passwordOk, cleanBuild, addBuild, addLine, addH2H, BADGES,
+  store, json, clean, dayStore, DAY_RESETS, sameOrigin, currentUser, hashPassword, passwordOk, cleanBuild, addBuild, addLine, addH2H, BADGES,
   publicView, saveRankRow, deleteAccount, endSession, etToday, SCALE
 } from '../lib/account.mjs';
 
@@ -21,7 +21,7 @@ async function checkTopBoard(u) {
   if (!todo.length) return false;
   const lb = getStore({ name: 'leaderboard', consistency: 'strong' });
   for (const d of todo) {
-    const s = await lb.get(`s/${d}`, { type: 'json' }).catch(() => null);
+    const s = await lb.get(`s/${dayStore(d)}`, { type: 'json' }).catch(() => null);
     const list = s ? Object.values(s.entries || {}).sort((a, b) => b.avg - a.avg || a.t - b.t) : [];
     if (list[0] && list[0].uid === u.uid) u.badges['top-board'] = (u.badges['top-board'] || 0) + 1;
     u.daily.lbChecked = [...(u.daily.lbChecked || []), d].slice(-60);
@@ -47,7 +47,11 @@ export default async (req) => {
     const build = cleanBuild(b.build || {});
     if (!build) return json({ error: 'That build doesn\'t look complete.' }, 400);
     if (build.play === 'h2h') return json({ error: 'Head-to-head builds are saved with the result.' }, 400);
-    if (build.play === 'daily' && u.daily.days.includes(build.day)) return json({ ok: true, earned: [], already: true });
+    if (build.play === 'daily' && u.daily.days.includes(build.day)) {
+      // a reset Daily can be played once more; it counts as a build but doesn't add to the streak again
+      if (!(DAY_RESETS[build.day] && u.daily.reset !== dayStore(build.day))) return json({ ok: true, earned: [], already: true });
+      u.daily.reset = dayStore(build.day);
+    }
     return save({ earned: addBuild(u, build, etToday()) });
   }
 
