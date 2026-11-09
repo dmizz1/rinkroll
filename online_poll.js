@@ -190,7 +190,7 @@ function startOnline(L, me) {
   $('peek').checked = false;
   state.online = true;
   const seat = net.role === 'host' ? 0 : 104729; // host and challenger get different spins
-  state.seq = seededSeq(POOLS[state.mode][state.pos], (L.seed + L.round * 7919 + seat) >>> 0);
+  state.seq = seededSeq(POOLS[state.mode][state.pos], (L.seed + L.round * 7919 + seat) >>> 0); state.rseq = null; state.rerolling = false;
   state.seqIdx = me.seqIdx || 0;
   state.rerolls = typeof me.rerolls === 'number' ? me.rerolls : 1;
   const resume = (me.slots && me.slots.some(Boolean)) ? me.slots : null;
@@ -253,7 +253,7 @@ function renderH2H() {
   v.className = 'verdict ' + (res === 'tie' ? '' : res);
   const how = (w, l) => w >= l ? `${w}–${l} in categories` : `on overall grade (${w}–${l} in categories)`;
   v.textContent = res === 'win' ? `You win ${how(myWins, oppWins)}` : res === 'loss' ? `${oname} wins ${how(oppWins, myWins)}` : 'Dead even';
-  if (net.verdictRound !== L.round) { net.verdictRound = L.round; fanfare(res !== 'loss'); }
+  if (net.verdictRound !== L.round) { net.verdictRound = L.round; fanfare(res !== 'loss'); if (typeof acctOnH2H === 'function') acctOnH2H(L.code, L.round); }
 }
 
 async function rematch() {

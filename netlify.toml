@@ -12,3 +12,9 @@
   [headers.values]
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "strict-origin-when-cross-origin"
+
+# public profiles: rinkroll.app/u/<name> opens the game page, which shows that player's profile
+[[redirects]]
+  from = "/u/*"
+  to = "/index.html"
+  status = 200

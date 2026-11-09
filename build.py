@@ -13,7 +13,8 @@ import json
 DATA_DATE = json.load(open(P('data_meta.json'), encoding='utf-8'))['updated']
 
 SHARE_DESC = 'Spin real NHL players, steal one graded skill from each, and build a monster. Play solo, the Daily, the salary-cap Line Builder, or head-to-head with a friend.'
-NAV = '<nav class="site-nav" aria-label="Site"><a href="how-to-play.html">How to play</a><a href="privacy.html">Privacy</a></nav>'
+NAV = '<nav class="site-nav" aria-label="Site"><a href="/how-to-play.html">How to play</a><a href="/privacy.html">Privacy</a><a href="/#account" class="acct-nav">Account</a></nav>'
+GAME_NAV = '<nav class="site-nav" aria-label="Site"><a href="/how-to-play.html">How to play</a><a href="/privacy.html">Privacy</a><a href="/#account" id="acct-link" class="acct-nav">Sign in</a></nav>'
 CONTACT = 'shlumpedd13@gmail.com'
 SITE = 'https://rinkroll.app/'
 
@@ -32,7 +33,7 @@ art = inject(tpl.replace('__NAV__', '')).replace('__LB__', 'false')
 open(P('rink-roll.html'), 'w', encoding='utf-8').write(art)
 
 # ---------- 2. standalone game ----------
-t = tpl.replace('__NAV__', NAV)
+t = tpl.replace('__NAV__', GAME_NAV).replace('<!--__ACCOUNT_HTML__-->', read('account.html')).replace('/*__ACCOUNT_CSS__*/', read('account.css')).replace('/*__ACCOUNTJS__*/', read('account.js'))
 start = t.index('/* ---------- head-to-head ---------- */')
 end = t.index('initNet();\n') + len('initNet();\n')
 t = t[:start] + read('online_poll.js') + t[end:]
@@ -56,7 +57,7 @@ rep('.op-msg {', '''.name-row { grid-column: 1 / -1; display: flex; gap: 12px; a
 .op-msg {''')
 rep('<meta name="claude:viewport-fit-sides" content="cover">\n', '')
 rep('Data: NHL rosters, stats and EDGE tracking updated __DATA_DATE__.</div>',
-    'Data: NHL rosters, stats and EDGE tracking updated __DATA_DATE__.</div>\n    <div>Head-to-head lobbies run through this site, so it works on any network, with no accounts. <a href="how-to-play.html">How to play</a> · <a href="privacy.html">Privacy policy</a></div>')
+    'Data: NHL rosters, stats and EDGE tracking updated __DATA_DATE__.</div>\n    <div>Head-to-head lobbies run through this site, so it works on any network, no account needed. <a href="how-to-play.html">How to play</a> · <a href="privacy.html">Privacy policy</a></div>')
 
 def social(title, desc, url):
     img = SITE + 'og.png'
@@ -92,18 +93,20 @@ def _upd():
     fmt = lambda d: (lambda x: f"{x:%b} {x.day}, {x.year}")(datetime.date.fromisoformat(d.strip()))
     days = {}  # one date heading per day, with that day's updates listed under it
     for d, s in rows: days.setdefault(d.strip(), []).append(s.strip())
-    li = ''.join(f'<li><time datetime="{d}">{fmt(d)}</time>' + ''.join(f'<span class="u">{_h.escape(s)}</span>' for s in ss) + '</li>' for d, ss in list(days.items())[:3])
-    return f'    <aside class="notepad" aria-label="Updates"><h2>Updates</h2><ul>{li}</ul></aside>\n'
+    li = ''.join(f'<li><time datetime="{d}">{fmt(d)}</time>' + ''.join(f'<span class="u">{_h.escape(s)}</span>' for s in ss) + '</li>' for d, ss in list(days.items())[:12])
+    return f'    <aside class="notepad" aria-label="Updates"><h2>Updates</h2><ul tabindex="0" aria-label="Update notes, newest first (scroll for older ones)">{li}</ul></aside>\n'
 _np = _upd()
 if _np:
     rep('  <section class="setup" id="setup">\n', '  <section class="setup" id="setup">\n' + _np)
     rep('.lb-preview {', """.notepad { position: relative; max-width: 460px; margin: 4px 0 22px auto; padding: 14px 18px 12px 46px; color: #1d2433; transform: rotate(-.6deg);
-  background: repeating-linear-gradient(#fdf8e1 0 25px, #b9cbe4 25px 26px) 0 38px / 100% calc(100% - 38px) no-repeat, #fdf8e1;
+  background: #fdf8e1;
   border-radius: 3px 3px 6px 6px; box-shadow: 0 10px 22px rgba(0,0,0,.35), 0 1px 0 rgba(255,255,255,.4) inset; }
 .notepad::before { content: ""; position: absolute; top: 0; bottom: 0; left: 32px; width: 2px; background: rgba(230,57,70,.55); }
 .notepad::after { content: ""; position: absolute; top: -9px; left: 50%; width: 86px; height: 20px; transform: translateX(-50%) rotate(2deg); background: rgba(244,201,93,.75); box-shadow: 0 1px 3px rgba(0,0,0,.2); }
 .notepad h2 { margin: 0 0 6px; font: 800 22px/1 var(--display); text-transform: uppercase; letter-spacing: .05em; color: #121e33; }
-.notepad ul { list-style: none; margin: 0; padding: 0; }
+.notepad ul { list-style: none; margin: 0 -10px 0 0; padding: 0 10px 0 0; max-height: 156px; overflow-y: auto; overscroll-behavior: contain;
+  background: repeating-linear-gradient(transparent 0 25px, #b9cbe4 25px 26px); background-attachment: local; scrollbar-width: thin; scrollbar-color: #c9b98a transparent; }
+.notepad ul:focus-visible { outline: 2px solid var(--blue-line); outline-offset: 2px; }
 .notepad li { font: 500 15px/26px var(--body); }
 .notepad li + li { margin-top: 0; }
 .notepad .u { display: block; padding-left: 14px; text-indent: -14px; }

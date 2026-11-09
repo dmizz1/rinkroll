@@ -325,6 +325,7 @@ body.fx .p-meta { color: #c7d4e2; }
 
 @media (prefers-reduced-motion: reduce) {
   body.fx .beam { animation: none; } *, *::before, *::after { animation: none !important; transition: none !important; } }
+/*__ACCOUNT_CSS__*/
 </style>
 
 <div class="wrap">
@@ -546,11 +547,12 @@ body.fx .p-meta { color: #c7d4e2; }
     </div>
   </section>
 
+<!--__ACCOUNT_HTML__-->
   <footer class="foot">
     <div><b>Fan-made game.</b> Rink Roll is not affiliated with, endorsed by, or sponsored by the National Hockey League, the NHL Players' Association, or any team. Player names and statistics are used for reference only.</div>
     <div><b>How the grades work.</b> Current players are ranked against everyone at their position, then curved: roughly the top 2% earn S and the bottom 8% get F. Speed blends max skating speed and 20+ mph bursts. Shot blends shot velocity, goal rate and shooting %. Hands, Sense and Playmaking use finishing from the slot, offensive-zone time, points, assists and power-play production. Build is height and weight. Grit (Current NHL forwards only) blends net-front presence, tips, screens, puck battles and offensive physicality. Defense adds Physicality (size, penalty minutes, shot power, puck battles) and Stick-checking (ice time, plus/minus, clean play). Goalie grades come from save % by shot distance, three-season save %, and career save %. Small samples are pulled toward average.</div>
     <div>Public NHL data doesn't split saves by glove or blocker side, so goalies are graded on save % by shot distance instead: Mid-range and Long-range. Modern Era Stars covers players whose careers fall mostly between 1980 and 2026 (75 forwards, 75 defensemen, 35 goalies), graded by hand from each player's career and reputation.</div>
-    <div>Current mode only includes players with at least 82 career NHL regular-season games, and forwards need at least 0.40 career points per game. Data: NHL rosters, stats and EDGE tracking updated __DATA_DATE__.</div>
+    <div>Current mode only includes players with at least 82 career NHL regular-season games, forwards need at least 0.40 career points per game and defensemen at least 0.20. Data: NHL rosters, stats and EDGE tracking updated __DATA_DATE__.</div>
   </footer>
 </div>
 
@@ -619,10 +621,10 @@ function updateBug() {
 function show(id) {
   // leaving the build screen stops a spin mid-roll (no more ticks, horn or flash)
   if (id !== 'game' && state.spinning) { cancelAnimationFrame(rafId); state.spinning = false; }
-  ['setup', 'lobby', 'game', 'result', 'line'].forEach(s => $(s).hidden = s !== id); window.scrollTo({ top: 0, behavior: 'smooth' });
+  ['setup', 'lobby', 'game', 'result', 'line', 'account'].forEach(s => { const el = $(s); if (el) el.hidden = s !== id; }); window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-function startGame() { state.online = false; state.daily = null; state.seq = null; initBuild(null); }
+function startGame() { state.online = false; state.daily = null; state.seq = null; state.rseq = null; state.rerolling = false; initBuild(null); }
 
 // resume: optional saved progress [{name, grade} | null per slot]
 function initBuild(resume) {
@@ -687,6 +689,13 @@ function updateControls() {
 }
 
 function pickRandom() {
+  if (state.rseq && state.rerolling) {
+    state.rerolling = false;
+    while (state.rseqIdx < state.rseq.length) {
+      const p = state.rseq[state.rseqIdx++];
+      if (!state.used.has(p.name)) return p;
+    }
+  }
   if (state.seq) {
     while (state.seqIdx < state.seq.length) {
       const p = state.seq[state.seqIdx++];
@@ -824,7 +833,7 @@ function assign(i) {
 
 function reroll() {
   if (state.rerolls < 1 || !state.current) return;
-  state.rerolls--; state.current = null; spin();
+  state.rerolls--; state.current = null; state.rerolling = true; spin();
   if (state.online) saveProgress(false);
   if (state.daily) dailySaveProgress(false);
 }
@@ -913,7 +922,7 @@ function finish() {
   renderOptimal();
   showDailyLeaderboard();
   if (state.online) { saveProgress(true, avg); renderH2H(); }
-  else fanfare(avg >= 7);
+  else { fanfare(avg >= 7); if (typeof acctOnBuild === 'function') acctOnBuild(); }
 }
 
 function copyText() {
@@ -944,6 +953,7 @@ function seededSeq(pool, seed) {
 /*__FX__*/
 /*__LINE__*/
 /*__LBJS__*/
+/*__ACCOUNTJS__*/
 /* ---------- play modes, daily, share ---------- */
 function setPlay(play) {
   state.play = play;
@@ -963,7 +973,15 @@ function setPlay(play) {
 document.querySelectorAll('[data-play]').forEach(b => b.addEventListener('click', () => setPlay(b.dataset.play)));
 
 const DAILY_EPOCH = Date.UTC(2026, 10, 5); // Daily #1 = Nov 5, 2026
-function todayKey() { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; }
+// The Daily runs on Eastern time, so everyone everywhere is on the same Daily
+function etParts(d = new Date()) {
+  try {
+    const f = new Intl.DateTimeFormat('en-CA', { timeZone: 'America/New_York', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' });
+    const o = {}; f.formatToParts(d).forEach(p => o[p.type] = p.value);
+    return { key: `${o.year}-${o.month}-${o.day}`, h: +o.hour % 24, m: +o.minute };
+  } catch (e) { return { key: `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`, h: d.getHours(), m: d.getMinutes() }; }
+}
+function todayKey() { return etParts().key; }
 function dailyInfo() {
   const key = todayKey(); const [y, m, d] = key.split('-').map(Number);
   const n = Math.round((Date.UTC(y, m - 1, d) - DAILY_EPOCH) / 864e5) + 1;
@@ -974,7 +992,7 @@ function dailyInfo() {
 function dailyLoad() { try { return JSON.parse(localStorage.getItem('rinkroll-daily-' + dailyInfo().key) || 'null'); } catch (e) { return null; } }
 function dailySaveProgress(done) {
   if (!state.daily) return;
-  const body = { slots: state.slots.map(s => s.player ? { name: s.player.name, grade: s.grade } : null), seqIdx: state.seqIdx, rerolls: state.rerolls, done: !!done };
+  const body = { slots: state.slots.map(s => s.player ? { name: s.player.name, grade: s.grade } : null), seqIdx: state.seqIdx, rseqIdx: state.rseqIdx || 0, rerolls: state.rerolls, done: !!done };
   try { localStorage.setItem('rinkroll-daily-' + state.daily.key, JSON.stringify(body)); } catch (e) {}
 }
 function dailyDone() { const s = dailyLoad(); return !!(s && s.done); }
@@ -991,15 +1009,21 @@ function startDaily() {
   const D = dailyInfo();
   state.online = false; state.daily = D;
   state.mode = D.mode; state.pos = D.pos; state.peek = false;
-  state.seq = seededSeq(POOLS[D.mode][D.pos], D.seed);
+  // sorted by name first, so a data refresh that only reorders players can't change the Daily;
+  // the shuffle is split in two: spins come from the first half, re-rolls from the second,
+  // so re-rolling never shifts which players everyone else sees on later spins
+  const all = seededSeq(POOLS[D.mode][D.pos].slice().sort((a, b) => a.name < b.name ? -1 : a.name > b.name ? 1 : 0), D.seed);
+  const half = Math.ceil(all.length / 2);
+  state.seq = all.slice(0, half); state.rseq = all.slice(half);
   const s = dailyLoad();
   state.seqIdx = s && s.seqIdx ? s.seqIdx : 0;
+  state.rseqIdx = s && s.rseqIdx ? s.rseqIdx : 0; state.rerolling = false;
   state.rerolls = s && typeof s.rerolls === 'number' ? s.rerolls : 1;
   initBuild(s && s.slots && s.slots.some(Boolean) ? s.slots : null);
 }
 function untilMidnight() {
-  const now = new Date(), next = new Date(now); next.setHours(24, 0, 0, 0);
-  const mins = Math.max(1, Math.round((next - now) / 60000));
+  const { h, m } = etParts();
+  const mins = Math.max(1, 24 * 60 - (h * 60 + m));
   return `${Math.floor(mins / 60)}h ${mins % 60}m`;
 }
 
@@ -1187,7 +1211,7 @@ function startOnline(L, me) {
   $('peek').checked = state.peek;
   state.online = true;
   const seat = (me && me.role === 'host') ? 0 : 104729; // host and challenger get different spins
-  state.seq = seededSeq(POOLS[state.mode][state.pos], (L.seed + L.round * 7919 + seat) >>> 0);
+  state.seq = seededSeq(POOLS[state.mode][state.pos], (L.seed + L.round * 7919 + seat) >>> 0); state.rseq = null; state.rerolling = false;
   state.seqIdx = me.seqIdx || 0;
   state.rerolls = typeof me.rerolls === 'number' ? me.rerolls : 1;
   const resume = (me.slots && me.slots.length) ? me.slots : null;

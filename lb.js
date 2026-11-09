@@ -17,7 +17,7 @@ function lbRowsHtml(entries, limit, highlightT) {
   return '<ol class="lb-list">' + entries.slice(0, limit).map((e, i) => {
     const ovr = SCALE[Math.max(0, Math.min(13, Math.round(e.avg)))];
     const chips = e.grades.map(g => `<span class="gr" data-t="${tier(g)}">${esc(g)}</span>`).join('');
-    return `<li class="${e.t === highlightT ? 'me' : ''}"><span class="lb-rank">${i + 1}</span><span class="lb-main"><span class="lb-name">${esc(e.name)}</span><span class="lb-chips">${chips}</span><span class="lb-players">${e.players.map(esc).join(' · ')}</span></span><span class="gr" data-t="${tier(ovr)}">${ovr}</span></li>`;
+    return `<li class="${e.t === highlightT ? 'me' : ''}"><span class="lb-rank">${i + 1}</span><span class="lb-main"><span class="lb-name">${e.handle ? `<a href="#u=${esc(e.handle)}">${esc(e.name)}</a>` : esc(e.name)}${e.sc && typeof miniBadges === 'function' ? miniBadges(e.sc) : ''}</span><span class="lb-chips">${chips}</span><span class="lb-players">${e.players.map(esc).join(' · ')}</span></span><span class="gr" data-t="${tier(ovr)}">${ovr}</span></li>`;
   }).join('') + '</ol>';
 }
 function lbMine(day) { try { return JSON.parse(localStorage.getItem('rinkroll-lb-' + day) || 'null'); } catch (e) { return null; } }

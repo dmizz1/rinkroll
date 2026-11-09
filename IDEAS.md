@@ -1,6 +1,6 @@
 # Thinking jar (ideas for later, not built yet)
 
-## Queued for the next update (saved, not deployed yet)
+## Shipped Nov 9, 2026 (with accounts, badges, Daily fixes)
 - Tage Thompson: Build S
 - Adam Fox: Speed B+, Shot B, Build D+, Stick-checking S
 - Defensemen need 0.20 career points per game (pool 205 -> 170)
@@ -12,7 +12,7 @@
    - Goalies: shootout duel vs the same 10 average shooters
    - Result screen: score + "why you won" (which categories swung it)
    - Optional twist: shared-spin draft (claiming a category locks it for the opponent)
-2. Account system (see Accounts below)
+2. DONE Nov 9: account system (Google, email link, password), badges, history, streaks, ranking, H2H record, profiles
 3. DONE Nov 6: clicking the RINK·ROLL title returns to the main menu
 4. Advertise and earn revenue (see Marketing below)
 

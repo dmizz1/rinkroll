@@ -250,12 +250,14 @@ button:focus-visible, [tabindex]:focus-visible { outline: 3px solid var(--gold);
 .lb-locked { margin: 0; font-size: 15px; }
 .lb-locked::before { content: '\1F512  '; }
 .notepad { position: relative; max-width: 460px; margin: 4px 0 22px auto; padding: 14px 18px 12px 46px; color: #1d2433; transform: rotate(-.6deg);
-  background: repeating-linear-gradient(#fdf8e1 0 25px, #b9cbe4 25px 26px) 0 38px / 100% calc(100% - 38px) no-repeat, #fdf8e1;
+  background: #fdf8e1;
   border-radius: 3px 3px 6px 6px; box-shadow: 0 10px 22px rgba(0,0,0,.35), 0 1px 0 rgba(255,255,255,.4) inset; }
 .notepad::before { content: ""; position: absolute; top: 0; bottom: 0; left: 32px; width: 2px; background: rgba(230,57,70,.55); }
 .notepad::after { content: ""; position: absolute; top: -9px; left: 50%; width: 86px; height: 20px; transform: translateX(-50%) rotate(2deg); background: rgba(244,201,93,.75); box-shadow: 0 1px 3px rgba(0,0,0,.2); }
 .notepad h2 { margin: 0 0 6px; font: 800 22px/1 var(--display); text-transform: uppercase; letter-spacing: .05em; color: #121e33; }
-.notepad ul { list-style: none; margin: 0; padding: 0; }
+.notepad ul { list-style: none; margin: 0 -10px 0 0; padding: 0 10px 0 0; max-height: 156px; overflow-y: auto; overscroll-behavior: contain;
+  background: repeating-linear-gradient(transparent 0 25px, #b9cbe4 25px 26px); background-attachment: local; scrollbar-width: thin; scrollbar-color: #c9b98a transparent; }
+.notepad ul:focus-visible { outline: 2px solid var(--blue-line); outline-offset: 2px; }
 .notepad li { font: 500 15px/26px var(--body); }
 .notepad li + li { margin-top: 0; }
 .notepad .u { display: block; padding-left: 14px; text-indent: -14px; }
@@ -364,6 +366,94 @@ body.fx .p-meta { color: #c7d4e2; }
 
 @media (prefers-reduced-motion: reduce) {
   body.fx .beam { animation: none; } *, *::before, *::after { animation: none !important; transition: none !important; } }
+/* ---------- accounts ---------- */
+.acct { display: grid; gap: 16px; }
+.acct-card { background: var(--boards); border: 1px solid var(--rule); border-radius: 10px; padding: 18px 20px; display: grid; gap: 12px; }
+#acct-out .acct-card, #acct-setpw .acct-card { max-width: 520px; }
+.acct-h { font-family: var(--display); font-weight: 900; font-size: 34px; text-transform: uppercase; letter-spacing: .03em; margin: 0; }
+.acct-msg { margin: 0; font-size: 15px; color: var(--g-b); min-height: 0; }
+.acct-msg:empty { display: none; }
+.acct-msg.err { color: #ff8a94; }
+.acct-age { display: flex; gap: 10px; align-items: center; font-weight: 600; }
+.acct-age input { width: 20px; height: 20px; accent-color: var(--lamp); }
+.acct-age small { display: block; color: var(--frost); font-weight: 400; font-size: 13px; }
+.acct-google { display: flex; gap: 12px; align-items: center; justify-content: center; background: #fff; color: #1f1f1f; border-radius: 6px; padding: 12px 16px; font: 600 17px var(--body); text-decoration: none; min-height: 48px; }
+.acct-google:hover { background: #eef2f6; }
+.acct-or { display: flex; align-items: center; gap: 12px; color: var(--frost); font-size: 13px; text-transform: uppercase; letter-spacing: .1em; }
+.acct-or::before, .acct-or::after { content: ""; flex: 1; height: 1px; background: var(--rule); }
+.acct-form { display: grid; gap: 8px; }
+.acct-label { font-family: var(--data); font-weight: 700; font-size: 13px; letter-spacing: .1em; text-transform: uppercase; color: var(--frost); }
+.acct-label small { text-transform: none; letter-spacing: 0; font-weight: 400; }
+.acct-input { width: 100%; box-sizing: border-box; min-width: 0; background: #060c16; border: 2px solid var(--rule); border-radius: 4px; padding: 10px 12px; color: var(--ice); font: 600 17px var(--body); min-height: 46px; }
+.acct-input:focus { outline: none; border-color: var(--blue-line); }
+.acct-row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.acct-row .acct-input { flex: 1 1 200px; width: auto; }
+.acct-small { font-size: 14px; }
+.acct-link { background: none; border: 0; padding: 4px 0; color: var(--frost); font: 500 14px var(--body); text-decoration: underline; cursor: pointer; text-align: left; }
+.acct-link:hover { color: var(--ice); }
+.acct-fine { margin: 0; }
+.acct-fine a { color: var(--frost); }
+.acct-head { display: flex; flex-wrap: wrap; gap: 14px; align-items: center; }
+.acct-avatar { width: 64px; height: 64px; border-radius: 50%; background: var(--boards-2); border: 2px solid var(--lamp); display: grid; place-items: center; font-family: var(--display); font-weight: 900; font-size: 26px; text-transform: uppercase; flex: none; }
+.acct-id { display: grid; gap: 2px; flex: 1 1 180px; min-width: 0; }
+.acct-name { font-family: var(--display); font-weight: 900; font-size: 36px; line-height: 1; text-transform: uppercase; overflow-wrap: anywhere; }
+.acct-head-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.acct-tiles { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+@media (max-width: 560px) { .acct-tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.acct-tile { background: var(--boards); border: 1px solid var(--rule); border-radius: 10px; padding: 12px 8px; text-align: center; }
+.acct-tile b { display: block; font-family: var(--display); font-weight: 900; font-size: 32px; line-height: 1; }
+.acct-tile b .gr { font-size: 30px; }
+.acct-tile > span { display: block; margin-top: 6px; font-family: var(--data); font-weight: 700; font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: var(--frost); }
+.acct-tile > small { display: block; margin-top: 2px; font-size: 12px; color: var(--frost); }
+.acct-sec-h { display: flex; flex-wrap: wrap; gap: 6px 14px; align-items: baseline; justify-content: space-between; }
+.acct-sec-h h3 { margin: 0; font-family: var(--display); font-weight: 800; font-size: 24px; letter-spacing: .04em; text-transform: uppercase; }
+.acct-count { font-family: var(--data); font-weight: 700; color: var(--frost); }
+.acct-showcase { display: flex; gap: 18px; flex-wrap: wrap; justify-content: center; min-height: 40px; }
+.acct-group { margin-top: 6px; }
+.acct-group h4 { margin: 4px 0 10px; font-family: var(--display); font-weight: 800; font-size: 18px; letter-spacing: .06em; text-transform: uppercase; color: var(--lamp); }
+.acct-bgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: 14px 8px; }
+.badge { display: grid; justify-items: center; gap: 6px; text-align: center; background: none; border: 0; padding: 4px; color: var(--ice); font: inherit; border-radius: 10px; }
+button.badge { cursor: pointer; }
+button.badge:hover .puck { transform: translateY(-2px); }
+.badge.sel .puck { outline: 3px solid var(--blue-line); outline-offset: 3px; }
+.badge .bn { font-family: var(--display); font-weight: 800; font-size: 16px; line-height: 1.05; text-transform: uppercase; }
+.badge .bh { font-size: 12px; line-height: 1.3; color: var(--frost); max-width: 13em; }
+.badge .bt { font-family: var(--data); font-weight: 700; font-size: 11px; letter-spacing: .08em; text-transform: uppercase; }
+.puck { --rim: var(--ice); width: 66px; height: 66px; border-radius: 50%; background: #111c2e; border: 5px solid #1d2c47; box-shadow: inset 0 0 0 2px var(--rim), 0 5px 0 #05090f; display: grid; place-items: center; transition: transform .15s; }
+.puck svg { width: 32px; height: 32px; }
+.puck.big { width: 84px; height: 84px; } .puck.big svg { width: 42px; height: 42px; }
+.puck.sm { width: 26px; height: 26px; border-width: 2px; box-shadow: inset 0 0 0 1px var(--rim); } .puck.sm svg { width: 14px; height: 14px; }
+.puck[data-tier="bronze"] { --rim: #c98a5a; } .puck[data-tier="silver"] { --rim: #c9d4e0; }
+.puck[data-tier="gold"] { --rim: #f4c95d; box-shadow: inset 0 0 0 2px var(--rim), 0 0 16px rgba(244,201,93,.35), 0 5px 0 #05090f; }
+.puck.locked { background: #0d1626; border: 4px dashed var(--rule); box-shadow: none; font-family: var(--display); font-weight: 900; font-size: 18px; color: #4a5f80; }
+.puck.sm.locked { font-size: 9px; border-width: 2px; }
+.acct-next { display: grid; gap: 6px; padding-top: 6px; }
+.acct-next .row { display: flex; justify-content: space-between; font-size: 14px; }
+.acct-bar { height: 8px; background: var(--night); border-radius: 999px; overflow: hidden; }
+.acct-bar i { display: block; height: 8px; background: var(--lamp); border-radius: 999px; }
+.acct-tabs { display: flex; gap: 8px; flex-wrap: wrap; }
+.acct-tab { background: none; border: 2px solid var(--rule); color: var(--frost); border-radius: 999px; padding: 8px 16px; font: 800 16px var(--display); letter-spacing: .06em; text-transform: uppercase; cursor: pointer; min-height: 44px; }
+.acct-tab.on { background: var(--ice); color: var(--night); border-color: var(--ice); }
+.acct-hist { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.acct-hist li { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 12px; align-items: center; background: var(--night); border-radius: 8px; padding: 10px 12px; }
+.acct-hist .what { font-weight: 600; }
+.acct-hist .when { font-size: 13px; color: var(--frost); }
+.acct-hist .chips { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 4px; }
+.acct-hist .chips .gr { font-size: 14px; }
+.acct-hist .ovr-chip .gr { font-size: 22px; }
+.acct-rank { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.acct-rank li { display: grid; grid-template-columns: 2.4em minmax(0, 1fr) auto auto; gap: 10px; align-items: center; background: var(--night); border-radius: 8px; padding: 8px 12px; }
+.acct-rank li.me { outline: 2px solid var(--blue-line); }
+.acct-rank .r { font-family: var(--display); font-weight: 900; font-size: 22px; color: var(--frost); }
+.acct-rank .n { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.acct-rank .n a { color: var(--ice); font-weight: 700; }
+.acct-rank .d { font-size: 13px; color: var(--frost); }
+.acct-sc { display: inline-flex; gap: 3px; vertical-align: middle; margin-left: 6px; }
+.lb-name a { color: inherit; }
+.acct-danger { border-top: 1px solid var(--rule); padding-top: 12px; margin-top: 4px; }
+.acct-toast { position: fixed; left: 50%; bottom: 20px; transform: translateX(-50%); z-index: 50; background: var(--boards-2); border: 2px solid var(--g-s); color: var(--ice); border-radius: 999px; padding: 10px 18px; font-weight: 700; display: flex; gap: 10px; align-items: center; box-shadow: 0 10px 30px rgba(0,0,0,.5); max-width: calc(100vw - 32px); }
+.site-nav .acct-nav { color: var(--ice); border-color: var(--lamp); }
+
 </style>
 <style>html{-webkit-text-size-adjust:100%}body{margin:0}img{max-width:100%}[hidden]{display:none!important}:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}.foot a{color:var(--frost)}</style>
 </head>
@@ -375,14 +465,14 @@ body.fx .p-meta { color: #c7d4e2; }
       <p class="credit">Created by D.M</p>
       <h1 class="brand"><a href="./" id="home-link" title="Main menu">Rink<span>·</span>Roll</a></h1>
       <p class="tag">Spin real NHL players. Steal one skill from each. Build a monster.</p>
-      <nav class="site-nav" aria-label="Site"><a href="how-to-play.html">How to play</a><a href="privacy.html">Privacy</a></nav>
+      <nav class="site-nav" aria-label="Site"><a href="/how-to-play.html">How to play</a><a href="/privacy.html">Privacy</a><a href="/#account" id="acct-link" class="acct-nav">Sign in</a></nav>
     </div>
     <div class="scorebug" id="bug"><span>Pool <b id="bug-pool">—</b></span><span>Pos <b id="bug-pos">—</b></span><span>Re-rolls <b id="bug-rr">—</b></span><button class="mute" id="mute" aria-pressed="false">Sound on</button><button class="mute" id="fx-toggle" aria-pressed="true">Arena on</button></div>
   </header>
 
   <!-- SETUP -->
   <section class="setup" id="setup">
-    <aside class="notepad" aria-label="Updates"><h2>Updates</h2><ul><li><time datetime="2026-11-06">Nov 6, 2026</time><span class="u">Grit added for current forwards.</span><span class="u">D Physicality now counts puck battles.</span><span class="u">Grades updated with latest games.</span></li></ul></aside>
+    <aside class="notepad" aria-label="Updates"><h2>Updates</h2><ul tabindex="0" aria-label="Update notes, newest first (scroll for older ones)"><li><time datetime="2026-11-09">Nov 9, 2026</time><span class="u">Accounts: badges, streaks, history.</span><span class="u">Same Daily spins for everyone.</span><span class="u">Cap Line cap raised to $50M.</span><span class="u">Defense pool trimmed; grade tweaks.</span></li><li><time datetime="2026-11-06">Nov 6, 2026</time><span class="u">Grit added for current forwards.</span><span class="u">D Physicality now counts puck battles.</span><span class="u">Grades updated with latest games.</span></li></ul></aside>
     <div class="step">
       <h2>How to play <small>Step 1</small></h2>
       <div class="choices" role="group" aria-label="How to play">
@@ -590,12 +680,108 @@ body.fx .p-meta { color: #c7d4e2; }
     </div>
   </section>
 
+  <!-- ACCOUNT -->
+  <section class="acct" id="account" hidden>
+    <!-- signed out -->
+    <div id="acct-out" hidden>
+      <div class="acct-card">
+        <h2 class="acct-h">Your Rink Roll account</h2>
+        <p class="note">Optional: the game works the same without one. With an account you get your build history, average grades, Daily streaks, badges, a head-to-head record and a spot on the global ranking.</p>
+        <p class="acct-msg" id="acct-err" role="alert"></p>
+        <label class="acct-age"><input type="checkbox" id="acct-age"><span>I'm 13 or older<small>Needed to make a new account</small></span></label>
+        <a class="acct-google" id="acct-google" href="/api/auth/google?age=0">
+          <svg width="20" height="20" viewBox="0 0 48 48" aria-hidden="true"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-7.9l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.3-.1-2.4-.4-3.5z"/></svg>
+          Continue with Google
+        </a>
+        <div class="acct-or"><span>or use your email</span></div>
+        <form id="acct-email-form" class="acct-form" novalidate>
+          <label class="acct-label" for="acct-email">Email</label>
+          <input class="acct-input" id="acct-email" type="email" autocomplete="email" placeholder="you@example.com" required>
+          <div id="acct-pw-wrap" hidden>
+            <label class="acct-label" for="acct-pw">Password</label>
+            <input class="acct-input" id="acct-pw" type="password" autocomplete="current-password" placeholder="Your password">
+          </div>
+          <div class="acct-row">
+            <button class="btn hot" id="acct-email-go" type="submit">Email me a sign-in link</button>
+            <button class="btn" id="acct-pw-toggle" type="button">Use a password</button>
+          </div>
+          <div class="acct-row acct-small" id="acct-pw-links" hidden>
+            <button class="acct-link" id="acct-forgot" type="button">Forgot password?</button>
+            <button class="acct-link" id="acct-make-pw" type="button">New here? Create an account with a password</button>
+          </div>
+        </form>
+        <p class="note acct-fine">We only use your email to sign you in. See the <a href="privacy.html">Privacy page</a>.</p>
+      </div>
+    </div>
+
+    <!-- set a new password (after a reset link, or after a password sign-up link) -->
+    <div id="acct-setpw" hidden>
+      <div class="acct-card">
+        <h2 class="acct-h" id="acct-setpw-h">Choose a password</h2>
+        <p class="note" id="acct-setpw-note">At least 8 characters.</p>
+        <form id="acct-setpw-form" class="acct-form">
+          <input class="acct-input" id="acct-newpw" type="password" autocomplete="new-password" placeholder="New password" minlength="8" required>
+          <div class="acct-row"><button class="btn hot" type="submit">Save password</button><button class="btn" type="button" id="acct-setpw-skip">Skip</button></div>
+          <p class="acct-msg" id="acct-setpw-msg" role="alert"></p>
+        </form>
+      </div>
+    </div>
+
+    <!-- signed in, or someone's public profile -->
+    <div id="acct-in" hidden>
+      <div class="acct-head">
+        <div class="acct-avatar" id="acct-avatar">DM</div>
+        <div class="acct-id"><div class="acct-name" id="acct-name">—</div><button class="acct-link" id="acct-handle" type="button" title="Copy profile link">rinkroll.app/u/—</button></div>
+        <div class="acct-head-actions"><button class="btn" id="acct-back" type="button">Back to menu</button><button class="btn" id="acct-out-btn" type="button">Sign out</button></div>
+      </div>
+      <p class="acct-msg" id="acct-msg" role="status"></p>
+      <div class="acct-tiles" id="acct-tiles"></div>
+
+      <div class="acct-card">
+        <div class="acct-sec-h"><h3>Showcase</h3><span class="note" id="acct-sc-note">Tap badges below to pick 3. They show next to your name on the leaderboard.</span></div>
+        <div class="acct-showcase" id="acct-showcase"></div>
+      </div>
+
+      <div class="acct-card">
+        <div class="acct-sec-h"><h3>Badges</h3><span class="acct-count" id="acct-bcount">0 / 19</span></div>
+        <div id="acct-badges"></div>
+        <div class="acct-next" id="acct-next" hidden></div>
+      </div>
+
+      <div class="acct-tabs" role="tablist">
+        <button class="acct-tab on" data-tab="hist" role="tab" aria-selected="true">History</button>
+        <button class="acct-tab" data-tab="rank" role="tab" aria-selected="false">Global ranking</button>
+        <button class="acct-tab" data-tab="settings" role="tab" aria-selected="false" id="acct-tab-settings">Settings</button>
+      </div>
+      <div class="acct-card" id="acct-pane-hist"></div>
+      <div class="acct-card" id="acct-pane-rank" hidden></div>
+      <div class="acct-card" id="acct-pane-settings" hidden>
+        <form class="acct-form" id="acct-rename-form">
+          <label class="acct-label" for="acct-rename">Display name</label>
+          <div class="acct-row"><input class="acct-input" id="acct-rename" maxlength="16"><button class="btn" type="submit">Save</button></div>
+        </form>
+        <form class="acct-form" id="acct-pw-form">
+          <label class="acct-label" for="acct-pw2" id="acct-pw2-label">Password</label>
+          <div class="acct-row"><input class="acct-input" id="acct-pw2" type="password" autocomplete="new-password" minlength="8" placeholder="At least 8 characters"><button class="btn" type="submit">Save</button></div>
+        </form>
+        <p class="note" id="acct-signin-ways"></p>
+        <form class="acct-form acct-danger" id="acct-del-form">
+          <label class="acct-label" for="acct-del">Delete account <small>(type DELETE; this can't be undone)</small></label>
+          <div class="acct-row"><input class="acct-input" id="acct-del" autocomplete="off"><button class="btn" type="submit">Delete</button></div>
+        </form>
+        <p class="acct-msg" id="acct-set-msg" role="status"></p>
+      </div>
+    </div>
+    <p class="note" id="acct-loading">Loading…</p>
+  </section>
+  <div class="acct-toast" id="acct-toast" role="status" aria-live="polite" hidden></div>
+
   <footer class="foot">
     <div><b>Fan-made game.</b> Rink Roll is not affiliated with, endorsed by, or sponsored by the National Hockey League, the NHL Players' Association, or any team. Player names and statistics are used for reference only.</div>
     <div><b>How the grades work.</b> Current players are ranked against everyone at their position, then curved: roughly the top 2% earn S and the bottom 8% get F. Speed blends max skating speed and 20+ mph bursts. Shot blends shot velocity, goal rate and shooting %. Hands, Sense and Playmaking use finishing from the slot, offensive-zone time, points, assists and power-play production. Build is height and weight. Grit (Current NHL forwards only) blends net-front presence, tips, screens, puck battles and offensive physicality. Defense adds Physicality (size, penalty minutes, shot power, puck battles) and Stick-checking (ice time, plus/minus, clean play). Goalie grades come from save % by shot distance, three-season save %, and career save %. Small samples are pulled toward average.</div>
     <div>Public NHL data doesn't split saves by glove or blocker side, so goalies are graded on save % by shot distance instead: Mid-range and Long-range. Modern Era Stars covers players whose careers fall mostly between 1980 and 2026 (75 forwards, 75 defensemen, 35 goalies), graded by hand from each player's career and reputation.</div>
-    <div>Current mode only includes players with at least 82 career NHL regular-season games, and forwards need at least 0.40 career points per game. Data: NHL rosters, stats and EDGE tracking updated November 6, 2026.</div>
-    <div>Head-to-head lobbies run through this site, so it works on any network, with no accounts. <a href="how-to-play.html">How to play</a> · <a href="privacy.html">Privacy policy</a></div>
+    <div>Current mode only includes players with at least 82 career NHL regular-season games, forwards need at least 0.40 career points per game and defensemen at least 0.20. Data: NHL rosters, stats and EDGE tracking updated November 6, 2026.</div>
+    <div>Head-to-head lobbies run through this site, so it works on any network, no account needed. <a href="how-to-play.html">How to play</a> · <a href="privacy.html">Privacy policy</a></div>
   </footer>
 </div>
 
@@ -2464,10 +2650,10 @@ function updateBug() {
 function show(id) {
   // leaving the build screen stops a spin mid-roll (no more ticks, horn or flash)
   if (id !== 'game' && state.spinning) { cancelAnimationFrame(rafId); state.spinning = false; }
-  ['setup', 'lobby', 'game', 'result', 'line'].forEach(s => $(s).hidden = s !== id); window.scrollTo({ top: 0, behavior: 'smooth' });
+  ['setup', 'lobby', 'game', 'result', 'line', 'account'].forEach(s => { const el = $(s); if (el) el.hidden = s !== id; }); window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-function startGame() { state.online = false; state.daily = null; state.seq = null; initBuild(null); }
+function startGame() { state.online = false; state.daily = null; state.seq = null; state.rseq = null; state.rerolling = false; initBuild(null); }
 
 // resume: optional saved progress [{name, grade} | null per slot]
 function initBuild(resume) {
@@ -2532,6 +2718,13 @@ function updateControls() {
 }
 
 function pickRandom() {
+  if (state.rseq && state.rerolling) {
+    state.rerolling = false;
+    while (state.rseqIdx < state.rseq.length) {
+      const p = state.rseq[state.rseqIdx++];
+      if (!state.used.has(p.name)) return p;
+    }
+  }
   if (state.seq) {
     while (state.seqIdx < state.seq.length) {
       const p = state.seq[state.seqIdx++];
@@ -2669,7 +2862,7 @@ function assign(i) {
 
 function reroll() {
   if (state.rerolls < 1 || !state.current) return;
-  state.rerolls--; state.current = null; spin();
+  state.rerolls--; state.current = null; state.rerolling = true; spin();
   if (state.online) saveProgress(false);
   if (state.daily) dailySaveProgress(false);
 }
@@ -2758,7 +2951,7 @@ function finish() {
   renderOptimal();
   showDailyLeaderboard();
   if (state.online) { saveProgress(true, avg); renderH2H(); }
-  else fanfare(avg >= 7);
+  else { fanfare(avg >= 7); if (typeof acctOnBuild === 'function') acctOnBuild(); }
 }
 
 function copyText() {
@@ -3343,6 +3536,7 @@ function revealPlayoffs(S) {
     $('season-awards').innerHTML = S.trophies.length ? trophyChips(S.trophies) + (S.smythe ? `<span class="no-hw">Conn Smythe: ${esc(S.smythe.name)}</span>` : '') : trophyChips([]);
     if (S.cup) { horn(); fxBurst('big'); } fanfare(S.cup || S.path.length >= 2);
     line.busy = false;
+    if (typeof acctOnLine === 'function') acctOnLine(S);
     renderCard({
       kicker: line.variant === 'cap' ? 'Cap Line' : 'Skill Line',
       title: S.cup ? 'Stanley Cup Champs' : S.confRank > 8 ? 'Lottery Bound' : S.path.length >= 3 ? 'Deep Playoff Run' : 'Playoff Team',
@@ -3393,7 +3587,7 @@ function lbRowsHtml(entries, limit, highlightT) {
   return '<ol class="lb-list">' + entries.slice(0, limit).map((e, i) => {
     const ovr = SCALE[Math.max(0, Math.min(13, Math.round(e.avg)))];
     const chips = e.grades.map(g => `<span class="gr" data-t="${tier(g)}">${esc(g)}</span>`).join('');
-    return `<li class="${e.t === highlightT ? 'me' : ''}"><span class="lb-rank">${i + 1}</span><span class="lb-main"><span class="lb-name">${esc(e.name)}</span><span class="lb-chips">${chips}</span><span class="lb-players">${e.players.map(esc).join(' · ')}</span></span><span class="gr" data-t="${tier(ovr)}">${ovr}</span></li>`;
+    return `<li class="${e.t === highlightT ? 'me' : ''}"><span class="lb-rank">${i + 1}</span><span class="lb-main"><span class="lb-name">${e.handle ? `<a href="#u=${esc(e.handle)}">${esc(e.name)}</a>` : esc(e.name)}${e.sc && typeof miniBadges === 'function' ? miniBadges(e.sc) : ''}</span><span class="lb-chips">${chips}</span><span class="lb-players">${e.players.map(esc).join(' · ')}</span></span><span class="gr" data-t="${tier(ovr)}">${ovr}</span></li>`;
   }).join('') + '</ol>';
 }
 function lbMine(day) { try { return JSON.parse(localStorage.getItem('rinkroll-lb-' + day) || 'null'); } catch (e) { return null; } }
@@ -3455,6 +3649,339 @@ async function loadDailyPreview() {
   } catch (e) { el.innerHTML = ''; el.hidden = true; }
 }
 
+/* ---------- accounts (public site only) ---------- */
+const ACCT = { user: null, catalog: null, loaded: false, view: null, picking: false, rankData: null };
+const BADGE_ORDER = ['first-star', 'perfect-pick', 'honor-roll', 's-tier', 'optimal', 'dumpster-fire', 'rookie-season', 'hat-trick', 'iron-man', 'every-game', 'top-board', 'first-win', 'win-streak', 'rivalry', 'comeback', 'presidents', 'champion', 'cap-wizard', 'money-puck'];
+const BADGE_GROUPS = ['Grades', 'Daily', 'Head-to-head', 'Line Builder'];
+const R = '#e63946', I = '#eaf2f7', G = '#f4c95d';
+const BADGE_SVG = {
+  'first-star': `<path stroke="${G}" d="M12 3l2.6 5.6 6.1.7-4.5 4.2 1.2 6L12 16.6 6.6 19.5l1.2-6L3.3 9.3l6.1-.7z"/>`,
+  'perfect-pick': `<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5.2"/><circle cx="12" cy="12" r="1.6" fill="${R}" stroke="${R}"/>`,
+  'honor-roll': `<circle cx="12" cy="9" r="5.5"/><circle cx="12" cy="9" r="2.4" stroke="${R}"/><path d="M8.6 13.3L7 21.5l5-2.6 5 2.6-1.6-8.2"/>`,
+  's-tier': `<path stroke="${G}" d="M3.5 18.5h17M4.5 18.5L3 8l5 4 4-7.5 4 7.5 5-4-1.5 10.5"/><circle cx="12" cy="14.5" r="1.2" fill="${R}" stroke="${R}"/>`,
+  'optimal': `<path d="M4 9h4.2a2.3 2.3 0 1 1 4.6 0H17v4.2a2.3 2.3 0 1 1 0 4.6V21H4z"/><path stroke="${R}" d="M14.5 3.5l2 2 4-4"/>`,
+  'dumpster-fire': `<path d="M4 11h16M5.5 11l1.4 10h10.2l1.4-10M9.5 14v4M14.5 14v4"/><path stroke="#ff9f5a" d="M12 9.5c-2.2-1.6-1.4-3.9 0-6 .3 1.6 1.4 2.2 2.2 3.3.6.9.3 2-.4 2.7M9.2 9.5c-.9-.9-.8-2 .1-3"/>`,
+  'rookie-season': `<path d="M6 3.5h5v6.5l6.3 1.8a2.4 2.4 0 0 1 1.7 2.3V16H6zM6 7h3M3 20h18"/><path stroke="${R}" d="M8 16v4M16 16v4"/>`,
+  'hat-trick': `<path d="M2 18a3.5 3.5 0 0 1 7 0zM9 18h1.8"/><path stroke="${R}" d="M8.5 10a3.5 3.5 0 0 1 7 0zM15.5 10h1.8"/><path d="M13 18a3.5 3.5 0 0 1 7 0zM20 18h1.8"/>`,
+  'iron-man': `<path d="M7 12h10M3 10v4M21 10v4"/><path stroke="${R}" d="M5 7.5v9M7 6v12M17 6v12M19 7.5v9"/>`,
+  'every-game': `<rect x="3.5" y="5" width="17" height="15.5" rx="2"/><path d="M3.5 9.5h17M8 3v4M16 3v4"/><text x="12" y="18.2" text-anchor="middle" font-family="Saira Extra Condensed, sans-serif" font-weight="900" font-size="8.2" fill="${R}" stroke="none">82</text>`,
+  'top-board': `<path stroke="${G}" d="M7 3.5h10V9a5 5 0 0 1-10 0zM7 5.5H4.3a3 3 0 0 0 3 4.2M17 5.5h2.7a3 3 0 0 1-3 4.2M12 14v4M8 21h8M9 18h6"/><text x="12" y="10.6" text-anchor="middle" font-family="Saira Extra Condensed, sans-serif" font-weight="900" font-size="7" fill="${R}" stroke="none">1</text>`,
+  'first-win': `<path d="M3.5 20V9a2 2 0 0 1 2-2h13a2 2 0 0 1 2 2v11M2 20h20"/><path stroke="#4a5f80" stroke-width="1.1" d="M7.5 7l1.5 13M12 7v13M16.5 7L15 20M4 12h16M4 16h16"/><ellipse cx="12" cy="17.6" rx="3" ry="1.2" fill="${R}" stroke="${R}"/>`,
+  'win-streak': `<path fill="${R}" stroke="${R}" d="M7 15a5 5 0 0 1 10 0z"/><path d="M5.5 15h13v3.5h-13zM9 21h6M12 18.5V21"/><path stroke="${R}" d="M12 4v3M4.6 7.3l2.1 2.1M19.4 7.3l-2.1 2.1"/>`,
+  'rivalry': `<path d="M4 3l12.5 15.5h4"/><path stroke="${R}" d="M20 3L7.5 18.5h-4"/>`,
+  'comeback': `<path d="M3 9l4 4 3-3 3 4M3 20.5h18"/><path stroke="${R}" d="M13 14l7.5-7.5M15.5 6.5h5v5"/>`,
+  'presidents': `<path d="M3.5 7.5h17l-1.2 2.3H4.7zM12 15.8v3M7.5 21h9M8.5 18.8h7"/><path stroke="#3b7bea" d="M5 9.8a7 6 0 0 0 14 0"/>`,
+  'champion': `<path stroke="${G}" d="M8 2.5h8v2.5a4 4 0 0 1-8 0zM10.5 9h3v1.5h-3zM9 10.5h6v2.8H9zM8 13.3h8v2.8H8zM7 16.1h10v2.8H7zM6 18.9h12v2.6H6z"/>`,
+  'cap-wizard': `<path d="M7 17.5L12 3l5 14.5"/><ellipse cx="12" cy="18.2" rx="8.5" ry="2.3"/><path stroke="${R}" stroke-width="2.2" d="M8.7 13h6.6"/><path stroke="${G}" d="M12 6.8v2.6M10.7 8.1h2.6"/>`,
+  'money-puck': `<ellipse cx="12" cy="14.5" rx="8" ry="3"/><path d="M4 14.5v3c0 1.7 3.6 3 8 3s8-1.3 8-3v-3"/><path stroke="#5ee0a8" d="M14.2 3.6c-.5-.6-1.3-.9-2.2-.9-1.3 0-2.2.7-2.2 1.6 0 2.1 4.5 1.2 4.5 3.3 0 .9-1 1.6-2.3 1.6-1 0-1.9-.4-2.3-1M12 1.5v1.2M12 9.2v1.3"/>`
+};
+const TIER_TEXT = { bronze: 'Bronze', silver: 'Silver', gold: 'Gold', earned: 'Earned' };
+function puck(id, tierName, size = '') {
+  const label = ACCT.catalog && ACCT.catalog[id] ? ACCT.catalog[id].name : id;
+  if (!tierName) return `<span class="puck locked ${size}" role="img" aria-label="${esc(label)}, not earned yet">???</span>`;
+  return `<span class="puck ${size}" data-tier="${tierName}" role="img" aria-label="${esc(label)}"><svg viewBox="0 0 24 24" fill="none" stroke="${I}" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${BADGE_SVG[id] || ''}</svg></span>`;
+}
+function miniBadges(ids) { return ids && ids.length ? `<span class="acct-sc">${ids.map(id => puck(id, 'earned', 'sm')).join('')}</span>` : ''; }
+
+async function acctApi(path, body) {
+  const r = await fetch(path, body ? { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body), credentials: 'same-origin' } : { cache: 'no-store', credentials: 'same-origin' });
+  let j = {}; try { j = await r.json(); } catch (e) {}
+  if (!r.ok) throw new Error(j.error || 'Something went wrong. Try again.');
+  return j;
+}
+function acctToast(text) {
+  const el = $('acct-toast'); if (!el) return;
+  el.textContent = text; el.hidden = false;
+  clearTimeout(acctToast.t); acctToast.t = setTimeout(() => el.hidden = true, 4200);
+}
+function announceEarned(ids) {
+  if (!ids || !ids.length || !ACCT.catalog) return;
+  const names = [...new Set(ids)].map(k => ACCT.catalog[k] && ACCT.catalog[k].name).filter(Boolean);
+  if (names.length) acctToast(`🏅 Badge earned: ${names.join(', ')}`);
+}
+async function acctLoad() {
+  try { const j = await acctApi('/api/me'); ACCT.user = j.user; ACCT.catalog = j.catalog || ACCT.catalog; } catch (e) { ACCT.user = null; }
+  ACCT.loaded = true; acctNav();
+  if (ACCT.user && !ACCT.user.imported) acctImport();
+  return ACCT.user;
+}
+function acctNav() {
+  const a = $('acct-link'); if (!a) return;
+  a.textContent = ACCT.user ? ACCT.user.name : 'Sign in';
+  const n = $('lb-name');
+  if (n) { if (ACCT.user) { n.value = ACCT.user.name; n.readOnly = true; n.title = 'Your account name'; } else { n.readOnly = false; n.title = ''; } }
+}
+// past Dailies saved on this device become part of a new account (once)
+async function acctImport() {
+  const dailies = [];
+  try {
+    for (let i = 0; i < localStorage.length; i++) {
+      const k = localStorage.key(i), m = /^rinkroll-daily-(\d{4}-\d{2}-\d{2})$/.exec(k || ''); if (!m) continue;
+      const s = JSON.parse(localStorage.getItem(k) || 'null');
+      if (s && s.done && Array.isArray(s.slots) && s.slots.every(Boolean)) dailies.push({ day: m[1], pos: dailyPosFor(m[1]), slots: s.slots });
+    }
+  } catch (e) {}
+  try {
+    const j = await acctApi('/api/me', { action: 'import', dailies }); ACCT.user.imported = true;
+    if (j.imported) {
+      await acctLoad();
+      if (!$('account').hidden && !$('acct-in').hidden && !ACCT.view) renderProfile(ACCT.user, true);
+      acctToast(`Added ${j.imported} past ${j.imported === 1 ? 'Daily' : 'Dailies'} from this device`);
+    }
+  } catch (e) {}
+}
+function dailyPosFor(key) { const [y, m, d] = key.split('-').map(Number); const n = Math.round((Date.UTC(y, m - 1, d) - DAILY_EPOCH) / 864e5) + 1; return ['F', 'D', 'G'][((n - 1) % 3 + 3) % 3]; }
+
+/* ---- hooks from the game ---- */
+function acctOnBuild() {
+  if (!ACCT.user || state.online) return;
+  const build = { mode: state.mode, pos: state.pos, play: state.daily ? 'daily' : 'solo', day: state.daily ? state.daily.key : null,
+    slots: state.slots.map(s => ({ name: s.player.name, grade: s.grade, grades: s.player.grades })) };
+  acctApi('/api/me', { action: 'build', build }).then(j => { announceEarned(j.earned); ACCT.stale = true; }).catch(() => {});
+}
+function acctOnLine(S) {
+  if (!ACCT.user || !S) return;
+  const hasLine = typeof line !== 'undefined';
+  const data = { variant: hasLine ? line.variant : 'skill', W: S.W, L: S.L, OTL: S.OTL, cup: S.cup, presidents: S.presidents, playoffs: S.confRank <= 8, finish: S.finish,
+    capUsed: typeof capUsed === 'function' ? capUsed() : 0, players: (hasLine ? line.picks : []).map(p => p.name) };
+  acctApi('/api/me', { action: 'line', line: data }).then(j => { announceEarned(j.earned); ACCT.stale = true; }).catch(() => {});
+}
+function acctOnH2H(code, round) {
+  if (!ACCT.user || !code) return;
+  const slots = state.slots.map(s => s.player ? { name: s.player.name, grades: s.player.grades } : null);
+  acctApi('/api/me', { action: 'h2h', code, round, slots }).then(j => {
+    if (j.counted) announceEarned(j.earned);
+    else if (j.why === 'both' && !acctOnH2H.told) { acctOnH2H.told = true; acctToast('Head-to-head records count when both players are signed in'); }
+    ACCT.stale = true;
+  }).catch(() => {});
+}
+
+/* ---- screens ---- */
+async function openAccount(opts = {}) {
+  show('account');
+  ACCT.view = null; ACCT.picking = false;
+  $('acct-loading').hidden = false; ['acct-out', 'acct-in', 'acct-setpw'].forEach(id => $(id).hidden = true);
+  if (!ACCT.loaded || ACCT.stale || opts.reload) { ACCT.stale = false; await acctLoad(); }
+  $('acct-loading').hidden = true;
+  if (opts.setPassword) return showSetPw(opts.setPassword);
+  if (!ACCT.user) return showSignedOut(opts.err);
+  renderProfile(ACCT.user, true);
+}
+async function openProfile(handle) {
+  show('account'); ACCT.picking = false;
+  $('acct-loading').hidden = false; ['acct-out', 'acct-in', 'acct-setpw'].forEach(id => $(id).hidden = true);
+  if (!ACCT.loaded) await acctLoad();
+  try {
+    const j = await acctApi('/api/rank?profile=' + encodeURIComponent(handle));
+    $('acct-loading').hidden = true;
+    if (ACCT.user && ACCT.user.handle === j.profile.handle) return renderProfile(ACCT.user, true);
+    ACCT.view = j.profile; renderProfile(j.profile, false);
+  } catch (e) { $('acct-loading').textContent = 'No player found with that name.'; }
+}
+function showSignedOut(err) {
+  $('acct-out').hidden = false;
+  const msgs = { google: 'Google sign-in didn\'t go through. Try again, or use your email.', age: 'To make an account, check the box confirming you\'re 13 or older, then try again.' };
+  msg('acct-err', err ? (msgs[err] || err) : '', true);
+}
+function showSetPw(kind) {
+  $('acct-setpw').hidden = false;
+  $('acct-setpw-h').textContent = kind === 'reset' ? 'Choose a new password' : 'Add a password';
+  $('acct-setpw-note').textContent = kind === 'reset' ? 'At least 8 characters.' : 'You\'re signed in. Add a password so you can sign in with it next time (at least 8 characters).';
+  $('acct-setpw-skip').hidden = kind === 'reset';
+  $('acct-setpw-form').dataset.kind = kind;
+  $('acct-newpw').value = ''; msg('acct-setpw-msg', '');
+}
+
+function renderProfile(u, self) {
+  $('acct-in').hidden = false;
+  $('acct-avatar').textContent = (u.name || '?').replace(/[^A-Za-z0-9]/g, '').slice(0, 2) || '?';
+  $('acct-name').textContent = u.name;
+  $('acct-handle').textContent = `rinkroll.app/u/${u.handle}`;
+  $('acct-out-btn').hidden = !self; $('acct-tab-settings').hidden = !self;
+  msg('acct-msg', '');
+  const st = u.stats;
+  const tile = (big, label, small = '') => `<div class="acct-tile"><b>${big}</b><span>${label}</span>${small ? `<small>${small}</small>` : ''}</div>`;
+  $('acct-tiles').innerHTML =
+    tile(st.avg ? chip(st.avg) : '—', 'Avg build', `${st.builds} ${st.builds === 1 ? 'build' : 'builds'}`) +
+    tile(st.daily.streak, 'Day streak', `best ${st.daily.best}`) +
+    tile(`${st.h2h.w}–${st.h2h.l}`, 'Head-to-head', st.h2h.t ? `${st.h2h.t} tied` : '') +
+    tile(u.rank ? '#' + u.rank : '—', 'Global rank', u.rank ? '' : `${Math.max(0, 10 - st.daily.n)} more ${10 - st.daily.n === 1 ? 'Daily' : 'Dailies'} to rank`);
+  if (self && ACCT.rankData && ACCT.rankData.me) $('acct-tiles').lastElementChild.querySelector('b').textContent = '#' + ACCT.rankData.me.rank;
+  renderShowcase(u, self); renderBadges(u, self); renderHist(u);
+  setTab('hist');
+  if (self) {
+    $('acct-rename').value = u.name;
+    $('acct-pw2-label').textContent = u.hasPassword ? 'Change password' : 'Add a password';
+    $('acct-signin-ways').textContent = `Signed in as ${u.email}. You can sign in with: ${['email link', u.hasPassword ? 'password' : null, u.google ? 'Google' : null].filter(Boolean).join(', ')}.`;
+    if (!ACCT.rankData) loadRank(true);
+  }
+}
+function renderShowcase(u, self) {
+  const sc = u.showcase || [];
+  $('acct-sc-note').textContent = self ? (ACCT.picking ? 'Tap badges below to pick up to 3, then tap Done.' : 'Shown next to your name on the leaderboard.') : '';
+  $('acct-showcase').innerHTML = (sc.length ? sc.map(id => `<div class="badge">${puck(id, u.badges[id] && u.badges[id].tier, 'big')}<span class="bn">${esc(ACCT.catalog[id].name)}</span></div>`).join('') : `<p class="note">${self ? 'No badges picked yet.' : 'No badges picked yet.'}</p>`)
+    + (self ? `<button class="btn" id="acct-pick" type="button">${ACCT.picking ? 'Done' : 'Pick badges'}</button>` : '');
+  if (self) $('acct-pick').onclick = async () => {
+    if (ACCT.picking) {
+      ACCT.picking = false;
+      try { await acctApi('/api/me', { action: 'showcase', ids: ACCT.user.showcase }); } catch (e) { msg('acct-msg', e.message, true); }
+    } else ACCT.picking = true;
+    renderShowcase(ACCT.user, true); renderBadges(ACCT.user, true);
+  };
+}
+function renderBadges(u, self) {
+  const cat = ACCT.catalog || {}, got = u.badges || {};
+  const n = BADGE_ORDER.filter(id => got[id]).length;
+  $('acct-bcount').textContent = `${n} / ${BADGE_ORDER.length}`;
+  $('acct-badges').innerHTML = BADGE_GROUPS.map(g => `<div class="acct-group"><h4>${g}</h4><div class="acct-bgrid">${BADGE_ORDER.filter(id => cat[id] && cat[id].group === g).map(id => {
+    const b = got[id], t = b && b.tier, tag = self && ACCT.picking && t ? 'button' : 'div', sel = (u.showcase || []).includes(id) ? ' sel' : '';
+    const count = b && cat[id].rep ? ` · ${b.n}×` : '';
+    return `<${tag} class="badge${sel}" data-id="${id}"${tag === 'button' ? ' type="button"' : ''}>${puck(id, t)}<span class="bn">${esc(cat[id].name)}</span>${t ? `<span class="bt" style="color:${t === 'gold' ? G : t === 'silver' ? '#c9d4e0' : t === 'bronze' ? '#c98a5a' : I}">${TIER_TEXT[t]}${count}</span>` : ''}<span class="bh">${esc(cat[id].how)}</span></${tag}>`;
+  }).join('')}</div></div>`).join('');
+  if (self && ACCT.picking) $('acct-badges').querySelectorAll('button.badge').forEach(el => el.onclick = () => {
+    const id = el.dataset.id, sc = ACCT.user.showcase || [];
+    ACCT.user.showcase = sc.includes(id) ? sc.filter(x => x !== id) : [...sc, id].slice(-3);
+    renderShowcase(ACCT.user, true); renderBadges(ACCT.user, true);
+  });
+  // next streak badge
+  const st = u.stats.daily, goals = [[3, 'hat-trick'], [30, 'iron-man'], [82, 'every-game']].find(([nn, id]) => !got[id]);
+  $('acct-next').hidden = !self || !goals;
+  if (self && goals) {
+    const [goal, id] = goals, have = Math.min(goal, st.streak);
+    $('acct-next').innerHTML = `<div class="row"><b>Next up: ${esc(cat[id].name)}</b><span>${have} / ${goal} days</span></div><div class="acct-bar"><i style="width:${Math.round(have / goal * 100)}%"></i></div>`;
+  }
+}
+function renderHist(u) {
+  const list = u.hist || [];
+  if (!list.length) { $('acct-pane-hist').innerHTML = '<p class="note">No builds yet. Finish a build, Daily, Line or head-to-head and it shows up here.</p>'; return; }
+  const when = t => new Date(t).toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+  const posName = p => ({ F: 'Forward', D: 'Defenseman', G: 'Goalie' }[p] || '');
+  $('acct-pane-hist').innerHTML = '<ul class="acct-hist">' + list.map(h => {
+    let what, right = '', chips = '';
+    if (h.k === 'build') { what = `${h.play === 'daily' ? 'Daily' : h.play === 'h2h' ? 'Head-to-head' : 'Solo'} · ${posName(h.pos)} · ${h.mode === 'current' ? 'Current NHL' : 'Modern Era Stars'}`; right = `<span class="ovr-chip">${chip(h.ovr)}</span>`; chips = (h.grades || []).map(chip).join(''); }
+    else if (h.k === 'line') { what = `${h.variant === 'cap' ? 'Cap Line' : 'Skill Line'} · ${h.rec} · ${h.pts} pts`; right = h.cup ? '<span class="ovr-chip">🏆</span>' : ''; chips = `<span class="when">${esc(h.finish || '')}</span>`; }
+    else { what = `Head-to-head ${h.res === 'win' ? 'win' : h.res === 'loss' ? 'loss' : 'tie'}${h.opp ? ' vs ' + esc(h.opp) : ''}`; right = h.ovr ? `<span class="ovr-chip">${chip(h.ovr)}</span>` : ''; }
+    return `<li><div><div class="what">${what}</div><div class="when">${when(h.t)}</div></div>${right}${chips ? `<div class="chips">${chips}</div>` : ''}</li>`;
+  }).join('') + '</ul>';
+}
+async function loadRank(quiet) {
+  try {
+    const j = ACCT.rankData = await acctApi('/api/rank');
+    if (ACCT.user && j.me && !ACCT.view) { const b = $('acct-tiles').lastElementChild; if (b) { b.querySelector('b').textContent = '#' + j.me.rank; const s = b.querySelector('small'); if (s) s.remove(); } }
+    renderRank();
+  } catch (e) { if (!quiet) $('acct-pane-rank').innerHTML = '<p class="note">Couldn\'t load the ranking. Try again in a moment.</p>'; }
+}
+function renderRank() {
+  const j = ACCT.rankData; if (!j) { $('acct-pane-rank').innerHTML = '<p class="note">Loading…</p>'; return; }
+  const row = r => `<li class="${j.me && j.me.handle === r.handle ? 'me' : ''}"><span class="r">${r.rank}</span><span class="n"><a href="#u=${esc(r.handle)}">${esc(r.name)}</a>${miniBadges(r.sc)}</span><span class="d">${r.n} Dailies</span>${chip(r.grade)}</li>`;
+  $('acct-pane-rank').innerHTML = `<p class="note">Ranked by average Daily grade. Play ${j.min} Dailies with an account to get on the board.</p>`
+    + (j.rows.length ? `<ol class="acct-rank">${j.rows.map(row).join('')}</ol>` : '<p class="note">Nobody has played enough Dailies yet. You could be first.</p>')
+    + (j.me && j.me.rank > 50 ? `<ol class="acct-rank">${row(j.me)}</ol>` : '');
+}
+function setTab(tab) {
+  document.querySelectorAll('.acct-tab').forEach(b => { const on = b.dataset.tab === tab; b.classList.toggle('on', on); b.setAttribute('aria-selected', on); });
+  ['hist', 'rank', 'settings'].forEach(t => $('acct-pane-' + t).hidden = t !== tab);
+  if (tab === 'rank') { renderRank(); loadRank(); }
+}
+
+/* ---- wiring ---- */
+function acctWire() {
+  if (!$('account')) return;
+  const age = $('acct-age'), g = $('acct-google');
+  age.onchange = () => g.href = '/api/auth/google?age=' + (age.checked ? 1 : 0);
+  let pwMode = false;
+  $('acct-pw-toggle').onclick = () => {
+    pwMode = !pwMode;
+    $('acct-pw-wrap').hidden = !pwMode; $('acct-pw-links').hidden = !pwMode;
+    $('acct-email-go').textContent = pwMode ? 'Sign in' : 'Email me a sign-in link';
+    $('acct-pw-toggle').textContent = pwMode ? 'Use an email link' : 'Use a password';
+    msg('acct-err', '');
+  };
+  const email = () => $('acct-email').value.trim();
+  const busy = (on) => $('acct-email-go').disabled = on;
+  $('acct-email-form').onsubmit = async e => {
+    e.preventDefault(); msg('acct-err', ''); busy(true);
+    try {
+      if (pwMode) { await acctApi('/api/auth/password', { action: 'login', email: email(), password: $('acct-pw').value }); await openAccount({ reload: true }); }
+      else { await acctApi('/api/auth/email', { email: email(), age13: age.checked }); msg('acct-err', `Check ${email()} for your sign-in link. It expires in 15 minutes.`); $('acct-err').classList.remove('err'); }
+    } catch (err) { msg('acct-err', err.message, true); }
+    busy(false);
+  };
+  $('acct-forgot').onclick = async () => {
+    msg('acct-err', '');
+    try { await acctApi('/api/auth/password', { action: 'reset-request', email: email() }); msg('acct-err', `If there's an account for ${email()}, a reset link is on its way.`); $('acct-err').classList.remove('err'); }
+    catch (err) { msg('acct-err', err.message, true); }
+  };
+  $('acct-make-pw').onclick = async () => {
+    msg('acct-err', '');
+    try { await acctApi('/api/auth/password', { action: 'signup', email: email(), age13: age.checked }); msg('acct-err', `Check ${email()} for a link. Open it to finish making your account and pick your password.`); $('acct-err').classList.remove('err'); }
+    catch (err) { msg('acct-err', err.message, true); }
+  };
+  $('acct-setpw-form').onsubmit = async e => {
+    e.preventDefault();
+    const kind = e.target.dataset.kind, pw = $('acct-newpw').value;
+    try {
+      if (kind === 'reset') await acctApi('/api/auth/password', { action: 'reset', t: ACCT.resetToken, password: pw });
+      else await acctApi('/api/me', { action: 'set-password', password: pw });
+      ACCT.resetToken = null; await openAccount({ reload: true }); msg('acct-msg', 'Password saved.');
+    } catch (err) { msg('acct-setpw-msg', err.message, true); }
+  };
+  $('acct-setpw-skip').onclick = () => openAccount({ reload: true });
+  $('acct-out-btn').onclick = async () => { try { await acctApi('/api/auth/logout', {}); } catch (e) {} ACCT.user = null; ACCT.rankData = null; acctNav(); openAccount(); };
+  $('acct-back').onclick = () => { history.replaceState(null, '', location.pathname); show('setup'); };
+  $('acct-handle').onclick = () => {
+    const u = ACCT.view || ACCT.user; if (!u) return;
+    const link = `https://rinkroll.app/u/${u.handle}`;
+    (navigator.clipboard ? navigator.clipboard.writeText(link) : Promise.reject()).then(() => msg('acct-msg', 'Profile link copied.'), () => msg('acct-msg', link));
+  };
+  document.querySelectorAll('.acct-tab').forEach(b => b.onclick = () => setTab(b.dataset.tab));
+  $('acct-rename-form').onsubmit = async e => { e.preventDefault(); try { await acctApi('/api/me', { action: 'rename', name: $('acct-rename').value }); await openAccount({ reload: true }); setTab('settings'); msg('acct-set-msg', 'Name saved.'); } catch (err) { msg('acct-set-msg', err.message, true); } };
+  $('acct-pw-form').onsubmit = async e => { e.preventDefault(); try { await acctApi('/api/me', { action: 'set-password', password: $('acct-pw2').value }); $('acct-pw2').value = ''; await openAccount({ reload: true }); setTab('settings'); msg('acct-set-msg', 'Password saved.'); } catch (err) { msg('acct-set-msg', err.message, true); } };
+  $('acct-del-form').onsubmit = async e => {
+    e.preventDefault();
+    try { await acctApi('/api/me', { action: 'delete', confirm: $('acct-del').value.trim() }); ACCT.user = null; acctNav(); history.replaceState(null, '', location.pathname); show('setup'); acctToast('Your account was deleted.'); }
+    catch (err) { msg('acct-set-msg', err.message, true); }
+  };
+  $('acct-link').addEventListener('click', e => { e.preventDefault(); history.replaceState(null, '', '#account'); openAccount(); });
+}
+
+// links: /u/<handle> and #u=<handle> (profiles), #account, #login=<token>, #reset=<token>
+async function acctRoute() {
+  const pm = /^\/u\/([A-Za-z0-9]{1,24})\/?$/.exec(location.pathname);
+  if (pm) { history.replaceState(null, '', '/#u=' + pm[1].toLowerCase()); }
+  const h = location.hash;
+  let m;
+  if ((m = /^#login=([A-Za-z0-9_-]{20,100})$/.exec(h))) {
+    history.replaceState(null, '', location.pathname);
+    show('account'); $('acct-loading').hidden = false; $('acct-loading').textContent = 'Signing you in…';
+    try {
+      const j = await acctApi('/api/auth/verify', { t: m[1] });
+      $('acct-loading').textContent = 'Loading…';
+      await openAccount({ reload: true, setPassword: j.setPassword ? 'new' : null });
+      if (j.created) acctToast('Welcome to Rink Roll! Your account is ready.');
+    } catch (err) { $('acct-loading').hidden = true; ACCT.loaded = false; await openAccount(); msg('acct-err', err.message, true); }
+    return true;
+  }
+  if ((m = /^#reset=([A-Za-z0-9_-]{20,100})$/.exec(h))) {
+    ACCT.resetToken = m[1]; history.replaceState(null, '', location.pathname);
+    show('account'); $('acct-loading').hidden = true; ['acct-out', 'acct-in'].forEach(id => $(id).hidden = true); showSetPw('reset');
+    return true;
+  }
+  if ((m = /^#u=([A-Za-z0-9]{1,24})$/.exec(h))) { openProfile(m[1].toLowerCase()); return true; }
+  if ((m = /^#account(?:\?(err|new)=(\w+))?$/.exec(h))) {
+    history.replaceState(null, '', location.pathname + '#account');
+    await openAccount({ reload: true, err: m[1] === 'err' ? m[2] : null });
+    if (m[1] === 'new') acctToast('Welcome to Rink Roll! Your account is ready.');
+    return true;
+  }
+  return false;
+}
+if (LB_ON) {
+  acctWire();
+  window.addEventListener('hashchange', () => { if (/^#(u=|account|login=|reset=)/.test(location.hash)) acctRoute(); });
+  acctRoute().then(routed => { if (!routed) acctLoad(); });
+}
+
 /* ---------- play modes, daily, share ---------- */
 function setPlay(play) {
   state.play = play;
@@ -3474,7 +4001,15 @@ function setPlay(play) {
 document.querySelectorAll('[data-play]').forEach(b => b.addEventListener('click', () => setPlay(b.dataset.play)));
 
 const DAILY_EPOCH = Date.UTC(2026, 10, 5); // Daily #1 = Nov 5, 2026
-function todayKey() { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; }
+// The Daily runs on Eastern time, so everyone everywhere is on the same Daily
+function etParts(d = new Date()) {
+  try {
+    const f = new Intl.DateTimeFormat('en-CA', { timeZone: 'America/New_York', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' });
+    const o = {}; f.formatToParts(d).forEach(p => o[p.type] = p.value);
+    return { key: `${o.year}-${o.month}-${o.day}`, h: +o.hour % 24, m: +o.minute };
+  } catch (e) { return { key: `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`, h: d.getHours(), m: d.getMinutes() }; }
+}
+function todayKey() { return etParts().key; }
 function dailyInfo() {
   const key = todayKey(); const [y, m, d] = key.split('-').map(Number);
   const n = Math.round((Date.UTC(y, m - 1, d) - DAILY_EPOCH) / 864e5) + 1;
@@ -3485,7 +4020,7 @@ function dailyInfo() {
 function dailyLoad() { try { return JSON.parse(localStorage.getItem('rinkroll-daily-' + dailyInfo().key) || 'null'); } catch (e) { return null; } }
 function dailySaveProgress(done) {
   if (!state.daily) return;
-  const body = { slots: state.slots.map(s => s.player ? { name: s.player.name, grade: s.grade } : null), seqIdx: state.seqIdx, rerolls: state.rerolls, done: !!done };
+  const body = { slots: state.slots.map(s => s.player ? { name: s.player.name, grade: s.grade } : null), seqIdx: state.seqIdx, rseqIdx: state.rseqIdx || 0, rerolls: state.rerolls, done: !!done };
   try { localStorage.setItem('rinkroll-daily-' + state.daily.key, JSON.stringify(body)); } catch (e) {}
 }
 function dailyDone() { const s = dailyLoad(); return !!(s && s.done); }
@@ -3502,15 +4037,21 @@ function startDaily() {
   const D = dailyInfo();
   state.online = false; state.daily = D;
   state.mode = D.mode; state.pos = D.pos; state.peek = false;
-  state.seq = seededSeq(POOLS[D.mode][D.pos], D.seed);
+  // sorted by name first, so a data refresh that only reorders players can't change the Daily;
+  // the shuffle is split in two: spins come from the first half, re-rolls from the second,
+  // so re-rolling never shifts which players everyone else sees on later spins
+  const all = seededSeq(POOLS[D.mode][D.pos].slice().sort((a, b) => a.name < b.name ? -1 : a.name > b.name ? 1 : 0), D.seed);
+  const half = Math.ceil(all.length / 2);
+  state.seq = all.slice(0, half); state.rseq = all.slice(half);
   const s = dailyLoad();
   state.seqIdx = s && s.seqIdx ? s.seqIdx : 0;
+  state.rseqIdx = s && s.rseqIdx ? s.rseqIdx : 0; state.rerolling = false;
   state.rerolls = s && typeof s.rerolls === 'number' ? s.rerolls : 1;
   initBuild(s && s.slots && s.slots.some(Boolean) ? s.slots : null);
 }
 function untilMidnight() {
-  const now = new Date(), next = new Date(now); next.setHours(24, 0, 0, 0);
-  const mins = Math.max(1, Math.round((next - now) / 60000));
+  const { h, m } = etParts();
+  const mins = Math.max(1, 24 * 60 - (h * 60 + m));
   return `${Math.floor(mins / 60)}h ${mins % 60}m`;
 }
 
@@ -3733,7 +4274,7 @@ function startOnline(L, me) {
   $('peek').checked = false;
   state.online = true;
   const seat = net.role === 'host' ? 0 : 104729; // host and challenger get different spins
-  state.seq = seededSeq(POOLS[state.mode][state.pos], (L.seed + L.round * 7919 + seat) >>> 0);
+  state.seq = seededSeq(POOLS[state.mode][state.pos], (L.seed + L.round * 7919 + seat) >>> 0); state.rseq = null; state.rerolling = false;
   state.seqIdx = me.seqIdx || 0;
   state.rerolls = typeof me.rerolls === 'number' ? me.rerolls : 1;
   const resume = (me.slots && me.slots.some(Boolean)) ? me.slots : null;
@@ -3796,7 +4337,7 @@ function renderH2H() {
   v.className = 'verdict ' + (res === 'tie' ? '' : res);
   const how = (w, l) => w >= l ? `${w}–${l} in categories` : `on overall grade (${w}–${l} in categories)`;
   v.textContent = res === 'win' ? `You win ${how(myWins, oppWins)}` : res === 'loss' ? `${oname} wins ${how(oppWins, myWins)}` : 'Dead even';
-  if (net.verdictRound !== L.round) { net.verdictRound = L.round; fanfare(res !== 'loss'); }
+  if (net.verdictRound !== L.round) { net.verdictRound = L.round; fanfare(res !== 'loss'); if (typeof acctOnH2H === 'function') acctOnH2H(L.code, L.round); }
 }
 
 async function rematch() {

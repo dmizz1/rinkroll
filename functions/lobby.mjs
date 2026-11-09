@@ -7,6 +7,7 @@
 //   POST /api/lobby  { action: 'rematch', cid, code, fromRound }
 // Keys: l/<code>/meta (settings + who holds each seat), l/<code>/host and l/<code>/guest (each written only by that player).
 import { getStore } from '@netlify/blobs';
+import { currentUser } from '../lib/account.mjs';
 
 const CODE_CHARS = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
 const CODE_RE = /^[A-HJ-NP-Z2-9]{5}$/;
@@ -51,7 +52,8 @@ export default async (req) => {
     const name = clean(b.name, 16) || 'Player';
     for (let i = 0; i < 6; i++) {
       const code = newCode();
-      const L = { code, mode, pos, seed: Math.floor(Math.random() * 2 ** 31), round: 1, hostCid: cid, guestCid: null, created: Date.now() };
+      const me = await currentUser(req).catch(() => null);
+      const L = { code, mode, pos, seed: Math.floor(Math.random() * 2 ** 31), round: 1, hostCid: cid, guestCid: null, hostUid: me ? me.uid : null, guestUid: null, created: Date.now() };
       const r = await store.setJSON(`l/${code}/meta`, L, { onlyIfNew: true });
       if (r && r.modified === false) continue;
       await store.setJSON(`l/${code}/host`, fresh(1, name));
@@ -76,7 +78,8 @@ export default async (req) => {
       const who = await store.get(`l/${code}/claim`, { type: 'json' });
       if (!who || who.cid !== cid) return json({ error: `Lobby ${code} already has two players.` }, 409);
     }
-    await store.setJSON(`l/${code}/meta`, { ...L, guestCid: cid });
+    const me = await currentUser(req).catch(() => null);
+    await store.setJSON(`l/${code}/meta`, { ...L, guestCid: cid, guestUid: me ? me.uid : null });
     await store.setJSON(`l/${code}/guest`, fresh(L.round, name));
     return json({ ok: true, code, you: 'guest' });
   }

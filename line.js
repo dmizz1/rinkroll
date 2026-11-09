@@ -204,6 +204,7 @@ function revealPlayoffs(S) {
     $('season-awards').innerHTML = S.trophies.length ? trophyChips(S.trophies) + (S.smythe ? `<span class="no-hw">Conn Smythe: ${esc(S.smythe.name)}</span>` : '') : trophyChips([]);
     if (S.cup) { horn(); fxBurst('big'); } fanfare(S.cup || S.path.length >= 2);
     line.busy = false;
+    if (typeof acctOnLine === 'function') acctOnLine(S);
     renderCard({
       kicker: line.variant === 'cap' ? 'Cap Line' : 'Skill Line',
       title: S.cup ? 'Stanley Cup Champs' : S.confRank > 8 ? 'Lottery Bound' : S.path.length >= 3 ? 'Deep Playoff Run' : 'Playoff Team',
