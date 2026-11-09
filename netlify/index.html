@@ -3475,7 +3475,11 @@ function winP(s, o) { return 1 / (1 + Math.exp(-2.4 * (s - o))); }
 function teamRating() { return line.picks.reduce((a, p, i) => a + ovrVal(p) * LINE_WEIGHT[i], 0); }
 
 function simSeason() {
-  const R = teamRating(), s = (R - 7.6) / 8; // ~8.4 (a solid line) ≈ 100 pts; ~10+ ≈ 115–125 pts
+  // Current NHL lines (Cap Line and current Skill Line) are tuned to what real drafts reach: a well-drafted line (about B+)
+  // makes the playoffs nearly every time and wins the Cup about 1 in 5; a top-10% line (A-) about 45%; a random line is a coin flip for the playoffs.
+  // Modern Era Stars keep the original, tougher scale since their players grade higher.
+  const [C, K] = line.mode === 'current' ? [6.8, 6.5] : [7.6, 8];
+  const R = teamRating(), s = (R - C) / K;
   let W = 0, L = 0, OTL = 0;
   const games = [];
   for (let i = 0; i < 82; i++) {
